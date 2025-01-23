@@ -14,7 +14,7 @@
     "python.formatting.provider": "black",
     "sonarlint.connectedMode.project": {
         "connectionId": "gbabineau",
-        "projectKey": "gbabineau_photo-id"
+        "projectKey": "gbabineau_VARCOM_get_reports"
     }
 
 }
