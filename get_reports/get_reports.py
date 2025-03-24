@@ -7,9 +7,11 @@ import os
 import sys
 from dateutil import parser
 from datetime import date
+from calendar import monthrange
 
 from ebird.api import get_historic_observations, get_regions
 from get_reports import get_taxonomy
+from datetime import datetime
 
 ebird_api_key_name = "EBIRDAPIKEY"
 
@@ -31,6 +33,9 @@ def check_counties_in_groups(county_list, review_species):
 
 
 def check_species_in_taxonomy(review_species, taxonomy):
+    logging.info(
+        "Checking species in state review list against eBird taxonomy."
+    )
     for species in review_species["review_species"]:
         if not any(
             taxon["comName"] == species["comName"] for taxon in taxonomy
@@ -104,6 +109,7 @@ def get_state_list(file_name: str, taxonomy: list) -> dict:
         return {}
     with open(file_name, "rt", encoding="utf-8") as f:
         state_list = json.load(f)["state_list"]
+    logging.info("Checking species in state list against eBird taxonomy.")
     for species in state_list:
         if not any(
             taxon["comName"] == species["comName"] for taxon in taxonomy
@@ -120,6 +126,10 @@ def parse_arguments() -> argparse.Namespace:
     arg_parser = argparse.ArgumentParser(
         prog="get_reports", description="Get eBird reports of interest."
     )
+    arg_parser.add_argument("--year", type=int, help="Year to review YYYY", required=True)
+    arg_parser.add_argument(
+        "--month", type=int, help="Month to review MM", required=True
+    )
     arg_parser.add_argument(
         "--review_species_file",
         help="Species requiring review",
@@ -135,20 +145,35 @@ def parse_arguments() -> argparse.Namespace:
     return arg_parser.parse_args()
 
 
+def county_in_list_or_group(county_name : str, exclusion_list: list, county_groups: list) -> bool:
+    included = False
+    if county_name in exclusion_list:
+        included = True
+    else:
+        for exclusion in exclusion_list:
+            groups = county_groups
+            group = next(
+                (g for g in groups if g["name"] == exclusion), None
+            )
+            if group and county_name in group["counties"]:
+                included = True
+    return included
+
+
 def find_record_of_interest(
     ebird_api_key: str,
     state_list: list,
-    county: str,
+    county: dict,
     day: date,
     review_species: dict,
 ) -> list:
     """Find records of interest for a county and date."""
     observations = get_historic_observations(
-        token=ebird_api_key, area=county, date=day, category="species"
+        token=ebird_api_key, area=county["code"], date=day, category="species"
     )
     records_of_interest = []
     for observation in observations:
-        if not any(
+        if observation.get("exoticCategory","") != 'X' and not any(
             species["comName"] == observation["comName"]
             for species in state_list
         ):
@@ -160,6 +185,7 @@ def find_record_of_interest(
                 {"observation": observation, "new": True}
             )
         else:
+# it is on the state list but is it reviewable?
             matching_species = next(
                 (
                     species
@@ -169,20 +195,34 @@ def find_record_of_interest(
                 None,
             )
             if matching_species:
-                logging.info(
-                    "Species %s is reviewable in %s.",
-                    observation["comName"],
-                    county,
-                )
-                records_of_interest.append(
-                    {
-                        "observation": observation,
-                        "new": False,
-                        "reviewable": True,
-                        "review_species": matching_species,
-                    }
-                )
-                break
+                reviewable = True
+                only_match = matching_species.get("only", [])
+                if only_match:
+                    reviewable = county_in_list_or_group(
+                        county["name"],
+                        only_match,
+                        review_species.get("county_groups", []))
+                elif county_in_list_or_group(
+                    county["name"],
+                    matching_species.get("exclude", []),
+                    review_species.get("county_groups", []),
+                ):
+                    reviewable = False
+
+                if reviewable:
+                    logging.info(
+                        "Species %s is reviewable in %s.",
+                        observation["comName"],
+                        county["name"],
+                    )
+                    records_of_interest.append(
+                        {
+                            "observation": observation,
+                            "new": False,
+                            "reviewable": True,
+                            "review_species": matching_species,
+                        }
+                    )
     return records_of_interest
 
 
@@ -198,6 +238,13 @@ def write_taxonomy_to_file(taxonomy: list, file_name: str) -> None:
     with open(file_name, "w", encoding="utf-8") as f:
         json.dump(taxonomy, f, ensure_ascii=False, indent=4)
     logging.info("Taxonomy written to %s", file_name)
+
+
+def iterate_days_in_month(year: int, month: int):
+    """Generate all days in a given month and year."""
+    num_days = monthrange(year, month)[1]
+    for day in range(1, num_days + 1):
+        yield date(year, month, day)
 
 
 def main():
@@ -228,18 +275,32 @@ def main():
     )
 
     records_to_review = []
-    # for county in counties:
-    for county in ["US-VA-003"]:
-        # for date in dates:
-        for day in [parser.parse("2025-01-12")]:
-            records_to_review.extend(
-                find_record_of_interest(
-                    ebird_api_key, state_list, county, day, species
-                )
+    for county in counties:
+        county_records = []
+        for day in iterate_days_in_month(args.year, args.month):
+            records_for_county = find_record_of_interest(
+                ebird_api_key, state_list, county, day, species
+            )
+            if records_for_county:
+                county_records.extend(records_for_county)
+        if county_records:
+            records_to_review.append(
+                {"county": county["name"], "records": county_records}
             )
     if records_to_review:
-        with open("reports/records_to_review.json", "wt", encoding="utf-8") as f:
-            json.dump(records_to_review, f, ensure_ascii=False, indent=4)
+        def get_current_date_string():
+            return datetime.now().strftime("%Y-%m-%d")
+
+        output_json = {
+            "date of observations": f"{args.year:04d},{args.month:02d}",
+            "state": state,
+            "date of report": get_current_date_string(),
+            "records": records_to_review
+        }
+        with open(
+            "reports/records_to_review.json", "wt", encoding="utf-8"
+        ) as f:
+            json.dump(output_json, f, ensure_ascii=False, indent=4)
 
 
 if __name__ == "__main__":

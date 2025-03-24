@@ -10,7 +10,7 @@ python = "^3.12"
 requests = "^2.31.0"
 ebird-api = "^3.2.2"
 python-dateutil ="^2.9.0"
-
+python-docx="^1.1.2"
 
 [poetry.group.dev.dependencies]
 flake8 = "^6.1.0"
