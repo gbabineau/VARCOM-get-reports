@@ -8,7 +8,7 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = "^3.12"
 requests = "^2.31.0"
-ebird-api = "^3.2.2"
+ebird-api = {git = "https://github.com/gbabineau/ebird-api.git", branch = "feature/add-rank-to-get-historic-observations"}
 python-dateutil ="^2.9.0"
 python-docx="^1.1.2"
 

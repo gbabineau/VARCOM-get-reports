@@ -119,12 +119,16 @@ name = "ebird-api"
 version = "3.4.1"
 description = "Wrapper for accessing the eBird API"
 optional = false
-python-versions = ">=3.8"
+python-versions = ">= 3.8"
 groups = ["main"]
-files = [
-    {file = "ebird_api-3.4.1-py3-none-any.whl", hash = "sha256:5b0342f4eef310e5f5bd37edfed073d42d8eb82ef8f9abea200d7fb0195d2c12"},
-    {file = "ebird_api-3.4.1.tar.gz", hash = "sha256:1f0421f55b0d38cbbdc4ec5fee85ea1f6b0a4e80b0770afe412f428f1789dbb7"},
-]
+files = []
+develop = false
+
+[package.source]
+type = "git"
+url = "https://github.com/gbabineau/ebird-api.git"
+reference = "feature/add-rank-to-get-historic-observations"
+resolved_reference = "d42f9f1e3bdbc7eb7de160dba03cd700f7dcc041"
 
 [[package]]
 name = "idna"
@@ -486,4 +490,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "9cf04ad250bd6c3e1b2d89ec59f6c9e5c0281a7edb316409a9969c534690f600"
+content-hash = "4b73e9707fd3643c573bb3c05937234439a06f7ee7b4b10da557a6d64eed73ab"

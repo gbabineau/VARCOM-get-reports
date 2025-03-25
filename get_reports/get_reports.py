@@ -169,7 +169,7 @@ def find_record_of_interest(
 ) -> list:
     """Find records of interest for a county and date."""
     observations = get_historic_observations(
-        token=ebird_api_key, area=county["code"], date=day, category="species"
+        token=ebird_api_key, area=county["code"], date=day, category="species", rank="create"
     )
     records_of_interest = []
     for observation in observations:
@@ -298,7 +298,9 @@ def main():
             "records": records_to_review
         }
         with open(
-            "reports/records_to_review.json", "wt", encoding="utf-8"
+            f"reports/records_to_review_{args.year:04d}_{args.month:02d}.json",
+            "wt",
+            encoding="utf-8",
         ) as f:
             json.dump(output_json, f, ensure_ascii=False, indent=4)
 
