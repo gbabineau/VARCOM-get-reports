@@ -71,16 +71,7 @@ def check_exclusions_in_counties(review_species, county_list, state):
 def get_review_species(
     file_name: str, taxonomy: list, county_list: list, state: str
 ) -> dict:
-    """
-    Retrieves the list of review species from a file.
 
-    Args:
-        file (str): The file containing the review species.
-        taxonomy (list): The taxonomy list.
-
-    Returns:
-        list: A dict containing information about the of review species.
-    """
     if not os.path.exists(file_name):
         logging.error("File %s does not exist.", file_name)
         return {}
@@ -95,15 +86,7 @@ def get_review_species(
 
 
 def get_state_list(file_name: str, taxonomy: list) -> dict:
-    """
-    Retrieves the list of states from a file.
 
-    Args:
-        file (str): The file containing the states.
-
-    Returns:
-        list: A dict containing information about the states.
-    """
     if not os.path.exists(file_name):
         logging.error("File %s does not exist.", file_name)
         return {}
@@ -122,7 +105,6 @@ def get_state_list(file_name: str, taxonomy: list) -> dict:
 
 
 def parse_arguments() -> argparse.Namespace:
-    """Parse the command line arguments."""
     arg_parser = argparse.ArgumentParser(
         prog="get_reports", description="Get eBird reports of interest."
     )
@@ -159,6 +141,21 @@ def county_in_list_or_group(county_name : str, exclusion_list: list, county_grou
                 included = True
     return included
 
+def is_new_record(observation: dict, state_list : list)->bool:
+    return observation.get("exoticCategory","") != 'X' and not any(
+            species["comName"] == observation["comName"]
+            for species in state_list
+        )
+
+def reviewable_species(observation: dict, species_to_review: list)->bool:
+    return next(
+                (
+                    species
+                    for species in species_to_review
+                    if species["comName"] == observation["comName"]
+                ),
+                None,
+            )
 
 def find_record_of_interest(
     ebird_api_key: str,
@@ -167,16 +164,12 @@ def find_record_of_interest(
     day: date,
     review_species: dict,
 ) -> list:
-    """Find records of interest for a county and date."""
     observations = get_historic_observations(
         token=ebird_api_key, area=county["code"], date=day, category="species", rank="create"
     )
     records_of_interest = []
     for observation in observations:
-        if observation.get("exoticCategory","") != 'X' and not any(
-            species["comName"] == observation["comName"]
-            for species in state_list
-        ):
+        if is_new_record(observation, state_list):
             logging.info(
                 "Species %s not in state list. A new record?",
                 observation["comName"],
@@ -185,16 +178,8 @@ def find_record_of_interest(
                 {"observation": observation, "new": True}
             )
         else:
-# it is on the state list but is it reviewable?
-            matching_species = next(
-                (
-                    species
-                    for species in review_species["review_species"]
-                    if species["comName"] == observation["comName"]
-                ),
-                None,
-            )
-            if matching_species:
+            if matching_species := reviewable_species(observation, review_species["review_species"]):
+
                 reviewable = True
                 only_match = matching_species.get("only", [])
                 if only_match:
@@ -227,13 +212,7 @@ def find_record_of_interest(
 
 
 def write_taxonomy_to_file(taxonomy: list, file_name: str) -> None:
-    """
-    Writes the taxonomy to a file.
 
-    Args:
-        taxonomy (list): The taxonomy list.
-        file_name (str): The file to write the taxonomy to.
-    """
     os.makedirs(os.path.dirname(file_name), exist_ok=True)
     with open(file_name, "w", encoding="utf-8") as f:
         json.dump(taxonomy, f, ensure_ascii=False, indent=4)
@@ -241,14 +220,12 @@ def write_taxonomy_to_file(taxonomy: list, file_name: str) -> None:
 
 
 def iterate_days_in_month(year: int, month: int):
-    """Generate all days in a given month and year."""
     num_days = monthrange(year, month)[1]
     for day in range(1, num_days + 1):
         yield date(year, month, day)
 
 
 def main():
-    """Main function for the app."""
     args = parse_arguments()
 
     if args.verbose:

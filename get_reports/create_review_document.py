@@ -105,6 +105,10 @@ def main():
                     document.add_paragraph(
                         f"The species {record["observation"]["comName"]} is reviewable across the entire state."
                     )
+                if record.get("new", False):
+                    document.add_paragraph(
+                        f"The species {record["observation"]["comName"]} is not in the state list. A new record?"
+                    )
                 current_species = species
             if record["observation"].get("subId"):
                 p = document.add_paragraph(style='List Bullet')
