@@ -2,7 +2,7 @@ import pytest
 from get_reports.get_records_to_review import _county_in_list_or_group, _reviewable_species,_is_new_record, _reviewable_species_with_no_exclusions, _find_record_of_interest, _iterate_days_in_month,get_records_to_review
 from datetime import date
 from unittest.mock import patch
-from get_reports.get_records_to_review import _find_record_of_interest
+
 
 
 def test_county_in_exclusion_list():
@@ -269,6 +269,114 @@ def test_find_record_of_interest_excluded_species(mock_get_historic_observations
     )
 
     assert len(result) == 0
+
+def test_iterate_days_in_month_regular_month():
+    year = 2023
+    month = 1  # January
+    days = list(_iterate_days_in_month(year, month))
+    assert len(days) == 31
+    assert days[0] == date(2023, 1, 1)
+    assert days[-1] == date(2023, 1, 31)
+
+
+def test_iterate_days_in_month_leap_year():
+    year = 2024
+    month = 2  # February in a leap year
+    days = list(_iterate_days_in_month(year, month))
+    assert len(days) == 29
+    assert days[0] == date(2024, 2, 1)
+    assert days[-1] == date(2024, 2, 29)
+
+
+def test_iterate_days_in_month_non_leap_year():
+    year = 2023
+    month = 2  # February in a non-leap year
+    days = list(_iterate_days_in_month(year, month))
+    assert len(days) == 28
+    assert days[0] == date(2023, 2, 1)
+    assert days[-1] == date(2023, 2, 28)
+
+
+def test_iterate_days_in_month_april():
+    year = 2023
+    month = 4  # April (30 days)
+    days = list(_iterate_days_in_month(year, month))
+    assert len(days) == 30
+    assert days[0] == date(2023, 4, 1)
+    assert days[-1] == date(2023, 4, 30)
+
+@patch("get_reports.get_records_to_review._iterate_days_in_month")
+@patch("get_reports.get_records_to_review._find_record_of_interest")
+def test_get_records_to_review_with_records(mock_find_record_of_interest, mock_iterate_days_in_month):
+    ebird_api_key = "test_key"
+    state_list = [{"comName": "SpeciesA"}]
+    counties = [{"name": "CountyA", "code": "CodeA"}, {"name": "CountyB", "code": "CodeB"}]
+    year = 2023
+    month = 10
+    review_species = {"review_species": [], "county_groups": []}
+
+    mock_iterate_days_in_month.return_value = [date(2023, 10, 1), date(2023, 10, 2)]
+    mock_find_record_of_interest.side_effect = [
+        [{"observation": {"comName": "SpeciesA"}, "new": True}],
+        [],
+        [{"observation": {"comName": "SpeciesB"}, "new": False}],
+        []
+    ]
+
+    result = get_records_to_review(ebird_api_key, state_list, counties, year, month, review_species)
+
+    assert len(result) == 2
+    assert result[0]["county"] == "CountyA"
+    assert len(result[0]["records"]) == 1
+    assert result[0]["records"][0]["observation"]["comName"] == "SpeciesA"
+    assert result[1]["county"] == "CountyB"
+    assert len(result[1]["records"]) == 1
+    assert result[1]["records"][0]["observation"]["comName"] == "SpeciesB"
+
+
+@patch("get_reports.get_records_to_review._iterate_days_in_month")
+@patch("get_reports.get_records_to_review._find_record_of_interest")
+def test_get_records_to_review_no_records(mock_find_record_of_interest, mock_iterate_days_in_month):
+    ebird_api_key = "test_key"
+    state_list = [{"comName": "SpeciesA"}]
+    counties = [{"name": "CountyA", "code": "CodeA"}]
+    year = 2023
+    month = 10
+    review_species = {"review_species": [], "county_groups": []}
+
+    mock_iterate_days_in_month.return_value = [date(2023, 10, 1), date(2023, 10, 2)]
+    mock_find_record_of_interest.return_value = []
+
+    result = get_records_to_review(ebird_api_key, state_list, counties, year, month, review_species)
+
+    assert len(result) == 0
+
+
+@patch("get_reports.get_records_to_review._iterate_days_in_month")
+@patch("get_reports.get_records_to_review._find_record_of_interest")
+def test_get_records_to_review_multiple_days(mock_find_record_of_interest, mock_iterate_days_in_month):
+    ebird_api_key = "test_key"
+    state_list = [{"comName": "SpeciesA"}]
+    counties = [{"name": "CountyA", "code": "CodeA"}]
+    year = 2023
+    month = 10
+    review_species = {"review_species": [], "county_groups": []}
+
+    mock_iterate_days_in_month.return_value = [date(2023, 10, 1), date(2023, 10, 2)]
+    mock_find_record_of_interest.side_effect = [
+        [{"observation": {"comName": "SpeciesA"}, "new": True}],
+        [{"observation": {"comName": "SpeciesB"}, "new": False}]
+    ]
+
+    result = get_records_to_review(ebird_api_key, state_list, counties, year, month, review_species)
+
+    assert len(result) == 1
+    assert result[0]["county"] == "CountyA"
+    assert len(result[0]["records"]) == 2
+    assert result[0]["records"][0]["observation"]["comName"] == "SpeciesA"
+    assert result[0]["records"][1]["observation"]["comName"] == "SpeciesB"
+
+
 
 
 

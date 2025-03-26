@@ -183,6 +183,21 @@ def _find_record_of_interest(
 
 
 def _iterate_days_in_month(year: int, month: int):
+    """
+    Generate an iterator over all the days in a given month of a specific year.
+
+    Args:
+        year (int): The year for which the days are to be generated.
+        month (int): The month (1-12) for which the days are to be generated.
+
+    Yields:
+        datetime.date: A date object for each day in the specified month.
+
+    Example:
+        for day in _iterate_days_in_month(2023, 2):
+            print(day)
+        # Output: 2023-02-01, 2023-02-02, ..., 2023-02-28
+    """
     num_days = monthrange(year, month)[1]
     for day in range(1, num_days + 1):
         yield date(year, month, day)
@@ -196,6 +211,26 @@ def get_records_to_review(
     month: int,
     review_species: dict,
 ) -> list:
+    """
+    Retrieves a list of bird observation records that require review for a given
+    set of counties, state(s), and a specific month and year.
+
+    Args:
+        ebird_api_key (str): The API key for accessing eBird data.
+        state_list (list): A list of state abbreviations to filter the records.
+        counties (list): A list of dictionaries representing counties, where each
+            dictionary contains at least a "name" key.
+        year (int): The year for which to retrieve records.
+        month (int): The month for which to retrieve records (1-12).
+        review_species (dict): A dictionary of species to review, where keys are
+            species names and values are additional filtering criteria.
+
+    Returns:
+        list: A list of dictionaries, where each dictionary contains:
+            - "county" (str): The name of the county.
+            - "records" (list): A list of records for the county that match the
+              review criteria.
+    """
     records_to_review = []
     for county in counties:
         county_records = []
