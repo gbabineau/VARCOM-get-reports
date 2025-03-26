@@ -1,0 +1,69 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "get reports jan 2025",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "get_reports.get_reports",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--verbose",
+                "--year", "2025",
+                "--month", "01",
+            ]
+        },
+                {
+            "name": "get reports april 2021",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "get_reports.get_reports",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--verbose",
+                "--year", "2021",
+                "--month", "04",
+            ]
+        },
+        {
+            "name": "review file Jan 2025",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "get_reports.create_review_document",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--verbose",
+                "--review_records_file", "reports/records_to_review_2025_01.json",
+                "--output_file", "reports/review_2025_01.docx"
+            ]
+        },
+        {
+            "name": "review file April 2021",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "get_reports.create_review_document",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--verbose",
+                "--review_records_file", "reports/records_to_review_2021_04.json",
+                "--output_file", "reports/review_2021_04.docx"
+            ]
+        },
+        {
+            "name": "demo",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "get_reports.demo",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+
+        },
+    ]
+}

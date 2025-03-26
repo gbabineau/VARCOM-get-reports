@@ -1,0 +1,45 @@
+[tool.poetry]
+name = "get_reports"
+version = "0.4.0"
+description = "for VARCOM - interested in reports of select across the state of Virginia in  given time span"
+authors = ["gbabineau <guy.babineau@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+requests = "^2.31.0"
+ebird-api = {git = "https://github.com/gbabineau/ebird-api.git", branch = "feature/get_historic_observation_rank_parameter"}
+python-dateutil ="^2.9.0"
+python-docx="^1.1.2"
+
+[tool.poetry.group.test.dependencies]
+flake8 = "^6.1.0"
+coverage = "^7.3.1"
+pytest-cov = "^4.1.0"
+pytest-mock = "^3.6.1"
+pre-commit = "^3.8.0"
+pytest = "^8.3.5"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.coverage.run]
+source=["."]
+branch = true
+command_line = "-m pytest --junitxml=junit/test-results.xml"
+relative_files = true
+
+[tool.coverage.report]
+show_missing = true
+
+[tool.coverage.xml]
+output = "coverage.xml"
+
+[tool.poetry.group.lint.dependencies]
+ruff = "^0.4.10"
+mypy = "^1.11.2"
+
+[tool.ruff]
+line-length = 79
+
