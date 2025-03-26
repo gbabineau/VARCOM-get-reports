@@ -56,5 +56,14 @@
                 "--output_file", "reports/review_2021_04.docx"
             ]
         },
+        {
+            "name": "demo",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "get_reports.demo",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+
+        },
     ]
 }

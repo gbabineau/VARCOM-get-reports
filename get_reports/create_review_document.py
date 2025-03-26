@@ -1,15 +1,12 @@
 import argparse
 import json
 import logging
-from docx import Document
-from docx.shared import Inches, Pt, RGBColor
 import os
-from docx.oxml.shared import OxmlElement
-from docx.oxml.ns import qn
+from docx import Document
 
 
 
-def parse_arguments() -> argparse.Namespace:
+def _parse_arguments() -> argparse.Namespace:
     """Parse the command line arguments."""
     arg_parser = argparse.ArgumentParser(
         prog="create_review_document", description="Create a human readable report for expedited review."
@@ -34,7 +31,7 @@ def parse_arguments() -> argparse.Namespace:
 
 def main():
     """Main function for the app."""
-    args = parse_arguments()
+    args = _parse_arguments()
 
     if args.verbose:
         logging.basicConfig(level=logging.INFO)

@@ -1,0 +1,212 @@
+import logging
+from calendar import monthrange
+from datetime import date
+
+from ebird.api import get_historic_observations
+
+
+def _county_in_list_or_group(
+    county_name: str, exclusion_list: list, county_groups: list
+) -> bool:
+    """
+    Determines if a given county is included in an exclusion list or within a group of counties.
+
+    Args:
+        county_name (str): The name of the county to check.
+        exclusion_list (list): A list of county names to exclude.
+        county_groups (list): A list of dictionaries representing county groups.
+                                Each dictionary should have a "name" key for the group name
+                                and a "counties" key containing a list of county names in the group.
+
+    Returns:
+        bool: True if the county is in the exclusion list or in a group specified by the exclusion list,
+                False otherwise.
+    """
+    included = False
+    if county_name in exclusion_list:
+        included = True
+    else:
+        for exclusion in exclusion_list:
+            groups = county_groups
+            group = next((g for g in groups if g["name"] == exclusion), None)
+            if group and county_name in group["counties"]:
+                included = True
+    return included
+
+
+def _is_new_record(observation: dict, state_list: list) -> bool:
+    """
+    Determines if a given observation is a new record based on its exotic category
+    and whether its common name is already present in the state list.
+
+    Args:
+        observation (dict): A dictionary containing details of the observation.
+            Expected to have at least the key "exoticCategory" (str) and "comName" (str).
+        state_list (list): A list of dictionaries, each representing a species in the state.
+            Each dictionary is expected to have the key "comName" (str).
+
+    Returns:
+        bool: True if the observation is a new record (i.e., its "exoticCategory" is not "X"
+              and its "comName" is not found in the state list), otherwise False.
+    """
+    return observation.get("exoticCategory", "") != "X" and not any(
+        species["comName"] == observation["comName"] for species in state_list
+    )
+
+
+def _reviewable_species(observation: dict, species_to_review: list) -> bool:
+    """
+    Determines if a given observation corresponds to a species in the review list.
+
+    Args:
+        observation (dict): A dictionary representing an observation, expected to contain a "comName" key.
+        species_to_review (list): A list of dictionaries, where each dictionary represents a species
+                                  and is expected to contain a "comName" key.
+
+    Returns:
+        bool: True if the observation's "comName" matches the "comName" of any species in the review list,
+              otherwise False.
+    """
+    return next(
+        (
+            species
+            for species in species_to_review
+            if species["comName"] == observation["comName"]
+        ),
+        None,
+    )
+
+
+def _reviewable_species_with_no_exclusions(
+
+    matching_species: dict, review_species: dict, county: dict
+) -> bool:
+    """
+    Determines if a species is reviewable based on matching criteria and exclusions.
+
+    Args:
+        matching_species (dict): A dictionary containing species matching criteria.
+            Keys may include "only" (list of counties where the species is reviewable)
+            and "exclude" (list of counties where the species is not reviewable).
+        review_species (dict): A dictionary containing additional review criteria,
+            including "county_groups" (list of grouped counties for matching purposes).
+        county (dict): A dictionary representing the county information, including
+            the "name" key for the county's name.
+
+    Returns:
+        bool: True if the species is reviewable in the given county, False otherwise.
+    """
+    only_match = matching_species.get("only", [])
+    if only_match:
+        reviewable = _county_in_list_or_group(
+            county["name"], only_match, review_species.get("county_groups", [])
+        )
+    elif _county_in_list_or_group(
+        county["name"],
+        matching_species.get("exclude", []),
+        review_species.get("county_groups", []),
+    ):
+        reviewable = False
+    else:
+        reviewable = True
+    return reviewable
+
+
+def _find_record_of_interest(
+    ebird_api_key: str,
+    state_list: list,
+    county: dict,
+    day: date,
+    review_species: dict,
+) -> list:
+    """
+    Identifies records of interest from historic bird observations based on
+    specified criteria such as new species, reviewable species, and exclusions.
+
+    Args:
+        ebird_api_key (str): The API key for accessing eBird data.
+        state_list (list): A list of species already recorded in the state.
+        county (dict): A dictionary containing county information, including
+            "code" (county identifier) and "name" (county name).
+        day (date): The date for which observations are being retrieved.
+        review_species (dict): A dictionary containing reviewable species
+            information, including "review_species" (list of species to review)
+            and any exclusion criteria.
+
+    Returns:
+        list: A list of dictionaries representing records of interest. Each
+        dictionary may include:
+            - "observation" (dict): The observation data.
+            - "new" (bool): Whether the species is new to the state list.
+            - "reviewable" (bool, optional): Whether the species is reviewable.
+            - "review_species" (list, optional): Matching reviewable species.
+    """
+
+    observations = get_historic_observations(
+        token=ebird_api_key,
+        area=county["code"],
+        date=day,
+        category="species",
+        rank="create",
+    )
+
+    records_of_interest = []
+    for observation in observations:
+        if _is_new_record(observation, state_list):
+            logging.info(
+                "Species %s not in state list. A new record?",
+                observation["comName"],
+            )
+            records_of_interest.append(
+                {"observation": observation, "new": True}
+            )
+        elif matching_species := _reviewable_species(
+            observation, review_species["review_species"]
+        ):
+            if _reviewable_species_with_no_exclusions(
+                matching_species, review_species, county
+            ):
+                logging.info(
+                    "Species %s is reviewable in %s.",
+                    observation["comName"],
+                    county["name"],
+                )
+                records_of_interest.append(
+                    {
+                        "observation": observation,
+                        "new": False,
+                        "reviewable": True,
+                        "review_species": matching_species,
+                    }
+                )
+    return records_of_interest
+
+
+def _iterate_days_in_month(year: int, month: int):
+    num_days = monthrange(year, month)[1]
+    for day in range(1, num_days + 1):
+        yield date(year, month, day)
+
+
+def get_records_to_review(
+    ebird_api_key: str,
+    state_list: list,
+    counties: list,
+    year: int,
+    month: int,
+    review_species: dict,
+) -> list:
+    records_to_review = []
+    for county in counties:
+        county_records = []
+        for day in _iterate_days_in_month(year, month):
+            records_for_county = _find_record_of_interest(
+                ebird_api_key, state_list, county, day, review_species
+            )
+            if records_for_county:
+                county_records.extend(records_for_county)
+        if county_records:
+            records_to_review.append(
+                {"county": county["name"], "records": county_records}
+            )
+    return records_to_review

@@ -127,8 +127,8 @@ develop = false
 [package.source]
 type = "git"
 url = "https://github.com/gbabineau/ebird-api.git"
-reference = "feature/add-rank-to-get-historic-observations"
-resolved_reference = "d42f9f1e3bdbc7eb7de160dba03cd700f7dcc041"
+reference = "feature/get_historic_observation_rank_parameter"
+resolved_reference = "d77e9c68b1e83474f6339e267f61d433994ca7dd"
 
 [[package]]
 name = "idna"
@@ -490,4 +490,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "4b73e9707fd3643c573bb3c05937234439a06f7ee7b4b10da557a6d64eed73ab"
+content-hash = "08de016c4885c65bc648227a8e576ad1841c733cde8511f62e69d843ec81411b"
