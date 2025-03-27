@@ -3,7 +3,7 @@ name: Monthly Report Generation
 on:
   schedule:
     #- cron: '0 0 1 * *'  # Runs on the first day of every month at 12:00 AM
-    - cron: '0 0 27 * *'  # Runs on the first day of every month at 12:00 AM
+    - cron: '0 6 27 * *'  # Test run on the 27th day of every month at 6:00 AM (UTC)
 
 jobs:
   monthly-task:
@@ -29,4 +29,3 @@ jobs:
           echo "" >> email.txt
           mutt -s "Monthly Review Document" -a reports/review_${YEAR}_${MONTH}.docx -- guy.babineau@gmail.com < email.txt
           echo "Email sent successfully."
-          

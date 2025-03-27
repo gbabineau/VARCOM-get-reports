@@ -773,8 +773,25 @@
             "name" : "Eastern Coastal Plain",
             "counties" : [
                 "Accomack",
+                "Chesapeake",
+                "Essex",
+                "Gloucester",
+                "Hampton",
+                "James City",
+                "Lancaster",
+                "Mathews",
+                "Middlesex",
+                "Newport News",
+                "Norfolk",
                 "Northampton",
-                "Virginia Beach"]
+                "Northumberland",
+                "Poquoson",
+                "Portsmouth",
+                "Richmond",
+                "Suffolk",
+                "Virginia Beach",
+                "York"
+            ]
         },
         {
             "name" : "Coastal Plain",

@@ -129,7 +129,7 @@ def _add_species_link(document: Document, record: dict):
     """Add a hyperlink for a species record."""
     p = document.add_paragraph(style='List Bullet')
     p.add_run(
-        f"https://ebird.org/checklist/{record['observation']['subId']}"
+        f"{record['observation']['obsDt']} https://ebird.org/checklist/{record['observation']['subId']}"
     ).hyperlink = f"https://ebird.org/checklist/{record['observation']['subId']}"
 
 

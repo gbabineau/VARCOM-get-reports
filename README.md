@@ -9,6 +9,8 @@ This code is shared so that any one else could use it. It is written so that ano
 
 ## Issues
 
+* Subspecies are not handled. We probably could but need to figure out a way to do it that doesn't require a lot of work like adding all the subspecies - think Downy Woodpecker (Eastern) for example that we really don't need to see. I figure it isn't priority and will let ideas percolate before implementing anything.
+
 * Note that for any county, the first observation of a species for every day will be included. THis means, for example, if two individuals of the same species are seen in the same day, only one will be listed. This is a limitation of the API we are using. To limit records it will send the last or the first. I chose to have it send the last. To get all the records on that day, we would have to download the data.
 
 * There will be an entry for every day that a species is seen in a county, even if it is thought to be the same individual. Of course there is no way to know if it is the same individual (eBird can't say whether it was watched 24/7). So these things will have to be manually reviewed.
