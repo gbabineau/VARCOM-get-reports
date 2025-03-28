@@ -42,6 +42,6 @@ jobs:
       - name: Run integration tests
         run: |
           echo $EBIRDAPIKEY
-          bash -v integration_test/create_review_document.sh
+          bash -v integration_test/create_report.sh
         env:
           EBIRDAPIKEY: ${{ secrets.EBIRDAPIKEY }}
