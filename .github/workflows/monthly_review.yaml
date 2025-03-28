@@ -11,9 +11,13 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-
+        env:
+          EBIRDAPIKEY: ${{ secrets.EBIRDAPIKEY }}
       - name: Run Monthly Task
         run: |
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+          poetry install
           YEAR=$(date -d "$(date +%Y-%m-01) -2 months" +%Y)
           MONTH=$(date -d "$(date +%Y-%m-01) -2 months" +%m)
           echo "The year and month of two months ago: ${YEAR}${MONTH}"
