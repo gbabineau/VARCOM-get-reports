@@ -3,7 +3,7 @@ name: Monthly Report Generation
 on:
   schedule:
     #- cron: '  '  # Runs on the third day of every month at 1:13 AM (UTC)
-    - cron: '18 15 28 * *'  # Test run
+    - cron: '53 19 * * *'  # Test run
 
 jobs:
   monthly-task:
