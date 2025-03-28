@@ -11,8 +11,6 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-        env:
-          EBIRDAPIKEY: ${{ secrets.EBIRDAPIKEY }}
       - name: Run Monthly Task
         run: |
           python -m pip install --upgrade pip
@@ -33,3 +31,5 @@ jobs:
           echo "" >> email.txt
           mutt -s "Monthly Review Document" -a reports/review_${YEAR}_${MONTH}.docx -- guy.babineau@gmail.com < email.txt
           echo "Email sent successfully."
+        env:
+          EBIRDAPIKEY: ${{ secrets.EBIRDAPIKEY }}
