@@ -236,8 +236,10 @@ def test_add_species_records_valid_data(mocker):
 
     # Check that species links are added
     assert mock_add_species_link.call_count == 2
-    mock_add_species_link.assert_any_call(mock_document, county["records"][0])
-    mock_add_species_link.assert_any_call(mock_document, county["records"][2])
+    mock_add_species_link.assert_any_call(mock_document, county["records"][0]['observation'])
+    mock_add_species_link.assert_any_call(
+        mock_document, county["records"][2]["observation"]
+    )
 
 
 def test_add_species_records_empty_records(mocker):
@@ -288,8 +290,8 @@ def test_add_species_records_unsorted_data(mocker):
 
     # Check that species links are added in sorted order
     assert mock_add_species_link.call_count == 2
-    mock_add_species_link.assert_any_call(mock_document, county["records"][0])
-    mock_add_species_link.assert_any_call(mock_document, county["records"][1])
+    mock_add_species_link.assert_any_call(mock_document, county["records"][0]['observation'])
+    mock_add_species_link.assert_any_call(mock_document, county["records"][1]['observation'])
 
 def test_add_species_heading_exclude_only_notes(mocker):
     """Test _add_species_heading with exclude, only, and uniqueExcludeNotes."""
@@ -402,12 +404,12 @@ def test_add_species_link_with_valid_subId(mocker):
     mock_document.add_paragraph.return_value = mock_paragraph
     mock_paragraph.add_run.return_value = mock_run
 
-    record = {"observation": {"subId": "S12345"}}
+    record = {"observation": {"subId": "S12345", "obsDt": "2023-01-01"}}
 
-    _add_species_link(mock_document, record)
+    _add_species_link(mock_document, record['observation'])
 
     mock_document.add_paragraph.assert_called_once_with(style='List Bullet')
-    mock_paragraph.add_run.assert_called_once_with("https://ebird.org/checklist/S12345")
+    mock_paragraph.add_run.assert_called_once_with('2023-01-01 https://ebird.org/checklist/S12345')
     assert mock_run.hyperlink == "https://ebird.org/checklist/S12345"
 
 def test_save_document_file_exists(mocker, tmp_path):
