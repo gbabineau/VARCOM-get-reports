@@ -16,10 +16,7 @@ def test_parse_arguments_required_fields():
     args = _parse_arguments()
     assert args.year == 2023
     assert args.month == 10
-    assert (
-        args.review_species_file
-        == "get_reports/data/varcom_review_species.json"
-    )
+    assert args.input == "get_reports/data/varcom_review_species.json"
     assert args.state == "US-VA"
     assert not args.verbose
 
@@ -31,7 +28,7 @@ def test_parse_arguments_optional_fields():
         "2023",
         "--month",
         "10",
-        "--review_species_file",
+        "--input",
         "custom_species.json",
         "--state",
         "US-NY",
@@ -41,7 +38,7 @@ def test_parse_arguments_optional_fields():
     args = _parse_arguments()
     assert args.year == 2023
     assert args.month == 10
-    assert args.review_species_file == "custom_species.json"
+    assert args.input == "custom_species.json"
     assert args.state == "US-NY"
     assert args.verbose
 
@@ -59,6 +56,7 @@ def test_parse_arguments_version_flag():
     with pytest.raises(SystemExit) as excinfo:
         _parse_arguments()
     assert excinfo.value.code == 0
+
 
 @patch("get_reports.get_reports.datetime")
 @patch("builtins.open", new_callable=mock_open)
@@ -85,7 +83,9 @@ def test_save_records_to_file(mock_open, mock_datetime):
     }
 
     # Assert the file was opened with the correct filename and mode
-    mock_open.assert_called_once_with(expected_filename, "wt", encoding="utf-8")
+    mock_open.assert_called_once_with(
+        expected_filename, "wt", encoding="utf-8"
+    )
 
     # Assert the correct data was written to the file
     handle = mock_open()
@@ -105,6 +105,7 @@ def test_save_records_to_file_no_records(mock_open):
 
     # Assert the file was not opened since there are no records
     mock_open.assert_not_called()
+
 
 @patch("get_reports.get_reports._parse_arguments")
 @patch("get_reports.get_reports.logging.basicConfig")
@@ -131,7 +132,7 @@ def test_main(
     mock_args.year = 2023
     mock_args.month = 10
     mock_args.state = "US-VA"
-    mock_args.review_species_file = "custom_species.json"
+    mock_args.input = "custom_species.json"
     mock_args.verbose = True
     mock_parse_arguments.return_value = mock_args
 
@@ -161,10 +162,13 @@ def test_main(
         "custom_species.json", "mock_taxonomy", ["mock_county"], "US-VA"
     )
     mock_get_records_to_review.assert_called_once_with(
-        "mock_api_key", ["mock_state_list"], ["mock_county"], 2023, 10, ["mock_species"]
+        "mock_api_key",
+        ["mock_state_list"],
+        ["mock_county"],
+        2023,
+        10,
+        ["mock_species"],
     )
     mock_save_records_to_file.assert_called_once_with(
         ["mock_record"], 2023, 10, "US-VA"
     )
-
-

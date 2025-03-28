@@ -39,8 +39,8 @@
             "justMyCode": true,
             "args": [
                 "--verbose",
-                "--review_records_file", "reports/records_to_review_2025_01.json",
-                "--output_file", "reports/review_2025_01.docx"
+                "--input", "reports/records_to_review_2025_01.json",
+                "--output", "reports/review_2025_01.docx"
             ]
         },
         {
@@ -52,8 +52,8 @@
             "justMyCode": true,
             "args": [
                 "--verbose",
-                "--review_records_file", "reports/records_to_review_2021_04.json",
-                "--output_file", "reports/review_2021_04.docx"
+                "--input", "reports/records_to_review_2021_04.json",
+                "--output", "reports/review_2021_04.docx"
             ]
         },
         {
