@@ -33,8 +33,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-        env:
-          EBIRDAPIKEY: ${{ secrets.EBIRDAPIKEY }}
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -42,5 +41,8 @@ jobs:
           poetry install
       - name: Run integration tests
         run: |
-          bash integration_test/create_report.sh
-          bash integration_test/create_review_document.sh
+          echo $EBIRDAPIKEY
+          bash -v integration_test/create_report.sh
+          bash -v integration_test/create_review_document.sh
+        env:
+          EBIRDAPIKEY: ${{ secrets.EBIRDAPIKEY }}
