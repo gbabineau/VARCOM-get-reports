@@ -1,10 +1,11 @@
 name: Monthly Report Generation
 
 on:
-  schedule:
-    #- cron: '  '  # Runs on the third day of every month at 1:13 AM (UTC)
-    - cron: '2 15 * * *'  # Test run
-
+  # schedule:
+     #- cron: '13 1 3 * *'  # Runs on the third day of every month at 1:13 AM (UTC)
+  push:
+    branches:
+      - "**"
 jobs:
   monthly-task:
     runs-on: ubuntu-latest
@@ -19,6 +20,7 @@ jobs:
           YEAR=$(date -d "$(date +%Y-%m-01) -2 months" +%Y)
           MONTH=$(date -d "$(date +%Y-%m-01) -2 months" +%m)
           echo "The year and month of two months ago: ${YEAR}${MONTH}"
+          mkdir -p reports
           poetry run python -m get_reports.get_reports --verbose --year "${YEAR}" --month "${MONTH}"
           poetry run python -m get_reports.create_review_document --verbose --input reports/records_to_review_${YEAR}_${MONTH}.json --output reports/review_${YEAR}_${MONTH}.docx
           echo "Sending email with the output file..."
