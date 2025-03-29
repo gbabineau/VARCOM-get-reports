@@ -1,5 +1,3 @@
-
-
 import argparse
 import json
 import logging
@@ -7,7 +5,12 @@ from datetime import datetime
 
 from ebird.api import get_regions, get_taxonomy
 
-from get_reports import get_ebird_api_key, get_review_rules, get_state_list, get_records_to_review
+from get_reports import (
+    get_ebird_api_key,
+    get_review_rules,
+    get_state_list,
+    get_records_to_review,
+)
 
 
 def _parse_arguments() -> argparse.Namespace:
@@ -20,7 +23,7 @@ def _parse_arguments() -> argparse.Namespace:
     Command-line arguments:
         --year (int, required): Year to review in YYYY format.
         --month (int, required): Month to review in MM format.
-        --review_species_file (str, optional): Path to the JSON file containing species requiring review.
+        --input (str, optional): Path to the JSON file containing species requiring review.
             Defaults to "get_reports/data/varcom_review_species.json".
         --state (str, optional): State to review in the format "US-XX".
             Defaults to "US-VA".
@@ -30,12 +33,14 @@ def _parse_arguments() -> argparse.Namespace:
     arg_parser = argparse.ArgumentParser(
         prog="get_reports", description="Get eBird reports of interest."
     )
-    arg_parser.add_argument("--year", type=int, help="Year to review YYYY", required=True)
+    arg_parser.add_argument(
+        "--year", type=int, help="Year to review YYYY", required=True
+    )
     arg_parser.add_argument(
         "--month", type=int, help="Month to review MM", required=True
     )
     arg_parser.add_argument(
-        "--review_species_file",
+        "--input",
         help="Species requiring review",
         default="get_reports/data/varcom_review_species.json",
     )
@@ -48,7 +53,10 @@ def _parse_arguments() -> argparse.Namespace:
     )
     return arg_parser.parse_args()
 
-def _save_records_to_file(records: list, year: int, month: int, state: str) -> None:
+
+def _save_records_to_file(
+    records: list, year: int, month: int, state: str
+) -> None:
     """
     Save a list of records to a JSON file with metadata.
     This function creates a JSON file containing the provided records along with
@@ -64,6 +72,7 @@ def _save_records_to_file(records: list, year: int, month: int, state: str) -> N
         None
     """
     if records:
+
         def get_current_date_string():
             return datetime.now().strftime("%Y-%m-%d")
 
@@ -111,12 +120,12 @@ def main():
     ebird_api_key = get_ebird_api_key.get_ebird_api_key()
     taxonomy = get_taxonomy(ebird_api_key)
     state = args.state
-    state_list = get_state_list.get_state_list(args.review_species_file, taxonomy=taxonomy)
+    state_list = get_state_list.get_state_list(args.input, taxonomy=taxonomy)
     counties = get_regions(
         token=ebird_api_key, rtype="subnational2", region=state
     )
     species = get_review_rules.get_review_rules(
-        args.review_species_file, taxonomy, counties, state
+        args.input, taxonomy, counties, state
     )
     records_to_review = get_records_to_review.get_records_to_review(
         ebird_api_key, state_list, counties, args.year, args.month, species

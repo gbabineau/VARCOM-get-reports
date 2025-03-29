@@ -2,30 +2,78 @@ name: Monthly Report Generation
 
 on:
   schedule:
-    #- cron: '  '  # Runs on the third day of every month at 1:13 AM (UTC)
-    - cron: '53 19 * * *'  # Test run
-
+     - cron: '13 1 1 * *'  # Runs on the first day of every month at 1:13 AM (UTC)
+  # comment out the above and uncomment the below to test the script
+  # push:
+  #   branches:
+  #     - "**"
 jobs:
   monthly-task:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-
       - name: Run Monthly Task
         run: |
+          mkdir -p reports
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+          poetry install
           YEAR=$(date -d "$(date +%Y-%m-01) -2 months" +%Y)
           MONTH=$(date -d "$(date +%Y-%m-01) -2 months" +%m)
-          echo "The year and month of two months ago: ${YEAR}${MONTH}"
+          echo "The year and month of two months ago: ${YEAR} ${MONTH}"
           poetry run python -m get_reports.get_reports --verbose --year "${YEAR}" --month "${MONTH}"
-          poetry run python -m get_reports.create_review_document --verbose --review_records_file reports/records_to_review_${YEAR}_${MONTH}.json --output_file reports/review_${YEAR}_${MONTH}.docx
-          echo "Sending email with the output file..."
-          echo "Subject: Monthly Review Document" > email.txt
-          echo "To: guy.babineau@gmail.com" >> email.txt
-          echo "Please find the attached review document for ${YEAR}-${MONTH}." >> email.txt
-          echo "" >> email.txt
-          echo "Best regards," >> email.txt
-          echo "Your Automation System" >> email.txt
-          echo "" >> email.txt
-          mutt -s "Monthly Review Document" -a reports/review_${YEAR}_${MONTH}.docx -- guy.babineau@gmail.com < email.txt
-          echo "Email sent successfully."
+          poetry run python -m get_reports.create_review_document --verbose --input reports/records_to_review_${YEAR}_${MONTH}.json --output reports/review_${YEAR}_${MONTH}.docx
+        env:
+          EBIRDAPIKEY: ${{ secrets.EBIRDAPIKEY }}
+      - name: Send mail
+        uses: dawidd6/action-send-mail@v4
+        with:
+          # Specify connection via URL (replaces server_address, server_port, secure,
+          # username and password)
+          #
+          # Format:
+          #
+          #  * smtp://user:password@server:port
+          #  * smtp+starttls://user:password@server:port
+          #connection_url: ${{secrets.MAIL_CONNECTION}}
+          # Required mail server address if not connection_url:
+          server_address: smtp.gmail.com
+          # Server port, default 25:
+          server_port: 465
+          # Optional whether this connection use TLS (default is true if server_port is 465)
+          secure: true
+          # Optional (recommended) mail server username:
+          username: ${{secrets.MAIL_USERNAME}}
+          # Optional (recommended) mail server password:
+          password: ${{secrets.MAIL_PASSWORD}}
+          # Required mail subject:
+          subject: VARCOM Monthly Review Document
+          # Required recipients' addresses:
+          to: guy.babineau@gmail.com,traceyhopperwsq@gmail.com
+          # Required sender full name (address can be skipped):
+          from: guy.babineau@gmail.com
+          # Optional plain body:
+          body: Monthly VARCOM report from ${{github.repository}} completed successfully! This is an automated message.
+          # Optional HTML body read from file:
+          #html_body: file://README.html
+          # Optional carbon copy recipients:
+          #cc: kyloren@example.com,leia@example.com
+          # Optional blind carbon copy recipients:
+          #bcc: r2d2@example.com,hansolo@example.com
+          # Optional recipient of the email response:
+          #reply_to: luke@example.com
+          # Optional Message ID this message is replying to:
+          #in_reply_to: <random-luke@example.com>
+          # Optional unsigned/invalid certificates allowance:
+          ignore_cert: true
+          # Optional converting Markdown to HTML (set content_type to text/html too):
+          #convert_markdown: true
+          # Optional attachments:
+          attachments: reports/*.docx
+          # Optional priority: 'high', 'normal' (default) or 'low'
+          priority: low
+          # Optional nodemailerlog: true/false
+          #nodemailerlog: false
+          # Optional nodemailerdebug: true/false if true lognodem will also be set true
+          #nodemailerdebug: false

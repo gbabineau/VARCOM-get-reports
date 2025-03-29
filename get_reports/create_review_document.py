@@ -12,13 +12,13 @@ def _parse_arguments() -> argparse.Namespace:
         description="Create a human readable report for expedited review.",
     )
     arg_parser.add_argument(
-        "--review_records_file",
+        "--input",
         help="Observations requiring review",
         default="reports/records_to_review.json",
     )
 
     arg_parser.add_argument(
-        "--output_file",
+        "--output",
         help="Observations requiring review",
         default="reports/records_to_review.docx",
     )
@@ -50,7 +50,7 @@ def _add_document_header(document: Document, observations: dict):
     """Add the header section to the document."""
     document.add_heading("DRAFT Records for Expedited Review", 0)
     document.add_paragraph(
-        style="List Bullet",
+        style=LIST_BULLET_STYLE,
         text=f"Dates of observations: {observations['date of observations']}",
     )
     document.add_paragraph(
@@ -105,7 +105,7 @@ def _add_species_records(document: Document, county: dict):
             _add_species_heading(document, species, record, county)
             current_species = species
         if record["observation"].get("subId"):
-            _add_species_link(document, record['observation'])
+            _add_species_link(document, record["observation"])
 
 
 def _add_species_heading(
@@ -145,11 +145,11 @@ def _add_species_link(document: Document, observation: dict):
     ).hyperlink = f"https://ebird.org/checklist/{observation['subId']}"
 
 
-def _save_document(document: Document, output_file: str):
+def _save_document(document: Document, output: str):
     """Save the document to a file."""
-    if os.path.exists(output_file):
-        os.remove(output_file)
-    document.save(output_file)
+    if os.path.exists(output):
+        os.remove(output)
+    document.save(output)
 
 
 def main():
@@ -159,9 +159,9 @@ def main():
     if args.verbose:
         logging.basicConfig(level=logging.INFO)
 
-    observations = _load_observations(args.review_records_file)
+    observations = _load_observations(args.input)
     document = _create_document(observations)
-    _save_document(document, args.output_file)
+    _save_document(document, args.output)
 
 
 if __name__ == "__main__":

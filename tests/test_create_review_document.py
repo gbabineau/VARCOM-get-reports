@@ -14,16 +14,18 @@ from get_reports.create_review_document import (
     _load_observations,
     _parse_arguments,
     _save_document,
-    main
+    main,
 )
+
+LIST_BULLET_STYLE = "List Bullet"
 
 
 def test_parse_arguments_defaults(monkeypatch):
     """Test _parse_arguments with default arguments."""
     monkeypatch.setattr("sys.argv", ["create_review_document"])
     args = _parse_arguments()
-    assert args.review_records_file == "reports/records_to_review.json"
-    assert args.output_file == "reports/records_to_review.docx"
+    assert args.input == "reports/records_to_review.json"
+    assert args.output == "reports/records_to_review.docx"
     assert args.verbose is False
 
 
@@ -33,16 +35,16 @@ def test_parse_arguments_custom_arguments(monkeypatch):
         "sys.argv",
         [
             "create_review_document",
-            "--review_records_file",
+            "--input",
             "custom_records.json",
-            "--output_file",
+            "--output",
             "custom_output.docx",
             "--verbose",
         ],
     )
     args = _parse_arguments()
-    assert args.review_records_file == "custom_records.json"
-    assert args.output_file == "custom_output.docx"
+    assert args.input == "custom_records.json"
+    assert args.output == "custom_output.docx"
     assert args.verbose is True
 
 
@@ -53,7 +55,6 @@ def test_parse_arguments_missing_required(monkeypatch):
         args = _parse_arguments()
     except SystemExit as e:
         assert e.code == 0  # argparse exits with code 0 for help
-
 
 
 def test_load_observations_valid_file(tmp_path):
@@ -82,11 +83,16 @@ def test_load_observations_file_not_found():
     with pytest.raises(FileNotFoundError):
         _load_observations("non_existent_file.json")
 
+
 def test_create_document_valid_observations(mocker):
     """Test _create_document with valid observations."""
     mock_document = mocker.patch("get_reports.create_review_document.Document")
-    mock_add_document_header = mocker.patch("get_reports.create_review_document._add_document_header")
-    mock_add_county_records = mocker.patch("get_reports.create_review_document._add_county_records")
+    mock_add_document_header = mocker.patch(
+        "get_reports.create_review_document._add_document_header"
+    )
+    mock_add_county_records = mocker.patch(
+        "get_reports.create_review_document._add_county_records"
+    )
 
     observations = {
         "date of observations": "2023-01-01",
@@ -98,16 +104,24 @@ def test_create_document_valid_observations(mocker):
     result = _create_document(observations)
 
     mock_document.assert_called_once()
-    mock_add_document_header.assert_called_once_with(mock_document.return_value, observations)
-    mock_add_county_records.assert_called_once_with(mock_document.return_value, observations["records"])
+    mock_add_document_header.assert_called_once_with(
+        mock_document.return_value, observations
+    )
+    mock_add_county_records.assert_called_once_with(
+        mock_document.return_value, observations["records"]
+    )
     assert result == mock_document.return_value
 
 
 def test_create_document_missing_records(mocker):
     """Test _create_document with missing 'records' in observations."""
     mock_document = mocker.patch("get_reports.create_review_document.Document")
-    mock_add_document_header = mocker.patch("get_reports.create_review_document._add_document_header")
-    mock_add_county_records = mocker.patch("get_reports.create_review_document._add_county_records")
+    mock_add_document_header = mocker.patch(
+        "get_reports.create_review_document._add_document_header"
+    )
+    mock_add_county_records = mocker.patch(
+        "get_reports.create_review_document._add_county_records"
+    )
 
     observations = {
         "date of observations": "2023-01-01",
@@ -119,8 +133,11 @@ def test_create_document_missing_records(mocker):
         _create_document(observations)
 
     mock_document.assert_called_once()
-    mock_add_document_header.assert_called_once_with(mock_document.return_value, observations)
+    mock_add_document_header.assert_called_once_with(
+        mock_document.return_value, observations
+    )
     mock_add_county_records.assert_not_called()
+
 
 def test_add_document_header(mocker):
     """Test _add_document_header with valid observations."""
@@ -136,38 +153,49 @@ def test_add_document_header(mocker):
 
     _add_document_header(mock_document, observations)
 
-    mock_add_heading.assert_called_once_with('DRAFT Records for Expedited Review', 0)
+    mock_add_heading.assert_called_once_with(
+        "DRAFT Records for Expedited Review", 0
+    )
     assert mock_add_paragraph.call_count == 5
 
     mock_add_paragraph.assert_any_call(
-        style='List Bullet', text="Dates of observations: 2023-01-01"
+        style="List Bullet", text="Dates of observations: 2023-01-01"
     )
     mock_add_paragraph.assert_any_call(
-        style="List Bullet", text="State: Virginia"
+        style=LIST_BULLET_STYLE, text="State: Virginia"
     )
     mock_add_paragraph.assert_any_call(
-        style="List Bullet", text="Dates of report creation: 2023-01-02"
+        style=LIST_BULLET_STYLE, text="Dates of report creation: 2023-01-02"
     )
 
     # Check the hyperlinks
     produced_paragraph = mock_add_paragraph.call_args_list[3][1]
-    assert produced_paragraph["style"] == "List Bullet"
+    assert produced_paragraph["style"] == LIST_BULLET_STYLE
     assert "Produced for and by VARCOM" in produced_paragraph["text"]
 
     generated_paragraph = mock_add_paragraph.call_args_list[4][1]
-    assert generated_paragraph["style"] == "List Bullet"
-    assert "Automatically generated by VARCOM-get-reports" in generated_paragraph["text"]
+    assert generated_paragraph["style"] == LIST_BULLET_STYLE
+    assert (
+        "Automatically generated by VARCOM-get-reports"
+        in generated_paragraph["text"]
+    )
+
 
 def test_add_county_records(mocker):
     """Test _add_county_records with valid county data."""
     mock_document = mocker.Mock()
     mock_add_heading = mock_document.add_heading
     mock_add_paragraph = mock_document.add_paragraph
-    mock_add_species_records = mocker.patch("get_reports.create_review_document._add_species_records")
+    mock_add_species_records = mocker.patch(
+        "get_reports.create_review_document._add_species_records"
+    )
 
     counties = [
         {"county": "Fairfax", "records": [{"species": "Cardinal"}]},
-        {"county": "Loudoun", "records": [{"species": "Blue Jay"}, {"species": "Robin"}]},
+        {
+            "county": "Loudoun",
+            "records": [{"species": "Blue Jay"}, {"species": "Robin"}],
+        },
     ]
 
     _add_county_records(mock_document, counties)
@@ -192,7 +220,9 @@ def test_add_county_records_empty_counties(mocker):
     mock_document = mocker.Mock()
     mock_add_heading = mock_document.add_heading
     mock_add_paragraph = mock_document.add_paragraph
-    mock_add_species_records = mocker.patch("get_reports.create_review_document._add_species_records")
+    mock_add_species_records = mocker.patch(
+        "get_reports.create_review_document._add_species_records"
+    )
 
     counties = []
 
@@ -203,17 +233,26 @@ def test_add_county_records_empty_counties(mocker):
     mock_add_paragraph.assert_not_called()
     mock_add_species_records.assert_not_called()
 
+
 def test_add_species_records_valid_data(mocker):
     """Test _add_species_records with valid county data."""
     mock_document = mocker.Mock()
-    mock_add_species_heading = mocker.patch("get_reports.create_review_document._add_species_heading")
-    mock_add_species_link = mocker.patch("get_reports.create_review_document._add_species_link")
+    mock_add_species_heading = mocker.patch(
+        "get_reports.create_review_document._add_species_heading"
+    )
+    mock_add_species_link = mocker.patch(
+        "get_reports.create_review_document._add_species_link"
+    )
 
     county = {
         "county": "Fairfax",
         "records": [
             {
-                "observation": {"comName": "Cardinal", "obsDt": "2023-01-01", "subId": "S12345"},
+                "observation": {
+                    "comName": "Cardinal",
+                    "obsDt": "2023-01-01",
+                    "subId": "S12345",
+                },
                 "review_species": {},
             },
             {
@@ -221,7 +260,11 @@ def test_add_species_records_valid_data(mocker):
                 "review_species": {},
             },
             {
-                "observation": {"comName": "Blue Jay", "obsDt": "2023-01-01", "subId": "S67890"},
+                "observation": {
+                    "comName": "Blue Jay",
+                    "obsDt": "2023-01-01",
+                    "subId": "S67890",
+                },
                 "review_species": {},
             },
         ],
@@ -231,12 +274,18 @@ def test_add_species_records_valid_data(mocker):
 
     # Check that species headings are added
     assert mock_add_species_heading.call_count == 2
-    mock_add_species_heading.assert_any_call(mock_document, "Cardinal", county["records"][0], county)
-    mock_add_species_heading.assert_any_call(mock_document, "Blue Jay", county["records"][2], county)
+    mock_add_species_heading.assert_any_call(
+        mock_document, "Cardinal", county["records"][0], county
+    )
+    mock_add_species_heading.assert_any_call(
+        mock_document, "Blue Jay", county["records"][2], county
+    )
 
     # Check that species links are added
     assert mock_add_species_link.call_count == 2
-    mock_add_species_link.assert_any_call(mock_document, county["records"][0]['observation'])
+    mock_add_species_link.assert_any_call(
+        mock_document, county["records"][0]["observation"]
+    )
     mock_add_species_link.assert_any_call(
         mock_document, county["records"][2]["observation"]
     )
@@ -245,8 +294,12 @@ def test_add_species_records_valid_data(mocker):
 def test_add_species_records_empty_records(mocker):
     """Test _add_species_records with an empty records list."""
     mock_document = mocker.Mock()
-    mock_add_species_heading = mocker.patch("get_reports.create_review_document._add_species_heading")
-    mock_add_species_link = mocker.patch("get_reports.create_review_document._add_species_link")
+    mock_add_species_heading = mocker.patch(
+        "get_reports.create_review_document._add_species_heading"
+    )
+    mock_add_species_link = mocker.patch(
+        "get_reports.create_review_document._add_species_link"
+    )
 
     county = {"county": "Fairfax", "records": []}
 
@@ -260,18 +313,30 @@ def test_add_species_records_empty_records(mocker):
 def test_add_species_records_unsorted_data(mocker):
     """Test _add_species_records with unsorted records."""
     mock_document = mocker.Mock()
-    mock_add_species_heading = mocker.patch("get_reports.create_review_document._add_species_heading")
-    mock_add_species_link = mocker.patch("get_reports.create_review_document._add_species_link")
+    mock_add_species_heading = mocker.patch(
+        "get_reports.create_review_document._add_species_heading"
+    )
+    mock_add_species_link = mocker.patch(
+        "get_reports.create_review_document._add_species_link"
+    )
 
     county = {
         "county": "Fairfax",
         "records": [
             {
-                "observation": {"comName": "Blue Jay", "obsDt": "2023-01-02", "subId": "S67890"},
+                "observation": {
+                    "comName": "Blue Jay",
+                    "obsDt": "2023-01-02",
+                    "subId": "S67890",
+                },
                 "review_species": {},
             },
             {
-                "observation": {"comName": "Cardinal", "obsDt": "2023-01-01", "subId": "S12345"},
+                "observation": {
+                    "comName": "Cardinal",
+                    "obsDt": "2023-01-01",
+                    "subId": "S12345",
+                },
                 "review_species": {},
             },
             {
@@ -285,13 +350,22 @@ def test_add_species_records_unsorted_data(mocker):
 
     # Check that species headings are added in sorted order
     assert mock_add_species_heading.call_count == 2
-    mock_add_species_heading.assert_any_call(mock_document, "Blue Jay", county["records"][0], county)
-    mock_add_species_heading.assert_any_call(mock_document, "Cardinal", county["records"][1], county)
+    mock_add_species_heading.assert_any_call(
+        mock_document, "Blue Jay", county["records"][0], county
+    )
+    mock_add_species_heading.assert_any_call(
+        mock_document, "Cardinal", county["records"][1], county
+    )
 
     # Check that species links are added in sorted order
     assert mock_add_species_link.call_count == 2
-    mock_add_species_link.assert_any_call(mock_document, county["records"][0]['observation'])
-    mock_add_species_link.assert_any_call(mock_document, county["records"][1]['observation'])
+    mock_add_species_link.assert_any_call(
+        mock_document, county["records"][0]["observation"]
+    )
+    mock_add_species_link.assert_any_call(
+        mock_document, county["records"][1]["observation"]
+    )
+
 
 def test_add_species_heading_exclude_only_notes(mocker):
     """Test _add_species_heading with exclude, only, and uniqueExcludeNotes."""
@@ -361,7 +435,8 @@ def test_add_species_heading_new_species(mocker):
 
     mock_add_heading.assert_called_once_with(species, level=2)
     assert any(
-        "The species Rare Bird is not in the state list. A new record?" in call.args[0]
+        "The species Rare Bird is not in the state list. A new record?"
+        in call.args[0]
         for call in mock_add_paragraph.call_args_list
     )
 
@@ -396,6 +471,7 @@ def test_add_species_heading_combined_conditions(mocker):
         "The species Eagle is not in the state list. A new record?"
     )
 
+
 def test_add_species_link_with_valid_subId(mocker):
     """Test _add_species_link with a valid subId."""
     mock_document = mocker.Mock()
@@ -406,11 +482,14 @@ def test_add_species_link_with_valid_subId(mocker):
 
     record = {"observation": {"subId": "S12345", "obsDt": "2023-01-01"}}
 
-    _add_species_link(mock_document, record['observation'])
+    _add_species_link(mock_document, record["observation"])
 
-    mock_document.add_paragraph.assert_called_once_with(style='List Bullet')
-    mock_paragraph.add_run.assert_called_once_with('2023-01-01 https://ebird.org/checklist/S12345')
+    mock_document.add_paragraph.assert_called_once_with(style="List Bullet")
+    mock_paragraph.add_run.assert_called_once_with(
+        "2023-01-01 https://ebird.org/checklist/S12345"
+    )
     assert mock_run.hyperlink == "https://ebird.org/checklist/S12345"
+
 
 def test_save_document_file_exists(mocker, tmp_path):
     """Test _save_document when the output file already exists."""
@@ -418,13 +497,13 @@ def test_save_document_file_exists(mocker, tmp_path):
     mock_remove = mocker.patch("os.remove")
     mock_exists = mocker.patch("os.path.exists", return_value=True)
 
-    output_file = tmp_path / "test.docx"
+    output = tmp_path / "test.docx"
 
-    _save_document(mock_document, str(output_file))
+    _save_document(mock_document, str(output))
 
-    mock_exists.assert_called_once_with(str(output_file))
-    mock_remove.assert_called_once_with(str(output_file))
-    mock_document.save.assert_called_once_with(str(output_file))
+    mock_exists.assert_called_once_with(str(output))
+    mock_remove.assert_called_once_with(str(output))
+    mock_document.save.assert_called_once_with(str(output))
 
 
 def test_save_document_file_does_not_exist(mocker, tmp_path):
@@ -433,26 +512,35 @@ def test_save_document_file_does_not_exist(mocker, tmp_path):
     mock_remove = mocker.patch("os.remove")
     mock_exists = mocker.patch("os.path.exists", return_value=False)
 
-    output_file = tmp_path / "test.docx"
+    output = tmp_path / "test.docx"
 
-    _save_document(mock_document, str(output_file))
+    _save_document(mock_document, str(output))
 
-    mock_exists.assert_called_once_with(str(output_file))
+    mock_exists.assert_called_once_with(str(output))
     mock_remove.assert_not_called()
-    mock_document.save.assert_called_once_with(str(output_file))
+    mock_document.save.assert_called_once_with(str(output))
+
 
 def test_main_valid_arguments(mocker):
     """Test main function with valid arguments."""
-    mock_parse_arguments = mocker.patch("get_reports.create_review_document._parse_arguments")
-    mock_load_observations = mocker.patch("get_reports.create_review_document._load_observations")
-    mock_create_document = mocker.patch("get_reports.create_review_document._create_document")
-    mock_save_document = mocker.patch("get_reports.create_review_document._save_document")
+    mock_parse_arguments = mocker.patch(
+        "get_reports.create_review_document._parse_arguments"
+    )
+    mock_load_observations = mocker.patch(
+        "get_reports.create_review_document._load_observations"
+    )
+    mock_create_document = mocker.patch(
+        "get_reports.create_review_document._create_document"
+    )
+    mock_save_document = mocker.patch(
+        "get_reports.create_review_document._save_document"
+    )
     mock_logging = mocker.patch("logging.basicConfig")
 
     # Mock arguments
     mock_parse_arguments.return_value = argparse.Namespace(
-        review_records_file="valid_records.json",
-        output_file="output.docx",
+        input="valid_records.json",
+        output="output.docx",
         verbose=True,
     )
 
@@ -473,16 +561,24 @@ def test_main_valid_arguments(mocker):
 
 def test_main_no_verbose(mocker):
     """Test main function without verbose logging."""
-    mock_parse_arguments = mocker.patch("get_reports.create_review_document._parse_arguments")
-    mock_load_observations = mocker.patch("get_reports.create_review_document._load_observations")
-    mock_create_document = mocker.patch("get_reports.create_review_document._create_document")
-    mock_save_document = mocker.patch("get_reports.create_review_document._save_document")
+    mock_parse_arguments = mocker.patch(
+        "get_reports.create_review_document._parse_arguments"
+    )
+    mock_load_observations = mocker.patch(
+        "get_reports.create_review_document._load_observations"
+    )
+    mock_create_document = mocker.patch(
+        "get_reports.create_review_document._create_document"
+    )
+    mock_save_document = mocker.patch(
+        "get_reports.create_review_document._save_document"
+    )
     mock_logging = mocker.patch("logging.basicConfig")
 
     # Mock arguments
     mock_parse_arguments.return_value = argparse.Namespace(
-        review_records_file="valid_records.json",
-        output_file="output.docx",
+        input="valid_records.json",
+        output="output.docx",
         verbose=False,
     )
 
@@ -503,14 +599,18 @@ def test_main_no_verbose(mocker):
 
 def test_main_load_observations_raises_exception(mocker):
     """Test main function when _load_observations raises an exception."""
-    mock_parse_arguments = mocker.patch("get_reports.create_review_document._parse_arguments")
-    mock_load_observations = mocker.patch("get_reports.create_review_document._load_observations")
+    mock_parse_arguments = mocker.patch(
+        "get_reports.create_review_document._parse_arguments"
+    )
+    mock_load_observations = mocker.patch(
+        "get_reports.create_review_document._load_observations"
+    )
     mock_logging = mocker.patch("logging.basicConfig")
 
     # Mock arguments
     mock_parse_arguments.return_value = argparse.Namespace(
-        review_records_file="invalid_records.json",
-        output_file="output.docx",
+        input="invalid_records.json",
+        output="output.docx",
         verbose=True,
     )
 
@@ -525,4 +625,3 @@ def test_main_load_observations_raises_exception(mocker):
     mock_parse_arguments.assert_called_once()
     mock_logging.assert_called_once_with(level=logging.INFO)
     mock_load_observations.assert_called_once_with("invalid_records.json")
-

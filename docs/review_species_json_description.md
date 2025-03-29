@@ -1,47 +1,74 @@
-# Review Species json structure
+# Review Species JSON Structure
 
-The review species json structure is stored in a file and use to define species that require review.  The overall structure looks like this:
+The input file to `get_reports` is a json structured file file defines species that require review and organizes them into groups for clarity. And example of a file using this format is [this file](get_reports\data\varcom_review_species.json)
+
+## Overall Information
+
+* **_comment**: A comment providing context about the file.
+* **source**: The source of truth for the information, e.g., "https://www.virginiabirds.org/varcom-review-list".
+* **effective_date**: The date when the information was captured from the source of truth. This is useful for tracking changes over time, such as taxonomy updates or species review requirements.
+
+## Review Species
+
+These are species on the state list that require review, sometimes only under specific circumstances.
+
+* **review_species**: A list of species requiring review.
+  * **comName**: The common name of the species, aligned with eBird taxonomy.
+  * **scientificName**: The scientific name of the species.
+  * **exclude**: A list of counties or group names where this species is excluded from review requirements.
+  * **unique_exclude_notes**: A comment for unique cases where review is not required. For example, in Virginia, some birds are regularly recorded from the Chesapeake Bay Bridge Tunnel but are unusual in surrounding counties.
+
+## County Groups
+
+These groups organize counties based on geographic or ecological characteristics. For example, in Virginia, counties are grouped into Coastal Plain, Piedmont, and Mountains and Valleys.
+
+* **county_groups**: A list of groups, each containing a name, a list of counties, and a description.
+  * **name**: The name of the group.
+  * **counties**: A list of county names that belong to this group.
+  * **description**: A brief explanation of the group's purpose or characteristics.
+
+## Example JSON Structure
 
 ```json
 {
-    "_comment" : "This file contains the species that are reviewed in the VARCOM report. There are two sections, review_species and exclude_groups.",
-    "source" : "https://www.virginiabirds.org/varcom-review-list",
-    "effective_date" : "2021-04-06",
-    "review_species" : [
-        { "comName" : "Black-bellied Whistling-Duck", "exclude" : ["Coastal Plain", "Piedmont"]},
-        { "comName" : "Boat-tailed Grackle", "exclude" :["Isle of Wight", "York"], "unique_exclude_notes" : "except Eastern Coastal Plain, Isle of Wight Co. & York Co. east of Rt. 17."},
-        { "comName" : "Lucy's Warbler"},
-
-    ],
-    "county_groups" : [
-        { "name" : "group1", "counties": ["Arlington", "..."]},
-        { "name" : "group2", "counties": ["Albemarle", "..."]},
-        { "name" : "group3", "counties": ["Highland", "..."]}
-    ]
-
+  "_comment": "This file contains the species that are reviewed in the VARCOM report. There are two sections, review_species and exclude_groups.",
+  "source": "https://www.virginiabirds.org/varcom-review-list",
+  "effective_date": "2023-10-01",
+  "review_species": [
+    {
+      "comName": "Black-bellied Whistling-Duck",
+      "exclude": ["Coastal Plain", "Piedmont"],
+    },
+    {
+      "comName": "Boat-tailed Grackle",
+      "exclude": ["Isle of Wight", "York"],
+      "unique_exclude_notes": "except Eastern Coastal Plain, Isle of Wight Co. & York Co. east of Rt. 17.",
+    },
+    {
+      "comName": "Lucy's Warbler",
+    }
+  ],
+  "county_groups": [
+    {
+      "name": "group1",
+      "counties": ["Arlington", "..."],
+      "description": "Northern Virginia counties."
+    },
+    {
+      "name": "group2",
+      "counties": ["Albemarle", "..."],
+      "description": "Central Virginia counties."
+    },
+    {
+      "name": "group3",
+      "counties": ["Highland", "..."],
+      "description": "Western mountain counties."
+    }
+  ]
 }
 ```
 
-## Overall information
+## Additional Notes
 
-  * _comment: a comment pertaining to the file as a whole
-  * source" : Where the information to create this json is found. For example, in Virginia, this is our source of truth. "https://www.virginiabirds.org/varcom-review-list",
-  * effective_date: When this information was captured from the source of truth. This is helpful, as for example taxonomy changes, and the species requiring review may change over time.
-
-## Review species
-
-These are species which are on the state list but still require review...sometimes in some circumstances only.
-
-* review_species: A list of species that require review.
-  * comName: The common name of the species. Must be identical to eBird taxonomy common name.
-  * exclude: A list of counties or group names where this species is excluded from review requirements.
-  * unique_exclude_notes: A comment which can be used when there are unique requirements where review is not required. In Virginia, for example, there are some birds that are regularly recorded from the Chesapeake Bay Bridge Tunnel which are unusual, even in the counties surrounting. These are printed.
-
-## County groups
-
-These groups can be used, for example to collect counties which are on the coast where records of mountain birds would be rare. For example, in Virginia, we organize counties in three groups, Coastal Plain, Piedmont, and Mountains and Valleys. A county should only be in one group. This does create challenges, when for example a county includes habitat that could reasonable qualify it for any of the groups.
-
-* county_groups: A list of groups, each containing a name and a list of counties.
-  * name: The name of the group.
-  * counties: A list of county names that belong to this group.
+* The `description` field in `county_groups` improves clarity about the purpose of each group.
 

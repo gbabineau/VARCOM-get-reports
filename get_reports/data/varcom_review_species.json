@@ -771,6 +771,7 @@
     "county_groups" : [
         {
             "name" : "Eastern Coastal Plain",
+            "description" : "Counties and cities which are a subset Coastal Plain region of Virginia and are Easternmost.",
             "counties" : [
                 "Accomack",
                 "Chesapeake",
@@ -795,6 +796,7 @@
         },
         {
             "name" : "Coastal Plain",
+            "description" : "Counties and cities included in the Coastal Plain region of Virginia.",
             "counties": [
                 "Accomack",
                 "Alexandria",
@@ -838,6 +840,7 @@
         },
         {
             "name" : "Piedmont",
+            "description" : "Counties and cities included in the Piedmont region of Virginia.",
             "counties": [
                 "Albemarle",
                 "Amelia",
@@ -893,6 +896,7 @@
         },
         {
             "name" : "Mountains & Valleys",
+            "description" : "Counties and cities included in the Mountains & Valleys region of Virginia.",
             "counties": [
                 "Alleghany",
                 "Augusta",
