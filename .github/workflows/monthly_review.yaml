@@ -14,15 +14,17 @@ jobs:
         uses: actions/checkout@v2
       - name: Run Monthly Task
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install poetry
-          poetry install
-          YEAR=$(date -d "$(date +%Y-%m-01) -2 months" +%Y)
-          MONTH=$(date -d "$(date +%Y-%m-01) -2 months" +%m)
-          echo "The year and month of two months ago: ${YEAR} ${MONTH}"
           mkdir -p reports
-          poetry run python -m get_reports.get_reports --verbose --year "${YEAR}" --month "${MONTH}"
-          poetry run python -m get_reports.create_review_document --verbose --input reports/records_to_review_${YEAR}_${MONTH}.json --output reports/review_${YEAR}_${MONTH}.docx
+          # python -m pip install --upgrade pip
+          # python -m pip install poetry
+          # poetry install
+          # YEAR=$(date -d "$(date +%Y-%m-01) -2 months" +%Y)
+          # MONTH=$(date -d "$(date +%Y-%m-01) -2 months" +%m)
+          # echo "The year and month of two months ago: ${YEAR} ${MONTH}"
+          # poetry run python -m get_reports.get_reports --verbose --year "${YEAR}" --month "${MONTH}"
+          # poetry run python -m get_reports.create_review_document --verbose --input reports/records_to_review_${YEAR}_${MONTH}.json --output reports/review_${YEAR}_${MONTH}.docx
+          echo "test" > reports/test.docx
+          echo "test" > reports/test2.docx
         env:
           EBIRDAPIKEY: ${{ secrets.EBIRDAPIKEY }}
       - name: Send mail
@@ -35,7 +37,7 @@ jobs:
           #
           #  * smtp://user:password@server:port
           #  * smtp+starttls://user:password@server:port
-          connection_url: ${{secrets.MAIL_CONNECTION}}
+          #connection_url: ${{secrets.MAIL_CONNECTION}}
           # Required mail server address if not connection_url:
           server_address: smtp.gmail.com
           # Server port, default 25:
@@ -70,7 +72,7 @@ jobs:
           # Optional converting Markdown to HTML (set content_type to text/html too):
           #convert_markdown: true
           # Optional attachments:
-          attachments: reports/review_${YEAR}_${MONTH}.docx
+          attachments: reports/*.docx
           # Optional priority: 'high', 'normal' (default) or 'low'
           priority: low
           # Optional nodemailerlog: true/false
