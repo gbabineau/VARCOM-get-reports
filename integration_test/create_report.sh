@@ -10,4 +10,4 @@ poetry run python -m  get_reports.create_review_document  --input reports/record
 # and then search for the string S85143932 in the text file.
 
 poetry run python -m integration_test.doc2text  --input reports/review_2021_04_09.docx --output reports/review_2021_04_09.txt
-grep S85143932 reports/records_to_review_2021_04_09.txt
+grep S85143932 reports/review_2021_04_09.txt
