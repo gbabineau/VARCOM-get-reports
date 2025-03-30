@@ -5,6 +5,7 @@ This utility was created for [VARCOM](https://www.virginiabirds.org/varcom) - in
 This code is shared so that any one else could use it. It is written so that another state could use it. However, it is unsupported. See [./LICENSE]. Feel free to submit pull requests on the [source]([https://github.com/gbabineau/VARCOM-get-reports]) to fix bugs or clone it and make your own version.
 
 ## Use
+
 ### get_reports
 
 The `get_reports` script is used to generate reports of bird observations based on specific criteria. It queries the eBird API and processes the data to produce a report tailored to the needs of VARCOM or other organizations.
@@ -12,13 +13,14 @@ The `get_reports` script is used to generate reports of bird observations based 
 #### Usage
 
 ```bash
-python get_reports.py --year YYYY -month MM -state STATE_CODE --input INPUT_FILE
+python get_reports.py --year YYYY -month MM [--day DD] -state STATE_CODE --input INPUT_FILE
 ```
 
 #### Arguments
 
 - `--year`: The year for the report in `YYYY` format.
-- `--end_date`: The month number for the report in `MM` format.
+- `--month`: The month number for the report in `MM` format.
+- '--day': The day of the report - defaults to 0 which will create a report for the entire month
 - `--state`: The eBird state code (e.g., `US-VA` for Virginia) for which the report is generated.
 - `--input`: The file path for the definition of state review rules
 

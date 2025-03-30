@@ -182,7 +182,7 @@ def _find_record_of_interest(
     return records_of_interest
 
 
-def _iterate_days_in_month(year: int, month: int):
+def _iterate_days_in_month(year: int, month: int, day):
     """
     Generate an iterator over all the days in a given month of a specific year.
 
@@ -198,8 +198,11 @@ def _iterate_days_in_month(year: int, month: int):
             print(day)
         # Output: 2023-02-01, 2023-02-02, ..., 2023-02-28
     """
-    num_days = monthrange(year, month)[1]
-    for day in range(1, num_days + 1):
+    if day == 0:
+        num_days = monthrange(year, month)[1]
+        for day_of_month in range(1, num_days + 1):
+            yield date(year, month, day_of_month)
+    else:
         yield date(year, month, day)
 
 
@@ -209,6 +212,7 @@ def get_records_to_review(
     counties: list,
     year: int,
     month: int,
+    day: int,
     review_species: dict,
 ) -> list:
     """
@@ -234,9 +238,9 @@ def get_records_to_review(
     records_to_review = []
     for county in counties:
         county_records = []
-        for day in _iterate_days_in_month(year, month):
+        for day_in_month in _iterate_days_in_month(year, month, day):
             records_for_county = _find_record_of_interest(
-                ebird_api_key, state_list, county, day, review_species
+                ebird_api_key, state_list, county, day_in_month, review_species
             )
             if records_for_county:
                 county_records.extend(records_for_county)

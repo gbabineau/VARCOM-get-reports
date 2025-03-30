@@ -55,7 +55,7 @@ def _add_document_header(document: Document, observations: dict):
     )
     document.add_paragraph(
         style=LIST_BULLET_STYLE,
-        text=f"State: {observations['state']}",
+        text=f"Region: {observations['region']}",
     )
     document.add_paragraph(
         style=LIST_BULLET_STYLE,

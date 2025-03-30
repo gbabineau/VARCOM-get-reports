@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "get_reports"
 version = "0.4.0"
-description = "for VARCOM - interested in reports of select across the state of Virginia in  given time span"
+description = "for VARCOM - interested in reports of select across the state or single county of a state in  given time span"
 authors = ["gbabineau <guy.babineau@gmail.com>"]
 license = "MIT"
 
