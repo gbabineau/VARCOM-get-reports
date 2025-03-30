@@ -1,6 +1,7 @@
 """ Tests for get_reports.py module. """
 import sys
 from unittest.mock import MagicMock, mock_open, patch
+import json
 import logging
 import pytest
 
@@ -62,26 +63,27 @@ def test_parse_arguments_version_flag():
     assert excinfo.value.code == 0
 
 
+@patch("get_reports.get_reports.open", new_callable=mock_open)
 @patch("get_reports.get_reports.datetime")
-@patch("builtins.open", new_callable=mock_open)
-def test_save_records_to_file(mock_file_open, mock_datetime):
+def test_save_records_to_file_specific_day(mock_datetime, mock_file_open):
     # Mock the current date
     mock_datetime.now.return_value.strftime.return_value = "2023-10-15"
+    mock_datetime.return_value.strftime.side_effect = lambda fmt: "2023-10-15"
 
-    # Test data
-    records = [{"species": "Cardinal", "location": "Park"}]
+    # Input data
+    records = [{"species": "Mock Bird", "location": "Mock Location"}]
     year = 2023
     month = 10
-    day = 9
-    state = "US-VA"
+    day = 15
+    region = "US-VA"
 
     # Call the function
-    _save_records_to_file(records, year, month, day, state)
+    _save_records_to_file(records, year, month, day, region)
 
-    # Expected output
-    expected_filename = "reports/records_to_review_2023_10_09.json"
-    _= {
-        "date of observations": "2023,10,9",
+    # Expected file name and content
+    expected_filename = "reports/records_to_review_2023_10_15.json"
+    _ = {
+        "date of observations": "2023-10-15",
         "region": "US-VA",
         "date of report": "2023-10-15",
         "records": records,
@@ -97,26 +99,27 @@ def test_save_records_to_file(mock_file_open, mock_datetime):
     assert handle.write.call_count == 32
 
 
+@patch("get_reports.get_reports.open", new_callable=mock_open)
 @patch("get_reports.get_reports.datetime")
-@patch("builtins.open", new_callable=mock_open)
-def test_save_records_to_file_month(mock_file_open, mock_datetime):
+def test_save_records_to_file_all_days(mock_datetime, mock_file_open):
     # Mock the current date
     mock_datetime.now.return_value.strftime.return_value = "2023-10-15"
+    mock_datetime.return_value.strftime.side_effect = lambda fmt: "2023-10-15"
 
-    # Test data
-    records = [{"species": "Cardinal", "location": "Park"}]
+    # Input data
+    records = [{"species": "Mock Bird", "location": "Mock Location"}]
     year = 2023
     month = 10
     day = 0
-    state = "US-VA"
+    region = "US-VA"
 
     # Call the function
-    _save_records_to_file(records, year, month, day, state)
+    _save_records_to_file(records, year, month, day, region)
 
     # Expected output
     expected_filename = "reports/records_to_review_2023_10.json"
     _ = {
-        "date of observations": "2023,10",
+        "date of observations": "2023-10",
         "region": "US-VA",
         "date of report": "2023-10-15",
         "records": records,
@@ -132,17 +135,17 @@ def test_save_records_to_file_month(mock_file_open, mock_datetime):
     assert handle.write.call_count == 32
 
 
-@patch("builtins.open", new_callable=mock_open)
+@patch("get_reports.get_reports.open", new_callable=mock_open)
 def test_save_records_to_file_no_records(mock_file_open):
     # Test data
     records = []
     year = 2023
     month = 10
     day = 0
-    state = "US-VA"
+    region = "US-VA"
 
     # Call the function
-    _save_records_to_file(records, year, month, day, state)
+    _save_records_to_file(records, year, month, day, region)
 
     # Assert the file was not opened since there are no records
     mock_file_open.assert_not_called()

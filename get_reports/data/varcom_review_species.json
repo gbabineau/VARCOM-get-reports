@@ -79,7 +79,6 @@
         {"comName": "Chuck-will's-widow", "state status": ""},
         {"comName": "Eastern Whip-poor-will", "state status": ""},
         {"comName": "Chimney Swift", "state status": ""},
-        {"comName": "Mexican Violetear", "state status": "Accidental"},
         {"comName": "Rivoli's Hummingbird", "state status": "Accidental"},
         {"comName": "Ruby-throated Hummingbird", "state status": ""},
         {"comName": "Black-chinned Hummingbird", "state status": "Accidental"},
@@ -524,6 +523,9 @@
         {"comName": "Dickcissel", "state status": "Rare"}
         ],
     "review_species" : [
+        { "comName" : "Gray-crowned Rosy-finch"},
+        { "comName" : "Mexican Violetear"},
+        { "comName" : "Tropical Kingbird"	},
         { "comName" : "Black-bellied Whistling-Duck", "exclude" : ["Coastal Plain", "Piedmont"]},
         { "comName" : "West Indian Whistling-Duck"},
         { "comName" : "Fulvous Whistling-Duck"},

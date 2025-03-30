@@ -67,5 +67,17 @@
             "justMyCode": true,
 
         },
+        {
+            "name": "doc2text",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "integration_test.doc2text",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--input", "reports/review_2021_04_09.docx",
+                "--output", "reports/review_2021_04_09.txt"
+            ]
+        },
     ]
 }

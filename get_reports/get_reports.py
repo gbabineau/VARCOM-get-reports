@@ -88,11 +88,13 @@ def _save_records_to_file(
 
         def get_current_date_string():
             return datetime.now().strftime("%Y-%m-%d")
-
+        observation_date = (
+            datetime(year, month, day).strftime("%Y-%m-%d")
+            if day != 0
+            else datetime(year, month, 1).strftime("%Y-%m")
+        )
         output_json = {
-            "date of observations": f"{year:04d},{month:02d}"
-            if day == 0
-            else f"{year:04d},{month:02d},{day:02d}",
+            "date of observations": observation_date,
             "region": region,
             "date of report": get_current_date_string(),
             "records": records,
