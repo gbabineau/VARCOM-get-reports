@@ -5,8 +5,15 @@ The input file to `get_reports` is a json structured file file defines species t
 ## Overall Information
 
 * **_comment**: A comment providing context about the file.
-* **source**: The source of truth for the information, e.g., "https://www.virginiabirds.org/varcom-review-list".
+* **source**: The source of truth for the information, e.g., [Virginia's review list](https://www.virginiabirds.org/varcom-review-list).
 * **effective_date**: The date when the information was captured from the source of truth. This is useful for tracking changes over time, such as taxonomy updates or species review requirements.
+
+## Official State list
+
+This is the official state list of birds found in the state. If a bird is on this list, it does not require review unless it is on the [review_species list](#review-species). If the bird is not on this list it should be reviewed as a potential state record.
+
+* **review_species**: A list of species requiring review.
+  * **comName**: The common name of the species, aligned with eBird taxonomy.
 
 ## Review Species
 
@@ -14,8 +21,8 @@ These are species on the state list that require review, sometimes only under sp
 
 * **review_species**: A list of species requiring review.
   * **comName**: The common name of the species, aligned with eBird taxonomy.
-  * **scientificName**: The scientific name of the species.
   * **exclude**: A list of counties or group names where this species is excluded from review requirements.
+  * **only**: A list of counties or group names which are the only places in the state where this observation requires review.
   * **unique_exclude_notes**: A comment for unique cases where review is not required. For example, in Virginia, some birds are regularly recorded from the Chesapeake Bay Bridge Tunnel but are unusual in surrounding counties.
 
 ## County Groups
@@ -71,4 +78,3 @@ These groups organize counties based on geographic or ecological characteristics
 ## Additional Notes
 
 * The `description` field in `county_groups` improves clarity about the purpose of each group.
-

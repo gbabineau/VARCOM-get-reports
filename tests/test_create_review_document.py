@@ -147,7 +147,7 @@ def test_add_document_header(mocker):
 
     observations = {
         "date of observations": "2023-01-01",
-        "state": "Virginia",
+        "region": "US-VA",
         "date of report": "2023-01-02",
     }
 
@@ -162,7 +162,7 @@ def test_add_document_header(mocker):
         style="List Bullet", text="Dates of observations: 2023-01-01"
     )
     mock_add_paragraph.assert_any_call(
-        style=LIST_BULLET_STYLE, text="State: Virginia"
+        style=LIST_BULLET_STYLE, text="Region: US-VA"
     )
     mock_add_paragraph.assert_any_call(
         style=LIST_BULLET_STYLE, text="Dates of report creation: 2023-01-02"

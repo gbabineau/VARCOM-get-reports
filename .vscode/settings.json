@@ -4,7 +4,8 @@
         "comchi",
         "initialdir",
         "tearoff",
-        "textvariable"
+        "textvariable",
+        "VARCOM"
     ],
     "python.testing.pytestArgs": [
         "tests"

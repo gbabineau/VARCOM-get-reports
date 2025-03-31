@@ -1,3 +1,4 @@
+""" Get eBird reports of interest. """
 import argparse
 import json
 import logging
@@ -25,7 +26,7 @@ def _parse_arguments() -> argparse.Namespace:
         --month (int, required): Month to review in MM format.
         --input (str, optional): Path to the JSON file containing species requiring review.
             Defaults to "get_reports/data/varcom_review_species.json".
-        --state (str, optional): State to review in the format "US-XX".
+        --region (str, optional): State or county to review in the format US-SS, or US-SS-CCC.
             Defaults to "US-VA".
         --version: Displays the program version and exits.
         --verbose: Increases verbosity of the program output.
@@ -40,11 +41,22 @@ def _parse_arguments() -> argparse.Namespace:
         "--month", type=int, help="Month to review MM", required=True
     )
     arg_parser.add_argument(
+        "--day",
+        type=int,
+        help="Day to review DD. Defaults to 00 for all days in month.",
+        required=False,
+        default=0,
+    )
+    arg_parser.add_argument(
         "--input",
         help="Species requiring review",
         default="get_reports/data/varcom_review_species.json",
     )
-    arg_parser.add_argument("--state", help="State to review", default="US-VA")
+    arg_parser.add_argument(
+        "--region",
+        help="Region to review in the format US-SS, or US-SS-CCC",
+        default="US-VA",
+    )
     arg_parser.add_argument(
         "--version", action="version", version="%(prog)s 0.0.0"
     )
@@ -55,7 +67,7 @@ def _parse_arguments() -> argparse.Namespace:
 
 
 def _save_records_to_file(
-    records: list, year: int, month: int, state: str
+    records: list, year: int, month: int, day: int, region: str
 ) -> None:
     """
     Save a list of records to a JSON file with metadata.
@@ -66,8 +78,10 @@ def _save_records_to_file(
     Args:
         records (list): A list of records to be saved.
         year (int): The year associated with the records.
+        day (int): The day associated with the records. 0, indicates all days
+            in the month.
         month (int): The month associated with the records.
-        state (str): The state associated with the records.
+        region (str): The region associated with the records.
     Returns:
         None
     """
@@ -75,15 +89,24 @@ def _save_records_to_file(
 
         def get_current_date_string():
             return datetime.now().strftime("%Y-%m-%d")
-
+        observation_date = (
+            datetime(year, month, day).strftime("%Y-%m-%d")
+            if day != 0
+            else datetime(year, month, 1).strftime("%Y-%m")
+        )
         output_json = {
-            "date of observations": f"{year:04d},{month:02d}",
-            "state": state,
+            "date of observations": observation_date,
+            "region": region,
             "date of report": get_current_date_string(),
             "records": records,
         }
+        save_file_name = (
+            f"reports/records_to_review_{year:04d}_{month:02d}.json"
+            if day == 0
+            else f"reports/records_to_review_{year:04d}_{month:02d}_{day:02d}.json"
+        )
         with open(
-            f"reports/records_to_review_{year:04d}_{month:02d}.json",
+            save_file_name,
             "wt",
             encoding="utf-8",
         ) as f:
@@ -119,18 +142,42 @@ def main():
 
     ebird_api_key = get_ebird_api_key.get_ebird_api_key()
     taxonomy = get_taxonomy(ebird_api_key)
-    state = args.state
+    region = args.region
+    state = region[:5]
     state_list = get_state_list.get_state_list(args.input, taxonomy=taxonomy)
-    counties = get_regions(
+    county_list = get_regions(
         token=ebird_api_key, rtype="subnational2", region=state
     )
+    if state == region:
+        counties = county_list
+    else:
+        matching_county = next(
+            (county for county in county_list if county["code"] == region),
+            None,
+        )
+        if not matching_county:
+            logging.error(
+                "Region %s not found in county list of %s. Exiting.",
+                region,
+                state,
+            )
+            return
+        counties = [matching_county]
     species = get_review_rules.get_review_rules(
         args.input, taxonomy, counties, state
     )
     records_to_review = get_records_to_review.get_records_to_review(
-        ebird_api_key, state_list, counties, args.year, args.month, species
+        ebird_api_key=ebird_api_key,
+        state_list=state_list,
+        counties=counties,
+        year=args.year,
+        month=args.month,
+        day=args.day,
+        review_species=species,
     )
-    _save_records_to_file(records_to_review, args.year, args.month, state)
+    _save_records_to_file(
+        records_to_review, args.year, args.month, args.day, region
+    )
 
 
 if __name__ == "__main__":

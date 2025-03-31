@@ -1,3 +1,5 @@
+"""Module to create a human readable report for expedited review."""
+
 import argparse
 import json
 import logging
@@ -55,7 +57,7 @@ def _add_document_header(document: Document, observations: dict):
     )
     document.add_paragraph(
         style=LIST_BULLET_STYLE,
-        text=f"State: {observations['state']}",
+        text=f"Region: {observations['region']}",
     )
     document.add_paragraph(
         style=LIST_BULLET_STYLE,
@@ -63,7 +65,8 @@ def _add_document_header(document: Document, observations: dict):
     )
     p = document.add_paragraph(
         style=LIST_BULLET_STYLE,
-        text="Produced for and by VARCOM (Virginia Avian Records Committee), of the VSO (Virginia Society of Ornithology). ",
+        text="Produced for and by VARCOM (Virginia Avian Records Committee)"
+        ", of the VSO (Virginia Society of Ornithology). ",
     )
     p.add_run(
         "https://www.virginiabirds.org/varcom"
@@ -113,17 +116,16 @@ def _add_species_heading(
 ):
     """Add a heading and details for a species."""
     document.add_heading(species, level=2)
-    if exclude := record["review_species"].get("exclude", []):
+    review_species = record.get("review_species", {})
+    if exclude := review_species.get("exclude", []):
         document.add_paragraph(
             f"The species {species} is not excluded from review in {county['county']} because it is not in the following counties or groups of counties: {exclude}"
         )
-    if only := record["review_species"].get("only", []):
+    if only := review_species.get("only", []):
         document.add_paragraph(
             f"The species {species}: is only reviewed in the following counties or groups of counties: {only}"
         )
-    if unique_exclude_notes := record["review_species"].get(
-        "uniqueExcludeNotes", None
-    ):
+    if unique_exclude_notes := review_species.get("uniqueExcludeNotes", None):
         document.add_paragraph(
             f"This species has unique Exclude Notes which could not be automated. {unique_exclude_notes}"
         )
