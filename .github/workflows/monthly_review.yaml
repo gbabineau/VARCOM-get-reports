@@ -52,7 +52,7 @@ jobs:
           # Required recipients' addresses:
           to: guy.babineau@gmail.com,traceyhopperwsq@gmail.com
           # Required sender full name (address can be skipped):
-          from: guy.babineau@gmail.com
+          from: varcom.records@gmail.com
           # Optional plain body:
           body: Monthly VARCOM report from ${{github.repository}} completed successfully! This is an automated message.
           # Optional HTML body read from file:

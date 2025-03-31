@@ -1,3 +1,4 @@
+""" Get eBird reports of interest. """
 import argparse
 import json
 import logging

@@ -1,7 +1,6 @@
 """ Tests for get_reports.py module. """
 import sys
 from unittest.mock import MagicMock, mock_open, patch
-import json
 import logging
 import pytest
 

@@ -1,11 +1,14 @@
 """ Function to convert .docx files to very simple plain text files to test that
     expected text is in docx files. """
 import argparse
+import logging
+
 from docx import Document
 
 def extract_text_from_docx(input_file, output_file):
     """
     Extracts text from a .docx file and writes it to a specified output file.
+    No formatting is preserved, and the text is saved as plain text.
 
     Args:
         input_file (str): The path to the input .docx file.
@@ -29,7 +32,7 @@ def extract_text_from_docx(input_file, output_file):
         # Write the text to the output file
         with open(output_file, 'w', encoding='utf-8') as f:
             f.write(text)
-        print(f"Text successfully extracted to {output_file}")
+        logging.info("Text successfully extracted to %s." ,output_file)
     except (FileNotFoundError, IOError) as e:
         print(f"An error occurred: {e}")
 

@@ -1,9 +1,7 @@
-import os
+""" Unit tests for the doc2text module. """
 import pytest
 from docx import Document, opc
-from integration_test.doc2text import extract_text_from_docx, main, _parse_arguments
-import subprocess
-from pathlib import Path
+from integration_test.doc2text import extract_text_from_docx, _parse_arguments
 
 
 
@@ -72,4 +70,3 @@ def test_parse_arguments_missing_output(monkeypatch):
 
     with pytest.raises(SystemExit):
         _parse_arguments()
-
