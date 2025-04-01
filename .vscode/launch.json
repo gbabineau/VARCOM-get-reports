@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "get reports jan 2025",
+            "name": "get reports Feb 2025",
             "type": "debugpy",
             "request": "launch",
             "module": "get_reports.get_reports",
@@ -14,7 +14,7 @@
             "args": [
                 "--verbose",
                 "--year", "2025",
-                "--month", "01",
+                "--month", "02",
             ]
         },
                 {
@@ -33,7 +33,7 @@
             ]
         },
         {
-            "name": "review file Jan 2025",
+            "name": "review file Feb 2025",
             "type": "debugpy",
             "request": "launch",
             "module": "get_reports.create_review_document",
@@ -41,8 +41,23 @@
             "justMyCode": true,
             "args": [
                 "--verbose",
-                "--input", "reports/records_to_review_2025_01.json",
-                "--output", "reports/review_2025_01.docx"
+                "--input", "reports/records_to_review_2025_02.json",
+                "--output", "reports/review_2025_02.docx"
+            ]
+        },
+        {
+            "name": "Pelagic Protocol Test",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "get_reports.get_reports",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--verbose",
+                "--year", "2025",
+                "--month", "02",
+                "--day", "23",
+                "--region", "US-VA-131"
             ]
         },
         {

@@ -50,7 +50,7 @@ jobs:
           # Required mail subject:
           subject: VARCOM Monthly Review Document
           # Required recipients' addresses:
-          to: guy.babineau@gmail.com,traceyhopperwsq@gmail.com
+          to: guy.babineau@gmail.com,traceyhopperesq@gmail.com, mhanthony2@gmail.com
           # Required sender full name (address can be skipped):
           from: varcom.records@gmail.com
           # Optional plain body:

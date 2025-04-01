@@ -2,7 +2,7 @@ import logging
 from calendar import monthrange
 from datetime import date
 
-from ebird.api import get_historic_observations
+from ebird.api import get_historic_observations, get_checklist
 
 
 def _county_in_list_or_group(
@@ -111,6 +111,30 @@ def _reviewable_species_with_no_exclusions(
         reviewable = True
     return reviewable
 
+def _pelagic_record(ebird_api_key: str, observation : dict, pelagic_counties : list) -> bool:
+    if observation["subnational2Name"] in pelagic_counties:
+        # get checklist and see if it uses the pelagic protocol
+        checklist = get_checklist(ebird_api_key, sub_id=observation["subId"])
+        return checklist.get ("protocolId", "") == 'P60'
+    else:
+        return False
+
+def _observation_has_media(ebird_api_key: str, observation: dict) -> bool:
+    """
+    Determines if an observation has associated media (photos, videos, etc.).
+
+    Args:
+        observation (dict): A dictionary representing an observation.
+
+    Returns:
+        bool: True if the observation has associated media, False otherwise.
+    """
+    checklist = get_checklist(ebird_api_key, sub_id=observation["subId"])
+    return any(
+        obs.get("speciesCode") == observation["speciesCode"] and obs.get("mediaCounts")
+        for obs in checklist.get("obs", [])
+    )
+
 
 def _find_record_of_interest(
     ebird_api_key: str,
@@ -148,24 +172,39 @@ def _find_record_of_interest(
         date=day,
         category="species",
         rank="create",
+        detail="full"
     )
-
+    pelagic_counties = next(
+        (group["counties"] for group in review_species.get("county_groups", [])
+         if group["name"] == "Pelagic Counties"),
+        []
+    )
     records_of_interest = []
     for observation in observations:
         if _is_new_record(observation, state_list):
-            logging.info(
-                "Species %s not in state list. A new record?",
-                observation["comName"],
-            )
-            records_of_interest.append(
-                {"observation": observation, "new": True}
-            )
+            if not _pelagic_record(ebird_api_key=ebird_api_key,
+                                   observation=observation,
+                                   pelagic_counties=pelagic_counties):
+                logging.info(
+                    "Species %s not in state list. A new record?",
+                    observation["comName"],
+                )
+                records_of_interest.append(
+                    {"observation": observation,
+                     "new": True,
+                     "media": _observation_has_media(
+                         ebird_api_key=ebird_api_key,
+                         observation=observation)}
+                )
         elif matching_species := _reviewable_species(
             observation, review_species["review_species"]
         ):
             if _reviewable_species_with_no_exclusions(
                 matching_species, review_species, county
-            ):
+            ) and not _pelagic_record(
+                ebird_api_key=ebird_api_key,
+                observation=observation,
+                pelagic_counties=pelagic_counties):
                 logging.info(
                     "Species %s is reviewable in %s.",
                     observation["comName"],
@@ -177,6 +216,7 @@ def _find_record_of_interest(
                         "new": False,
                         "reviewable": True,
                         "review_species": matching_species,
+                        "media": _observation_has_media(ebird_api_key=ebird_api_key, observation=observation),
                     }
                 )
     return records_of_interest

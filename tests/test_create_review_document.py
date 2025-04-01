@@ -8,7 +8,7 @@ from get_reports.create_review_document import (
     _add_county_records,
     _add_document_header,
     _add_species_heading,
-    _add_species_link,
+    _add_observation_data,
     _add_species_records,
     _create_document,
     _load_observations,
@@ -240,8 +240,8 @@ def test_add_species_records_valid_data(mocker):
     mock_add_species_heading = mocker.patch(
         "get_reports.create_review_document._add_species_heading"
     )
-    mock_add_species_link = mocker.patch(
-        "get_reports.create_review_document._add_species_link"
+    mock_add_observation_data = mocker.patch(
+        "get_reports.create_review_document._add_observation_data"
     )
 
     county = {
@@ -282,11 +282,11 @@ def test_add_species_records_valid_data(mocker):
     )
 
     # Check that species links are added
-    assert mock_add_species_link.call_count == 2
-    mock_add_species_link.assert_any_call(
+    assert mock_add_observation_data.call_count == 2
+    mock_add_observation_data.assert_any_call(
         mock_document, county["records"][0]["observation"]
     )
-    mock_add_species_link.assert_any_call(
+    mock_add_observation_data.assert_any_call(
         mock_document, county["records"][2]["observation"]
     )
 
@@ -297,8 +297,8 @@ def test_add_species_records_empty_records(mocker):
     mock_add_species_heading = mocker.patch(
         "get_reports.create_review_document._add_species_heading"
     )
-    mock_add_species_link = mocker.patch(
-        "get_reports.create_review_document._add_species_link"
+    mock_add_observation_data = mocker.patch(
+        "get_reports.create_review_document._add_observation_data"
     )
 
     county = {"county": "Fairfax", "records": []}
@@ -307,7 +307,7 @@ def test_add_species_records_empty_records(mocker):
 
     # Ensure no headings or links are added
     mock_add_species_heading.assert_not_called()
-    mock_add_species_link.assert_not_called()
+    mock_add_observation_data.assert_not_called()
 
 
 def test_add_species_records_unsorted_data(mocker):
@@ -316,8 +316,8 @@ def test_add_species_records_unsorted_data(mocker):
     mock_add_species_heading = mocker.patch(
         "get_reports.create_review_document._add_species_heading"
     )
-    mock_add_species_link = mocker.patch(
-        "get_reports.create_review_document._add_species_link"
+    mock_add_observation_data = mocker.patch(
+        "get_reports.create_review_document._add_observation_data"
     )
 
     county = {
@@ -358,11 +358,11 @@ def test_add_species_records_unsorted_data(mocker):
     )
 
     # Check that species links are added in sorted order
-    assert mock_add_species_link.call_count == 2
-    mock_add_species_link.assert_any_call(
+    assert mock_add_observation_data.call_count == 2
+    mock_add_observation_data.assert_any_call(
         mock_document, county["records"][0]["observation"]
     )
-    mock_add_species_link.assert_any_call(
+    mock_add_observation_data.assert_any_call(
         mock_document, county["records"][1]["observation"]
     )
 
@@ -472,8 +472,8 @@ def test_add_species_heading_combined_conditions(mocker):
     )
 
 
-def test_add_species_link_with_valid_subId(mocker):
-    """Test _add_species_link with a valid subId."""
+def test_add_observation_data_with_valid_subId(mocker):
+    """Test _add_observation_data with a valid subId."""
     mock_document = mocker.Mock()
     mock_paragraph = mocker.Mock()
     mock_run = mocker.Mock()
@@ -482,7 +482,7 @@ def test_add_species_link_with_valid_subId(mocker):
 
     record = {"observation": {"subId": "S12345", "obsDt": "2023-01-01"}}
 
-    _add_species_link(mock_document, record["observation"])
+    _add_observation_data(mock_document, record["observation"])
 
     mock_document.add_paragraph.assert_called_once_with(style="List Bullet")
     mock_paragraph.add_run.assert_called_once_with(

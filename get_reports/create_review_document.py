@@ -108,7 +108,7 @@ def _add_species_records(document: Document, county: dict):
             _add_species_heading(document, species, record, county)
             current_species = species
         if record["observation"].get("subId"):
-            _add_species_link(document, record["observation"])
+            _add_observation_data(document, record)
 
 
 def _add_species_heading(
@@ -139,11 +139,13 @@ def _add_species_heading(
         )
 
 
-def _add_species_link(document: Document, observation: dict):
+def _add_observation_data(document: Document, record: dict):
     """Add a hyperlink for a species record."""
+    observation = record['observation']
     p = document.add_paragraph(style="List Bullet")
+    media_status = "Has media." if record.get('media') else "No media."
     p.add_run(
-        f"{observation['obsDt']} https://ebird.org/checklist/{observation['subId']}"
+        f"{observation['obsDt']}, {media_status}, Checklist: https://ebird.org/checklist/{observation['subId']}"
     ).hyperlink = f"https://ebird.org/checklist/{observation['subId']}"
 
 

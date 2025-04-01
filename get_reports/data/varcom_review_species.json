@@ -772,15 +772,22 @@
     ],
     "county_groups" : [
         {
+            "name" : "Pelagic Counties",
+            "description" : "Counties which have boundaries that include pelagic.",
+            "counties" : [
+                "Accomack",
+                "Northampton",
+                "Virginia Beach"
+            ]
+        },
+        {
             "name" : "Eastern Coastal Plain",
             "description" : "Counties and cities which are a subset Coastal Plain region of Virginia and are Easternmost.",
             "counties" : [
                 "Accomack",
                 "Chesapeake",
-                "Essex",
                 "Gloucester",
                 "Hampton",
-                "James City",
                 "Lancaster",
                 "Mathews",
                 "Middlesex",
@@ -793,7 +800,7 @@
                 "Richmond",
                 "Suffolk",
                 "Virginia Beach",
-                "York"
+                "Westmoreland."
             ]
         },
         {
