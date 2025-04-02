@@ -8,7 +8,7 @@ from get_reports.create_review_document import (
     _add_county_records,
     _add_document_header,
     _add_species_heading,
-    _add_species_link,
+    _add_observation_data,
     _add_species_records,
     _create_document,
     _load_observations,
@@ -234,45 +234,45 @@ def test_add_county_records_empty_counties(mocker):
     mock_add_species_records.assert_not_called()
 
 
-def test_add_species_records_valid_data(mocker):
+def test_add_species_records_with_valid_data(mocker):
     """Test _add_species_records with valid county data."""
     mock_document = mocker.Mock()
     mock_add_species_heading = mocker.patch(
         "get_reports.create_review_document._add_species_heading"
     )
-    mock_add_species_link = mocker.patch(
-        "get_reports.create_review_document._add_species_link"
+    mock_add_observation_data = mocker.patch(
+        "get_reports.create_review_document._add_observation_data"
     )
 
     county = {
-        "county": "Fairfax",
         "records": [
             {
                 "observation": {
                     "comName": "Cardinal",
                     "obsDt": "2023-01-01",
                     "subId": "S12345",
-                },
-                "review_species": {},
+                }
             },
             {
-                "observation": {"comName": "Cardinal", "obsDt": "2023-01-02"},
-                "review_species": {},
+                "observation": {
+                    "comName": "Cardinal",
+                    "obsDt": "2023-01-02",
+                    "subId": "S12346",
+                }
             },
             {
                 "observation": {
                     "comName": "Blue Jay",
                     "obsDt": "2023-01-01",
-                    "subId": "S67890",
-                },
-                "review_species": {},
+                    "subId": "S12347",
+                }
             },
-        ],
+        ]
     }
 
     _add_species_records(mock_document, county)
 
-    # Check that species headings are added
+    # Check that _add_species_heading is called for each unique species
     assert mock_add_species_heading.call_count == 2
     mock_add_species_heading.assert_any_call(
         mock_document, "Cardinal", county["records"][0], county
@@ -281,89 +281,81 @@ def test_add_species_records_valid_data(mocker):
         mock_document, "Blue Jay", county["records"][2], county
     )
 
-    # Check that species links are added
-    assert mock_add_species_link.call_count == 2
-    mock_add_species_link.assert_any_call(
-        mock_document, county["records"][0]["observation"]
+    # Check that _add_observation_data is called for each record with a subId
+    assert mock_add_observation_data.call_count == 3
+    mock_add_observation_data.assert_any_call(
+        mock_document, county["records"][0]
     )
-    mock_add_species_link.assert_any_call(
-        mock_document, county["records"][2]["observation"]
+    mock_add_observation_data.assert_any_call(
+        mock_document, county["records"][1]
+    )
+    mock_add_observation_data.assert_any_call(
+        mock_document, county["records"][2]
     )
 
 
-def test_add_species_records_empty_records(mocker):
+def test_add_species_records_with_empty_records(mocker):
     """Test _add_species_records with an empty records list."""
     mock_document = mocker.Mock()
     mock_add_species_heading = mocker.patch(
         "get_reports.create_review_document._add_species_heading"
     )
-    mock_add_species_link = mocker.patch(
-        "get_reports.create_review_document._add_species_link"
+    mock_add_observation_data = mocker.patch(
+        "get_reports.create_review_document._add_observation_data"
     )
 
-    county = {"county": "Fairfax", "records": []}
+    county = {"records": []}
 
     _add_species_records(mock_document, county)
 
-    # Ensure no headings or links are added
+    # Ensure no species headings or observation data are added
     mock_add_species_heading.assert_not_called()
-    mock_add_species_link.assert_not_called()
+    mock_add_observation_data.assert_not_called()
 
 
-def test_add_species_records_unsorted_data(mocker):
-    """Test _add_species_records with unsorted records."""
+def test_add_species_records_with_missing_subId(mocker):
+    """Test _add_species_records when some records are missing subId."""
     mock_document = mocker.Mock()
     mock_add_species_heading = mocker.patch(
         "get_reports.create_review_document._add_species_heading"
     )
-    mock_add_species_link = mocker.patch(
-        "get_reports.create_review_document._add_species_link"
+    mock_add_observation_data = mocker.patch(
+        "get_reports.create_review_document._add_observation_data"
     )
 
     county = {
-        "county": "Fairfax",
         "records": [
-            {
-                "observation": {
-                    "comName": "Blue Jay",
-                    "obsDt": "2023-01-02",
-                    "subId": "S67890",
-                },
-                "review_species": {},
-            },
             {
                 "observation": {
                     "comName": "Cardinal",
                     "obsDt": "2023-01-01",
-                    "subId": "S12345",
-                },
-                "review_species": {},
+                }
             },
             {
-                "observation": {"comName": "Cardinal", "obsDt": "2023-01-02"},
-                "review_species": {},
+                "observation": {
+                    "comName": "Blue Jay",
+                    "obsDt": "2023-01-02",
+                    "subId": "S12345",
+                }
             },
-        ],
+        ]
     }
 
     _add_species_records(mock_document, county)
 
-    # Check that species headings are added in sorted order
+    # Check that _add_species_heading is called for each unique species
     assert mock_add_species_heading.call_count == 2
     mock_add_species_heading.assert_any_call(
-        mock_document, "Blue Jay", county["records"][0], county
+        mock_document, "Cardinal", county["records"][0], county
     )
     mock_add_species_heading.assert_any_call(
-        mock_document, "Cardinal", county["records"][1], county
+        mock_document, "Blue Jay", county["records"][1], county
     )
 
-    # Check that species links are added in sorted order
-    assert mock_add_species_link.call_count == 2
-    mock_add_species_link.assert_any_call(
-        mock_document, county["records"][0]["observation"]
-    )
-    mock_add_species_link.assert_any_call(
-        mock_document, county["records"][1]["observation"]
+    # Check that _add_observation_data is only called for records with a subId
+    assert mock_add_observation_data.call_count == 1
+    mock_add_observation_data.assert_any_call(
+        mock_document, county["records"][1]
     )
 
 
@@ -472,23 +464,91 @@ def test_add_species_heading_combined_conditions(mocker):
     )
 
 
-def test_add_species_link_with_valid_subId(mocker):
-    """Test _add_species_link with a valid subId."""
+def test_add_observation_data_with_media(mocker):
+    """Test _add_observation_data when the record has media."""
     mock_document = mocker.Mock()
     mock_paragraph = mocker.Mock()
     mock_run = mocker.Mock()
     mock_document.add_paragraph.return_value = mock_paragraph
     mock_paragraph.add_run.return_value = mock_run
 
-    record = {"observation": {"subId": "S12345", "obsDt": "2023-01-01"}}
+    record = {
+        "observation": {
+            "subId": "S12345",
+            "obsDt": "2023-01-01",
+        },
+        "media": True,
+    }
 
-    _add_species_link(mock_document, record["observation"])
+    _add_observation_data(mock_document, record)
 
     mock_document.add_paragraph.assert_called_once_with(style="List Bullet")
     mock_paragraph.add_run.assert_called_once_with(
-        "2023-01-01 https://ebird.org/checklist/S12345"
+        "2023-01-01, Has media., Checklist: https://ebird.org/checklist/S12345"
     )
     assert mock_run.hyperlink == "https://ebird.org/checklist/S12345"
+
+
+def test_add_observation_data_without_media(mocker):
+    """Test _add_observation_data when the record does not have media."""
+    mock_document = mocker.Mock()
+    mock_paragraph = mocker.Mock()
+    mock_run = mocker.Mock()
+    mock_document.add_paragraph.return_value = mock_paragraph
+    mock_paragraph.add_run.return_value = mock_run
+
+    record = {
+        "observation": {
+            "subId": "S12345",
+            "obsDt": "2023-01-01",
+        },
+    }
+
+    _add_observation_data(mock_document, record)
+
+    mock_document.add_paragraph.assert_called_once_with(style="List Bullet")
+    mock_paragraph.add_run.assert_called_once_with(
+        "2023-01-01, No media., Checklist: https://ebird.org/checklist/S12345"
+    )
+    assert mock_run.hyperlink == "https://ebird.org/checklist/S12345"
+
+
+def test_add_observation_data_missing_subId(mocker):
+    """Test _add_observation_data when the record is missing subId."""
+    mock_document = mocker.Mock()
+    mock_paragraph = mocker.Mock()
+    mock_document.add_paragraph.return_value = mock_paragraph
+
+    record = {
+        "observation": {
+            "obsDt": "2023-01-01",
+        },
+    }
+
+    with pytest.raises(KeyError, match="'subId'"):
+        _add_observation_data(mock_document, record)
+
+    mock_document.add_paragraph.assert_called_once_with(style="List Bullet")
+    mock_paragraph.add_run.assert_not_called()
+
+
+def test_add_observation_data_missing_obsDt(mocker):
+    """Test _add_observation_data when the record is missing obsDt."""
+    mock_document = mocker.Mock()
+    mock_paragraph = mocker.Mock()
+    mock_document.add_paragraph.return_value = mock_paragraph
+
+    record = {
+        "observation": {
+            "subId": "S12345",
+        },
+    }
+
+    with pytest.raises(KeyError, match="'obsDt'"):
+        _add_observation_data(mock_document, record)
+
+    mock_document.add_paragraph.assert_called_once_with(style="List Bullet")
+    mock_paragraph.add_run.assert_not_called()
 
 
 def test_save_document_file_exists(mocker, tmp_path):
