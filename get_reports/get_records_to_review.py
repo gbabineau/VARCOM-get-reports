@@ -112,6 +112,21 @@ def _reviewable_species_with_no_exclusions(
     return reviewable
 
 def _pelagic_record(ebird_api_key: str, observation : dict, pelagic_counties : list) -> bool:
+    """
+    Determines if a given observation is a pelagic record.
+
+    A pelagic record is identified if the observation's county is in the list of pelagic counties
+    and the associated checklist uses the pelagic protocol (protocol ID 'P60').
+
+    Args:
+        ebird_api_key (str): The API key for accessing eBird data.
+        observation (dict): A dictionary containing observation details, including 'subnational2Name'
+                            (county name) and 'subId' (checklist ID).
+        pelagic_counties (list): A list of county names considered pelagic.
+
+    Returns:
+        bool: True if the observation is a pelagic record, False otherwise.
+    """
     if observation["subnational2Name"] in pelagic_counties:
         # get checklist and see if it uses the pelagic protocol
         checklist = get_checklist(ebird_api_key, sub_id=observation["subId"])
