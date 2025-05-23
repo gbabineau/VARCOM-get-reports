@@ -141,9 +141,9 @@ def _add_species_heading(
 
 def _add_observation_data(document: Document, record: dict):
     """Add a hyperlink for a species record."""
-    observation = record['observation']
+    observation = record["observation"]
     p = document.add_paragraph(style="List Bullet")
-    media_status = "Has media." if record.get('media') else "No media."
+    media_status = "Has media." if record.get("media") else "No media."
     p.add_run(
         f"{observation['obsDt']}, {media_status}, Checklist: https://ebird.org/checklist/{observation['subId']}"
     ).hyperlink = f"https://ebird.org/checklist/{observation['subId']}"

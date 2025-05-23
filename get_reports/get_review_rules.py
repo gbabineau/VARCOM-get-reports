@@ -2,6 +2,7 @@ import json
 import logging
 import os
 
+
 def _check_counties_in_groups(county_list, review_species):
     """
     Checks the presence of counties in specified county groups and logs warnings
