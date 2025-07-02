@@ -36,8 +36,9 @@ def test_get_state_list_file_not_exist(caplog, mock_taxonomy):
 
 def test_get_state_list_valid_file(caplog, mock_taxonomy, mock_state_list):
     mock_file_data = json.dumps(mock_state_list)
-    with patch("builtins.open", mock_open(read_data=mock_file_data)), patch(
-        "os.path.exists", return_value=True
+    with (
+        patch("builtins.open", mock_open(read_data=mock_file_data)),
+        patch("os.path.exists", return_value=True),
     ):
         with caplog.at_level(logging.INFO):
             result = get_state_list("valid_file.json", mock_taxonomy)
@@ -51,8 +52,9 @@ def test_get_state_list_species_not_in_taxonomy(
     caplog, mock_taxonomy, mock_state_list
 ):
     mock_file_data = json.dumps(mock_state_list)
-    with patch("builtins.open", mock_open(read_data=mock_file_data)), patch(
-        "os.path.exists", return_value=True
+    with (
+        patch("builtins.open", mock_open(read_data=mock_file_data)),
+        patch("os.path.exists", return_value=True),
     ):
         with caplog.at_level(logging.WARNING):
             result = get_state_list("valid_file.json", mock_taxonomy)

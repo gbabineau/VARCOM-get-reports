@@ -1,3 +1,4 @@
+"""Tests for the create_review_document module."""
 import argparse
 import json
 import logging
@@ -52,7 +53,7 @@ def test_parse_arguments_missing_required(monkeypatch):
     """Test _parse_arguments with missing required arguments."""
     monkeypatch.setattr("sys.argv", ["create_review_document"])
     try:
-        args = _parse_arguments()
+        _parse_arguments()
     except SystemExit as e:
         assert e.code == 0  # argparse exits with code 0 for help
 
@@ -247,25 +248,28 @@ def test_add_species_records_with_valid_data(mocker):
     county = {
         "records": [
             {
+                "media": True,
                 "observation": {
                     "comName": "Cardinal",
                     "obsDt": "2023-01-01",
                     "subId": "S12345",
-                }
+                },
             },
             {
+                "media": True,
                 "observation": {
                     "comName": "Cardinal",
                     "obsDt": "2023-01-02",
                     "subId": "S12346",
-                }
+                },
             },
             {
+                "media": True,
                 "observation": {
                     "comName": "Blue Jay",
                     "obsDt": "2023-01-01",
                     "subId": "S12347",
-                }
+                },
             },
         ]
     }
@@ -281,13 +285,10 @@ def test_add_species_records_with_valid_data(mocker):
         mock_document, "Blue Jay", county["records"][2], county
     )
 
-    # Check that _add_observation_data is called for each record with a subId
-    assert mock_add_observation_data.call_count == 3
+    # Check that _add_observation_data is called once for each species with a subId
+    assert mock_add_observation_data.call_count == 2
     mock_add_observation_data.assert_any_call(
         mock_document, county["records"][0]
-    )
-    mock_add_observation_data.assert_any_call(
-        mock_document, county["records"][1]
     )
     mock_add_observation_data.assert_any_call(
         mock_document, county["records"][2]
@@ -326,17 +327,19 @@ def test_add_species_records_with_missing_subId(mocker):
     county = {
         "records": [
             {
+                "media": True,
                 "observation": {
                     "comName": "Cardinal",
                     "obsDt": "2023-01-01",
-                }
+                },
             },
             {
+                "media": True,
                 "observation": {
                     "comName": "Blue Jay",
                     "obsDt": "2023-01-02",
                     "subId": "S12345",
-                }
+                },
             },
         ]
     }

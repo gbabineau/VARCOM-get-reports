@@ -1,8 +1,8 @@
-""" Unit tests for the doc2text module. """
+"""Unit tests for the doc2text module."""
+
 import pytest
 from docx import Document, opc
 from integration_test.doc2text import extract_text_from_docx, _parse_arguments
-
 
 
 @pytest.fixture
@@ -43,9 +43,16 @@ def test_extract_text_from_docx_file_not_found(tmp_path):
     with pytest.raises(opc.exceptions.PackageNotFoundError):
         extract_text_from_docx(str(input_file), str(output_file))
 
+
 def test_parse_arguments(monkeypatch):
     """Test _parse_arguments with valid arguments."""
-    test_args = ["script_name", "--input", "test.docx", "--output", "output.txt"]
+    test_args = [
+        "script_name",
+        "--input",
+        "test.docx",
+        "--output",
+        "output.txt",
+    ]
     monkeypatch.setattr("sys.argv", test_args)
 
     args = _parse_arguments()
