@@ -111,7 +111,7 @@ def _add_species_records(document: Document, county: dict):
             if media_count > 0 or no_media_count > 0:
                 document.add_paragraph(
                     f"Total records with media: {media_count}."
-                    f"Total records without media: {no_media_count}"
+                    f" Total records without media: {no_media_count}"
                 )
             _add_species_heading(document, species, record, county)
             current_species = species
