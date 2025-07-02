@@ -1,4 +1,5 @@
-""" Get eBird reports of interest. """
+"""Get eBird reports of interest."""
+
 import argparse
 import json
 import logging
@@ -89,6 +90,7 @@ def _save_records_to_file(
 
         def get_current_date_string():
             return datetime.now().strftime("%Y-%m-%d")
+
         observation_date = (
             datetime(year, month, day).strftime("%Y-%m-%d")
             if day != 0

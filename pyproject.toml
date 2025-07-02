@@ -37,9 +37,9 @@ show_missing = true
 output = "coverage.xml"
 
 [tool.poetry.group.lint.dependencies]
-ruff = "^0.4.10"
+ruff = "^0.12.1"
 mypy = "^1.11.2"
 
 [tool.ruff]
-line-length = 79
+line-length = 80
 

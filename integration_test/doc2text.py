@@ -1,9 +1,11 @@
-""" Function to convert .docx files to very simple plain text files to test that
-    expected text is in docx files. """
+"""Function to convert .docx files to very simple plain text files to test that
+expected text is in docx files."""
+
 import argparse
 import logging
 
 from docx import Document
+
 
 def extract_text_from_docx(input_file, output_file):
     """
@@ -28,13 +30,14 @@ def extract_text_from_docx(input_file, output_file):
         # Load the .docx file
         doc = Document(input_file)
         # Extract all text
-        text = '\n'.join([paragraph.text for paragraph in doc.paragraphs])
+        text = "\n".join([paragraph.text for paragraph in doc.paragraphs])
         # Write the text to the output file
-        with open(output_file, 'w', encoding='utf-8') as f:
+        with open(output_file, "w", encoding="utf-8") as f:
             f.write(text)
-        logging.info("Text successfully extracted to %s." ,output_file)
+        logging.info("Text successfully extracted to %s.", output_file)
     except (FileNotFoundError, IOError) as e:
         print(f"An error occurred: {e}")
+
 
 def _parse_arguments() -> argparse.Namespace:
     """
@@ -67,6 +70,7 @@ def main():
     args = _parse_arguments()
 
     extract_text_from_docx(args.input, args.output)
+
 
 if __name__ == "__main__":
     main()

@@ -1,4 +1,5 @@
-""" Tests for get_reports.py module. """
+"""Tests for get_reports.py module."""
+
 import sys
 from unittest.mock import MagicMock, mock_open, patch
 import logging

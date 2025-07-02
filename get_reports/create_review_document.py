@@ -98,17 +98,36 @@ def _add_species_records(document: Document, county: dict):
         key=lambda x: (
             x["observation"]["comName"],
             x["observation"]["obsDt"],
+            x["media"],
         ),
     )
 
     current_species = ""
+    media_count = 0
+    no_media_count = 0
     for record in sorted_records:
         species = record["observation"]["comName"]
         if species != current_species:
+            if media_count > 0 or no_media_count > 0:
+                document.add_paragraph(
+                    f"Total records with media: {media_count}."
+                    f" Total records without media: {no_media_count}"
+                )
             _add_species_heading(document, species, record, county)
             current_species = species
-        if record["observation"].get("subId"):
-            _add_observation_data(document, record)
+            media_count = 0
+            no_media_count = 0
+            if record["observation"].get("subId"):
+                _add_observation_data(document, record)
+        if record["media"]:
+            media_count += 1
+        else:
+            no_media_count += 1
+    if media_count > 0 or no_media_count > 0:
+        document.add_paragraph(
+            f"Total records with media: {media_count}."
+            f"Total records without media: {no_media_count}"
+        )
 
 
 def _add_species_heading(
@@ -119,15 +138,19 @@ def _add_species_heading(
     review_species = record.get("review_species", {})
     if exclude := review_species.get("exclude", []):
         document.add_paragraph(
-            f"The species {species} is not excluded from review in {county['county']} because it is not in the following counties or groups of counties: {exclude}"
+            f"The species {species} is not excluded from review in "
+            f"{county['county']} because it is not in the following counties "
+            f"or groups of counties: {exclude}"
         )
     if only := review_species.get("only", []):
         document.add_paragraph(
-            f"The species {species}: is only reviewed in the following counties or groups of counties: {only}"
+            f"The species {species}: is only reviewed in the following "
+            f"counties or groups of counties: {only}"
         )
     if unique_exclude_notes := review_species.get("uniqueExcludeNotes", None):
         document.add_paragraph(
-            f"This species has unique Exclude Notes which could not be automated. {unique_exclude_notes}"
+            "This species has unique Exclude Notes which could not be "
+            f"automated. {unique_exclude_notes}"
         )
     if not exclude and not only and not unique_exclude_notes:
         document.add_paragraph(
@@ -141,11 +164,12 @@ def _add_species_heading(
 
 def _add_observation_data(document: Document, record: dict):
     """Add a hyperlink for a species record."""
-    observation = record['observation']
+    observation = record["observation"]
     p = document.add_paragraph(style="List Bullet")
-    media_status = "Has media." if record.get('media') else "No media."
+    media_status = "Has media." if record.get("media") else "No media."
     p.add_run(
-        f"{observation['obsDt']}, {media_status}, Checklist: https://ebird.org/checklist/{observation['subId']}"
+        f"{observation['obsDt']}, {media_status}, "
+        f"Checklist: https://ebird.org/checklist/{observation['subId']}"
     ).hyperlink = f"https://ebird.org/checklist/{observation['subId']}"
 
 

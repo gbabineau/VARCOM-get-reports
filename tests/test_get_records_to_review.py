@@ -231,6 +231,7 @@ def test_reviewable_species_with_no_exclusions_no_only_or_exclude():
         is True
     )
 
+
 @patch("get_reports.get_records_to_review.get_historic_observations")
 @patch("get_reports.get_records_to_review._is_new_record")
 @patch("get_reports.get_records_to_review._pelagic_record")
@@ -578,6 +579,7 @@ def test_get_records_to_review_multiple_days(
     assert result[0]["records"][1]["observation"]["comName"] == "SpeciesC"
     assert result[0]["records"][1]["new"] is False
 
+
 @patch("get_reports.get_records_to_review.get_checklist")
 def test_pelagic_record_true(mock_get_checklist):
     ebird_api_key = "test_key"
@@ -627,6 +629,7 @@ def test_pelagic_record_false_no_protocol(mock_get_checklist):
 
     assert result is False
     mock_get_checklist.assert_called_once_with(ebird_api_key, sub_id="sub123")
+
 
 @patch("get_reports.get_records_to_review.get_checklist")
 def test_observation_has_media_true(mock_get_checklist):

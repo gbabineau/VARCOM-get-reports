@@ -1,6 +1,9 @@
+"""Module to load and validate review rules from a JSON file."""
+
 import json
 import logging
 import os
+
 
 def _check_counties_in_groups(county_list, review_species):
     """
@@ -27,9 +30,7 @@ def _check_counties_in_groups(county_list, review_species):
         if count == 0:
             logging.warning("County %s not found in any county group", county)
         elif count > 1:
-            logging.warning(
-                "County %s found in multiple county groups", county
-            )
+            logging.warning("County %s found in multiple county groups", county)
 
 
 def _check_species_in_taxonomy(review_species, taxonomy):
@@ -102,9 +103,7 @@ def _check_exclusions_in_counties(review_species, county_list, state):
                 )
     for species in review_species["review_species"]:
         for exclusion in species.get("exclude", []):
-            if not any(
-                d["name"] == exclusion for d in county_list
-            ) and not any(
+            if not any(d["name"] == exclusion for d in county_list) and not any(
                 group["name"] == exclusion
                 for group in review_species.get("county_groups", [])
             ):

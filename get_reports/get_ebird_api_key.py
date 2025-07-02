@@ -10,6 +10,7 @@ Constants:
     ebird_api_key_name (str): The name of the environment variable that
     stores the eBird API key.
 """
+
 import os
 import sys
 
@@ -35,6 +36,5 @@ def get_ebird_api_key() -> str:
             + ebird_api_key_name
             + " environment variable."
         )
-
 
     return ebird_api_key

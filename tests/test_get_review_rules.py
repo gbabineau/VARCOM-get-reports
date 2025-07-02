@@ -152,9 +152,12 @@ def test_check_species_in_taxonomy_logs_info_message(caplog):
         for record in caplog.records
     )
 
+
 def test_check_exclusions_in_counties_no_warnings(caplog):
     review_species = {
-        "county_groups": [{"name": "GroupA", "counties": ["CountyA", "CountyB"]}],
+        "county_groups": [
+            {"name": "GroupA", "counties": ["CountyA", "CountyB"]}
+        ],
         "review_species": [
             {"comName": "SpeciesA", "exclude": ["CountyA", "GroupA"]}
         ],
@@ -170,7 +173,9 @@ def test_check_exclusions_in_counties_no_warnings(caplog):
 
 def test_check_exclusions_in_counties_county_not_in_county_list(caplog):
     review_species = {
-        "county_groups": [{"name": "GroupA", "counties": ["CountyA", "CountyC"]}],
+        "county_groups": [
+            {"name": "GroupA", "counties": ["CountyA", "CountyC"]}
+        ],
         "review_species": [],
     }
     county_list = [{"name": "CountyA"}, {"name": "CountyB"}]
@@ -180,12 +185,17 @@ def test_check_exclusions_in_counties_county_not_in_county_list(caplog):
         _check_exclusions_in_counties(review_species, county_list, state)
 
     assert len(caplog.records) == 1
-    assert "County CountyC not found in eBird list of counties for TestState." in caplog.text
+    assert (
+        "County CountyC not found in eBird list of counties for TestState."
+        in caplog.text
+    )
 
 
 def test_check_exclusions_in_counties_exclusion_not_found(caplog):
     review_species = {
-        "county_groups": [{"name": "GroupA", "counties": ["CountyA", "CountyB"]}],
+        "county_groups": [
+            {"name": "GroupA", "counties": ["CountyA", "CountyB"]}
+        ],
         "review_species": [
             {"comName": "SpeciesA", "exclude": ["CountyC", "GroupB"]}
         ],
@@ -203,7 +213,9 @@ def test_check_exclusions_in_counties_exclusion_not_found(caplog):
 
 def test_check_exclusions_in_counties_mixed_warnings(caplog):
     review_species = {
-        "county_groups": [{"name": "GroupA", "counties": ["CountyA", "CountyC"]}],
+        "county_groups": [
+            {"name": "GroupA", "counties": ["CountyA", "CountyC"]}
+        ],
         "review_species": [
             {"comName": "SpeciesA", "exclude": ["CountyC", "GroupB"]}
         ],
@@ -215,9 +227,13 @@ def test_check_exclusions_in_counties_mixed_warnings(caplog):
         _check_exclusions_in_counties(review_species, county_list, state)
 
     assert len(caplog.records) == 3
-    assert "County CountyC not found in eBird list of counties for TestState." in caplog.text
+    assert (
+        "County CountyC not found in eBird list of counties for TestState."
+        in caplog.text
+    )
     assert "Exclusion CountyC was not found as a group or county" in caplog.text
     assert "Exclusion GroupB was not found as a group or county" in caplog.text
+
 
 def test_get_review_rules_file_not_exist(caplog):
     file_name = "non_existent_file.json"
@@ -278,11 +294,23 @@ def test_get_review_rules_validation_functions_called():
 
     with patch("builtins.open", mock_open(read_data=json.dumps(mock_data))):
         with patch("os.path.exists", return_value=True):
-            with patch("get_reports.get_review_rules._check_counties_in_groups") as mock_check_counties, \
-                    patch("get_reports.get_review_rules._check_species_in_taxonomy") as mock_check_species, \
-                    patch("get_reports.get_review_rules._check_exclusions_in_counties") as mock_check_exclusions:
+            with (
+                patch(
+                    "get_reports.get_review_rules._check_counties_in_groups"
+                ) as mock_check_counties,
+                patch(
+                    "get_reports.get_review_rules._check_species_in_taxonomy"
+                ) as mock_check_species,
+                patch(
+                    "get_reports.get_review_rules._check_exclusions_in_counties"
+                ) as mock_check_exclusions,
+            ):
                 get_review_rules(file_name, taxonomy, county_list, state)
 
-                mock_check_counties.assert_called_once_with(county_list, mock_data)
+                mock_check_counties.assert_called_once_with(
+                    county_list, mock_data
+                )
                 mock_check_species.assert_called_once_with(mock_data, taxonomy)
-                mock_check_exclusions.assert_called_once_with(mock_data, county_list, state)
+                mock_check_exclusions.assert_called_once_with(
+                    mock_data, county_list, state
+                )
