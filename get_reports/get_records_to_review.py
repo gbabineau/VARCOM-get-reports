@@ -3,7 +3,70 @@ from calendar import monthrange
 from datetime import date
 
 from ebird.api import get_historic_observations, get_checklist
+from time import sleep
 
+
+
+def get_checklist_with_retry(api_key: str, observation: str) -> list:
+    attempts = 0
+    while attempts < 3:
+        try:
+            return get_checklist(token=api_key, sub_id=observation)
+        except OSError as exc:
+            attempts += 1
+            sleep(0.1 * attempts)
+            logging.warning(
+                "get_checklist attempt %d failed for args %s, %s",
+                attempts,
+                observation,
+                exc,
+            )
+            if attempts >= 3:
+                logging.error(
+                    "get_checklist failed after %d attempts for args %s, %s",
+                    attempts,
+                    observation,
+                    exc,
+                )
+                raise
+
+def get_historic_observations_with_retry(
+    token: str,
+    area:str,
+    day: date,
+    category:str,
+    rank:str,
+    detail:str,
+) -> list:
+    attempts = 0
+    while attempts < 3:
+        try:
+            return get_historic_observations(token=token, area=area, date=day, category=category, rank=rank, detail=detail)
+        except OSError as exc:
+            attempts += 1
+            sleep(0.1 * attempts)
+            logging.warning(
+                "get_historic_observations attempt %d failed for args %s, %s, %s, %s, %s, %s",
+                attempts,
+                area,
+                day,
+                category,
+                rank,
+                detail,
+                exc,
+            )
+            if attempts >= 3:
+                logging.error(
+                    "get_checklist failed after %d attempts for args %s, %s, %s, %s, %s, %s",
+                    attempts,
+                    area,
+                    day,
+                    category,
+                    rank,
+                    detail,
+                    exc
+                )
+                raise
 
 def _county_in_list_or_group(
     county_name: str, exclusion_list: list, county_groups: list
@@ -131,7 +194,7 @@ def _pelagic_record(
     """
     if observation["subnational2Name"] in pelagic_counties:
         # get checklist and see if it uses the pelagic protocol
-        checklist = get_checklist(ebird_api_key, sub_id=observation["subId"])
+        checklist = get_checklist_with_retry(ebird_api_key, observation=observation["subId"])
         return checklist.get("protocolId", "") == "P60"
     else:
         return False
@@ -147,7 +210,7 @@ def _observation_has_media(ebird_api_key: str, observation: dict) -> bool:
     Returns:
         bool: True if the observation has associated media, False otherwise.
     """
-    checklist = get_checklist(ebird_api_key, sub_id=observation["subId"])
+    checklist = get_checklist_with_retry(ebird_api_key, observation=observation["subId"])
     return any(
         obs.get("speciesCode") == observation["speciesCode"]
         and obs.get("mediaCounts")
@@ -185,10 +248,10 @@ def _find_record_of_interest(
             - "review_species" (list, optional): Matching reviewable species.
     """
 
-    observations = get_historic_observations(
+    observations = get_historic_observations_with_retry(
         token=ebird_api_key,
         area=county["code"],
-        date=day,
+        day=day,
         category="species",
         rank="create",
         detail="full",
@@ -309,12 +372,18 @@ def get_records_to_review(
     records_to_review = []
     for county in counties:
         county_records = []
-        for day_in_month in _iterate_days_in_month(year, month, day):
-            records_for_county = _find_record_of_interest(
-                ebird_api_key, state_list, county, day_in_month, review_species
-            )
-            if records_for_county:
-                county_records.extend(records_for_county)
+        if month == 0:
+            month_range = range(1, 13)
+        else:
+            month_range = range(month, month+1)
+
+        for month_in_year in month_range:
+            for day_in_month in _iterate_days_in_month(year, month_in_year, day):
+                records_for_county = _find_record_of_interest(
+                    ebird_api_key, state_list, county, day_in_month, review_species
+                )
+                if records_for_county:
+                    county_records.extend(records_for_county)
         if county_records:
             records_to_review.append(
                 {"county": county["name"], "records": county_records}

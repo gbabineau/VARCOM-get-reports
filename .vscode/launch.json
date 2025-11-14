@@ -120,5 +120,57 @@
                 "--output", "reports/review_2021_04_09.txt"
             ]
         },
+        {
+            "name": "Review year 2024 (Just Albemarle)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "get_reports.get_reports",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--verbose",
+                "--year", "2024",
+                "--region", "US-VA-003"
+            ]
+        },
+        {
+            "name": "review file 2024",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "get_reports.create_review_document",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--verbose",
+                "--input", "reports/records_to_review_2024.json",
+                "--output", "reports/review_2024.docx"
+            ]
+        },
+        {
+            "name": "Review year 2024 (Whole State)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "get_reports.get_reports",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--verbose",
+                "--year", "2024",
+                "--region", "US-VA"
+            ]
+        },
+        {
+            "name": "Review year 2024 (Just Rappahannock)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "get_reports.get_reports",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--verbose",
+                "--year", "2024",
+                "--region", "US-VA-760"
+            ]
+        },
     ]
 }
