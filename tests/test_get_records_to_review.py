@@ -1,16 +1,18 @@
-from get_reports.get_records_to_review import (
-    _county_in_list_or_group,
-    _reviewable_species,
-    _is_new_record,
-    _reviewable_species_with_no_exclusions,
-    _find_record_of_interest,
-    _iterate_days_in_month,
-    get_records_to_review,
-    _pelagic_record,
-    _observation_has_media,
-)
+# pylint: disable=W0613, W0212, C0116, C0114, C0115
 from datetime import date
 from unittest.mock import patch
+
+from get_reports.get_records_to_review import (
+    _county_in_list_or_group,
+    _find_record_of_interest,
+    _is_new_record,
+    _iterate_days_in_month,
+    _observation_has_media,
+    _pelagic_record,
+    _reviewable_species,
+    _reviewable_species_with_no_exclusions,
+    get_records_to_review,
+)
 
 
 def test_county_in_exclusion_list():

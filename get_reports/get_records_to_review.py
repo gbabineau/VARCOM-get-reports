@@ -1,14 +1,23 @@
+"""
+Module gets the records to review based on VARCOM (or other) review rules.
+"""
+
 import logging
 from calendar import monthrange
 from datetime import date
-
-from ebird.api import get_historic_observations, get_checklist
 from time import sleep
+
+from ebird.api import get_checklist, get_historic_observations
+
 from get_reports import (
     continuation_record,
-    )
+)
+
 
 def get_checklist_with_retry(api_key: str, observation: str) -> list:
+    """
+        Calls the eBird API get_checklist with retries
+    """
     attempts = 0
     while attempts < 3:
         try:
@@ -31,18 +40,29 @@ def get_checklist_with_retry(api_key: str, observation: str) -> list:
                 )
                 raise
 
+
 def get_historic_observations_with_retry(
     token: str,
-    area:str,
+    area: str,
     day: date,
-    category:str,
-    rank:str,
-    detail:str,
+    category: str,
+    rank: str,
+    detail: str,
 ) -> list:
+    """
+        Calls the eBird API get_historic_observations with retries
+    """
     attempts = 0
     while attempts < 3:
         try:
-            return get_historic_observations(token=token, area=area, date=day, category=category, rank=rank, detail=detail)
+            return get_historic_observations(
+                token=token,
+                area=area,
+                date=day,
+                category=category,
+                rank=rank,
+                detail=detail,
+            )
         except OSError as exc:
             attempts += 1
             sleep(0.1 * attempts)
@@ -65,9 +85,10 @@ def get_historic_observations_with_retry(
                     category,
                     rank,
                     detail,
-                    exc
+                    exc,
                 )
                 raise
+
 
 def _county_in_list_or_group(
     county_name: str, exclusion_list: list, county_groups: list
@@ -79,12 +100,10 @@ def _county_in_list_or_group(
         county_name (str): The name of the county to check.
         exclusion_list (list): A list of county names to exclude.
         county_groups (list): A list of dictionaries representing county groups.
-                                Each dictionary should have a "name" key for the group name
-                                and a "counties" key containing a list of county names in the group.
 
     Returns:
-        bool: True if the county is in the exclusion list or in a group specified by the exclusion list,
-                False otherwise.
+        bool:   True if the county is in the exclusion list or in a group
+                specified by the exclusion list.
     """
     included = False
     if county_name in exclusion_list:
@@ -123,13 +142,12 @@ def _reviewable_species(observation: dict, species_to_review: list) -> bool:
     Determines if a given observation corresponds to a species in the review list.
 
     Args:
-        observation (dict): A dictionary representing an observation, expected to contain a "comName" key.
-        species_to_review (list): A list of dictionaries, where each dictionary represents a species
-                                  and is expected to contain a "comName" key.
+        observation (dict): A dictionary representing an observation.
+        species_to_review (list): A list of species requiring review
 
     Returns:
-        bool: True if the observation's "comName" matches the "comName" of any species in the review list,
-              otherwise False.
+        bool: True if the observation's "comName" matches the "comName" of any
+            species in the review list, otherwise False.
     """
     return next(
         (
@@ -186,8 +204,7 @@ def _pelagic_record(
 
     Args:
         ebird_api_key (str): The API key for accessing eBird data.
-        observation (dict): A dictionary containing observation details, including 'subnational2Name'
-                            (county name) and 'subId' (checklist ID).
+        observation (dict): A dictionary containing observation details.
         pelagic_counties (list): A list of county names considered pelagic.
 
     Returns:
@@ -195,7 +212,9 @@ def _pelagic_record(
     """
     if observation["subnational2Name"] in pelagic_counties:
         # get checklist and see if it uses the pelagic protocol
-        checklist = get_checklist_with_retry(ebird_api_key, observation=observation["subId"])
+        checklist = get_checklist_with_retry(
+            ebird_api_key, observation=observation["subId"]
+        )
         return checklist.get("protocolId", "") == "P60"
     else:
         return False
@@ -211,7 +230,9 @@ def _observation_has_media(ebird_api_key: str, observation: dict) -> bool:
     Returns:
         bool: True if the observation has associated media, False otherwise.
     """
-    checklist = get_checklist_with_retry(ebird_api_key, observation=observation["subId"])
+    checklist = get_checklist_with_retry(
+        ebird_api_key, observation=observation["subId"]
+    )
     return any(
         obs.get("speciesCode") == observation["speciesCode"]
         and obs.get("mediaCounts")
@@ -341,7 +362,6 @@ def _iterate_days_in_month(year: int, month: int, day):
         yield date(year, month, day)
 
 
-
 def get_records_to_review(
     ebird_api_key: str,
     state_list: list,
@@ -378,12 +398,18 @@ def get_records_to_review(
         if month == 0:
             month_range = range(1, 13)
         else:
-            month_range = range(month, month+1)
+            month_range = range(month, month + 1)
 
         for month_in_year in month_range:
-            for day_in_month in _iterate_days_in_month(year, month_in_year, day):
+            for day_in_month in _iterate_days_in_month(
+                year, month_in_year, day
+            ):
                 records_for_county = _find_record_of_interest(
-                    ebird_api_key, state_list, county, day_in_month, review_species
+                    ebird_api_key,
+                    state_list,
+                    county,
+                    day_in_month,
+                    review_species,
                 )
                 if records_for_county:
                     county_records.extend(records_for_county)

@@ -12,6 +12,7 @@ from get_reports.get_reports import (
     main,
 )
 
+# pylint: disable=C0116
 
 def test_parse_arguments_required_fields():
     test_args = ["get_reports", "--year", "2023", "--month", "10"]

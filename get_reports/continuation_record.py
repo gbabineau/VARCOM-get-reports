@@ -19,56 +19,10 @@ class ContinuationRecord:
     (default: "reports/continuation_data.dat") that stores two keys:
     - "counties": a list of counties that have already been processed (order preserved).
     - "records": a list of review records that should be carried forward between runs.
-    Behavior
-    - __init__(initialList):
-        - If the continuation file exists, it is loaded and the saved "counties" and "records"
-          are used to compute the remaining unprocessed counties and to populate the records
-          to review.
-        - If the file does not exist, an empty continuation file with {"counties": [], "records": []}
-          is created and both finished counties and pending records are treated as empty.
-        - Any OSError during read/create is logged and re-raised.
-        - The instance attribute _remaining_counties is computed as the elements of initialList
-          that are not present in the saved "counties" list (uses membership/== semantics).
-        - The instance attribute _records_to_review is populated from the saved "records" or [].
-    Public methods
-    - update(county: dict, review_records: list)
-        - Reads the current continuation file, appends the provided county to the saved
-          "counties" list, replaces the saved "records" with review_records, and writes the file.
-        - If the continuation file is missing, an error is logged and no file is written.
-        - Any OSError during read/write is logged and re-raised.
-    - complete()
-        - Removes the continuation file from disk if it exists.
-        - If the file does not exist, an error is logged.
-        - Any OSError during deletion is logged and re-raised.
-    - counties() -> list
-        - Returns the computed list of remaining counties (those in the initial list that have
-          not been recorded as finished).
-    - records() -> list
-        - Returns the list of records loaded from the continuation file (or an empty list if none).
-    Notes and expectations
-    - The class expects initialList to be an iterable of county identifiers/objects where
-      "in" and equality are meaningful for membership comparisons against saved counties.
-    - The county parameter passed to update is appended to the stored "counties" list as-is;
-      choose a stable and serializable representation (e.g., dict or string) to ensure correct
-      behavior across restarts.
-    - The "records" value stored in the file must be JSON-serializable.
-    - Operations are not synchronized; concurrent access from multiple processes or threads
-      may result in race conditions or file corruption. Consider external locking if needed.
-    - All file I/O uses UTF-8 and JSON encoding. The class logs errors and re-raises OSError
-      to allow callers to handle failure modes.
-    Example (illustrative)
-        initial = ["CountyA", "CountyB", "CountyC"]
-        cr = ContinuationRecord(initial)
-        remaining = cr.counties()         # counties left to process
-        records = cr.records()            # records carried forward
-        # after finishing CountyA:
-        cr.update("CountyA", ["record1", "record2"])
-        # when all done:
-        cr.complete()
     """
     _continuation_file = "reports/continuation_data.dat"
 
-    def __init__(self, initialList):
+    def __init__(self, initial_list):
         """
         Initialize the continuation/record state for processing a list of items.
 
@@ -88,11 +42,11 @@ class ContinuationRecord:
             exception is re-raised.
 
         After loading or creating the continuation file, self._remaining_counties is
-        set to the subset of initialList that are not present in finished_counties.
+        set to the subset of initial_list that are not present in finished_counties.
 
         Parameters
         ----------
-        initialList : list
+        initial_list : list
                 The full list of county identifiers (or items) that should be processed.
                 Used to compute remaining items by excluding those found in the continuation
                 file's "counties" list.
@@ -126,8 +80,8 @@ class ContinuationRecord:
                     self._records_to_review = continuation_data["records"]
                 logging.info(
                     "Restarting with %d counties remaining out of %d",
-                    len(initialList) - len(finished_counties),
-                    len(initialList),
+                    len(initial_list) - len(finished_counties),
+                    len(initial_list),
                 )
             else:
                 with p.open("w", encoding="utf-8") as fh:
@@ -140,51 +94,32 @@ class ContinuationRecord:
             )
             raise
         self._remaining_counties = [
-            x for x in initialList if x not in finished_counties
+            x for x in initial_list if x not in finished_counties
         ]
 
     def update(self, county: dict, review_records: list):
         """
-        Update the continuation JSON file by appending a county entry and replacing the records list.
+        Update the continuation JSON file by appending a county entry and
+        replacing the records list.
 
-        This method attempts to open the file at self._continuation_file (using UTF-8 encoding),
-        read its JSON content, append the provided `county` dict to the "counties" list, set the
-        "records" key to `review_records`, and write the updated JSON back to the same file with
+        This method attempts to open the file at self._continuation_file (using
+        UTF-8 encoding), read its JSON content, append the provided `county`
+        dict to the "counties" list, set the "records" key to `review_records`,
+        and write the updated JSON back to the same file with
         an indentation of 4 spaces.
 
         Parameters
         ----------
         county : dict
-            A dictionary representing a county entry to append to the "counties" list in the file.
+            A dictionary representing a county entry to append to the "counties"
+            list in the file.
         review_records : list
-            A list of review records that will replace the existing value of the "records" key.
+            A list of review records that will replace the existing value of the
+            "records" key.
 
         Returns
         -------
         None
-
-        Side effects
-        ------------
-        - Reads from and writes to the file path stored in self._continuation_file.
-        - Logs an error if the continuation file does not exist.
-        - Logs and re-raises OSError exceptions encountered while accessing the file.
-
-        Exceptions
-        ----------
-        OSError
-            Re-raised after being logged when file access or I/O operations fail.
-        json.JSONDecodeError
-            May be raised if the existing file contains invalid JSON when attempting to load it.
-        TypeError
-            May be raised if the in-memory JSON structure does not support the expected operations
-            (for example, if "counties" is not a list).
-
-        Notes
-        -----
-        - The method expects the JSON file to contain a top-level mapping with a "counties" key
-          whose value is a list. If that assumption is violated, a TypeError or other exception
-          may occur.
-        - If the file does not exist, the method logs an error and does not create the file.
         """
         p = Path(self._continuation_file)
         try:
@@ -242,9 +177,9 @@ class ContinuationRecord:
         """Return the list of records queued for review.
 
         Returns:
-            list: The internal list of records pending review. Each element represents a record (the concrete type depends on the surrounding codebase).
+            list: The internal list of records pending review.
 
         Notes:
-            This method returns the internal list object (self._records_to_review). Mutating the returned list will modify the instance's internal state. If a caller needs an independent copy, they should use instance.records().copy() or list(instance.records()).
+            This method returns the internal list object (._records_to_review).
         """
         return self._records_to_review

@@ -1,8 +1,8 @@
+# pylint: disable=W0212, C0116, C0114
 import json
 from pathlib import Path
 
 from get_reports.continuation_record import ContinuationRecord
-
 
 def test_init_creates_file_when_missing(tmp_path):
     ContinuationRecord._continuation_file = str(
@@ -57,7 +57,7 @@ def test_complete_deletes_file(tmp_path):
     assert not p.exists()
 
 
-def test_update_logs_error_when_file_missing(tmp_path, caplog):
+def test_update_logs_error_when_file_missing(tmp_path, capture_log):
     ContinuationRecord._continuation_file = str(
         tmp_path / "continuation_data.dat"
     )
@@ -66,6 +66,6 @@ def test_update_logs_error_when_file_missing(tmp_path, caplog):
     p = Path(ContinuationRecord._continuation_file)
     if p.exists():
         p.unlink()
-    caplog.clear()
+    capture_log.clear()
     cr.update({"id": "One"}, ["r"])
-    assert "Continuation file doesn't exist." in caplog.text
+    assert "Continuation file doesn't exist." in capture_log.text
