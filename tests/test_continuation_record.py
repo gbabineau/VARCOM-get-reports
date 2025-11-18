@@ -4,6 +4,7 @@ from pathlib import Path
 
 from get_reports.continuation_record import ContinuationRecord
 
+
 def test_init_creates_file_when_missing(tmp_path):
     ContinuationRecord._continuation_file = str(
         tmp_path / "continuation_data.dat"
@@ -57,7 +58,7 @@ def test_complete_deletes_file(tmp_path):
     assert not p.exists()
 
 
-def test_update_logs_error_when_file_missing(tmp_path, capture_log):
+def test_update_logs_error_when_file_missing(tmp_path, caplog):
     ContinuationRecord._continuation_file = str(
         tmp_path / "continuation_data.dat"
     )
@@ -66,6 +67,6 @@ def test_update_logs_error_when_file_missing(tmp_path, capture_log):
     p = Path(ContinuationRecord._continuation_file)
     if p.exists():
         p.unlink()
-    capture_log.clear()
+    caplog.clear()
     cr.update({"id": "One"}, ["r"])
-    assert "Continuation file doesn't exist." in capture_log.text
+    assert "Continuation file doesn't exist." in caplog.text

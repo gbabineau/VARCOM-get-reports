@@ -27,40 +27,36 @@ def mock_state_list():
     }
 
 
-def test_get_state_list_file_not_exist(capture_log, mock_taxonomy):
-    with capture_log.at_level(logging.ERROR):
+def test_get_state_list_file_not_exist(caplog, mock_taxonomy):
+    with caplog.at_level(logging.ERROR):
         result = get_state_list("non_existent_file.json", mock_taxonomy)
     assert result == {}
-    assert "File non_existent_file.json does not exist." in capture_log.text
+    assert "File non_existent_file.json does not exist." in caplog.text
 
 
-def test_get_state_list_valid_file(capture_log, mock_taxonomy, mock_state_list):
+def test_get_state_list_valid_file(caplog, mock_taxonomy, mock_state_list):
     mock_file_data = json.dumps(mock_state_list)
     with (
         patch("builtins.open", mock_open(read_data=mock_file_data)),
         patch("os.path.exists", return_value=True),
     ):
-        with capture_log.at_level(logging.INFO):
+        with caplog.at_level(logging.INFO):
             result = get_state_list("valid_file.json", mock_taxonomy)
     assert result == mock_state_list["state_list"]
     assert (
-        "Checking species in state list against eBird taxonomy."
-        in capture_log.text
+        "Checking species in state list against eBird taxonomy." in caplog.text
     )
 
 
 def test_get_state_list_species_not_in_taxonomy(
-    capture_log, mock_taxonomy, mock_state_list
+    caplog, mock_taxonomy, mock_state_list
 ):
     mock_file_data = json.dumps(mock_state_list)
     with (
         patch("builtins.open", mock_open(read_data=mock_file_data)),
         patch("os.path.exists", return_value=True),
     ):
-        with capture_log.at_level(logging.WARNING):
+        with caplog.at_level(logging.WARNING):
             result = get_state_list("valid_file.json", mock_taxonomy)
     assert result == mock_state_list["state_list"]
-    assert (
-        "Species Unknown Species not found in eBird taxonomy"
-        in capture_log.text
-    )
+    assert "Species Unknown Species not found in eBird taxonomy" in caplog.text
