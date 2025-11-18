@@ -3,6 +3,8 @@
         "columnspan",
         "comchi",
         "initialdir",
+        "rtype",
+        "subnational",
         "tearoff",
         "textvariable",
         "VARCOM"

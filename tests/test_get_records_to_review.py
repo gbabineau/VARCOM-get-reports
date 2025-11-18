@@ -454,9 +454,25 @@ def test_iterate_days_in_month_specific_day_30_days():
     assert len(days) == 1
     assert days[0] == date(2023, 6, 15)
 
+class MockContinuationRecord:
+    def __init__(self, initial_list) -> None:
+        self._to_review = initial_list
+        return
+    def records(self) -> list:
+        return []
+    def counties(self) -> list:
+        return self._to_review
+    def complete(self) -> None:
+        return
+    def update(self, county: dict, review_records: list) -> None:
+        return
 
 @patch("get_reports.get_records_to_review._iterate_days_in_month")
 @patch("get_reports.get_records_to_review._find_record_of_interest")
+@patch(
+    "get_reports.get_records_to_review.continuation_record.ContinuationRecord",
+    new=MockContinuationRecord
+)
 def test_get_records_to_review_single_county_single_day(
     mock_find_record_of_interest, mock_iterate_days_in_month
 ):
@@ -486,6 +502,10 @@ def test_get_records_to_review_single_county_single_day(
 
 @patch("get_reports.get_records_to_review._iterate_days_in_month")
 @patch("get_reports.get_records_to_review._find_record_of_interest")
+@patch(
+    "get_reports.get_records_to_review.continuation_record.ContinuationRecord",
+    new=MockContinuationRecord,
+)
 def test_get_records_to_review_multiple_counties(
     mock_find_record_of_interest, mock_iterate_days_in_month
 ):
@@ -524,6 +544,10 @@ def test_get_records_to_review_multiple_counties(
 
 @patch("get_reports.get_records_to_review._iterate_days_in_month")
 @patch("get_reports.get_records_to_review._find_record_of_interest")
+@patch(
+    "get_reports.get_records_to_review.continuation_record.ContinuationRecord",
+    new=MockContinuationRecord
+)
 def test_get_records_to_review_no_records(
     mock_find_record_of_interest, mock_iterate_days_in_month
 ):
@@ -547,6 +571,10 @@ def test_get_records_to_review_no_records(
 
 @patch("get_reports.get_records_to_review._iterate_days_in_month")
 @patch("get_reports.get_records_to_review._find_record_of_interest")
+@patch(
+    "get_reports.get_records_to_review.continuation_record.ContinuationRecord",
+    new=MockContinuationRecord
+)
 def test_get_records_to_review_multiple_days(
     mock_find_record_of_interest, mock_iterate_days_in_month
 ):
@@ -590,7 +618,9 @@ def test_pelagic_record_true(mock_get_checklist):
     result = _pelagic_record(ebird_api_key, observation, pelagic_counties)
 
     assert result is True
-    mock_get_checklist.assert_called_once_with(ebird_api_key, sub_id="sub123")
+    mock_get_checklist.assert_called_once_with(
+        token=ebird_api_key, sub_id="sub123"
+    )
 
 
 @patch("get_reports.get_records_to_review.get_checklist")
@@ -615,7 +645,9 @@ def test_pelagic_record_false_wrong_protocol(mock_get_checklist):
     result = _pelagic_record(ebird_api_key, observation, pelagic_counties)
 
     assert result is False
-    mock_get_checklist.assert_called_once_with(ebird_api_key, sub_id="sub123")
+    mock_get_checklist.assert_called_once_with(
+        token=ebird_api_key, sub_id="sub123"
+    )
 
 
 @patch("get_reports.get_records_to_review.get_checklist")
@@ -628,7 +660,9 @@ def test_pelagic_record_false_no_protocol(mock_get_checklist):
     result = _pelagic_record(ebird_api_key, observation, pelagic_counties)
 
     assert result is False
-    mock_get_checklist.assert_called_once_with(ebird_api_key, sub_id="sub123")
+    mock_get_checklist.assert_called_once_with(
+        token=ebird_api_key, sub_id="sub123"
+    )
 
 
 @patch("get_reports.get_records_to_review.get_checklist")
@@ -645,7 +679,9 @@ def test_observation_has_media_true(mock_get_checklist):
     result = _observation_has_media(ebird_api_key, observation)
 
     assert result is True
-    mock_get_checklist.assert_called_once_with(ebird_api_key, sub_id="sub123")
+    mock_get_checklist.assert_called_once_with(
+        token=ebird_api_key, sub_id="sub123"
+    )
 
 
 @patch("get_reports.get_records_to_review.get_checklist")
@@ -662,7 +698,9 @@ def test_observation_has_media_false_no_media(mock_get_checklist):
     result = _observation_has_media(ebird_api_key, observation)
 
     assert result is False
-    mock_get_checklist.assert_called_once_with(ebird_api_key, sub_id="sub123")
+    mock_get_checklist.assert_called_once_with(
+        token=ebird_api_key, sub_id="sub123"
+    )
 
 
 @patch("get_reports.get_records_to_review.get_checklist")
@@ -679,7 +717,9 @@ def test_observation_has_media_false_no_matching_species(mock_get_checklist):
     result = _observation_has_media(ebird_api_key, observation)
 
     assert result is False
-    mock_get_checklist.assert_called_once_with(ebird_api_key, sub_id="sub123")
+    mock_get_checklist.assert_called_once_with(
+        token=ebird_api_key, sub_id="sub123"
+    )
 
 
 @patch("get_reports.get_records_to_review.get_checklist")
@@ -691,4 +731,6 @@ def test_observation_has_media_false_empty_checklist(mock_get_checklist):
     result = _observation_has_media(ebird_api_key, observation)
 
     assert result is False
-    mock_get_checklist.assert_called_once_with(ebird_api_key, sub_id="sub123")
+    mock_get_checklist.assert_called_once_with(
+        token=ebird_api_key, sub_id="sub123"
+    )

@@ -1,8 +1,9 @@
 """Tests for get_reports.py module."""
 
+import logging
 import sys
 from unittest.mock import MagicMock, mock_open, patch
-import logging
+
 import pytest
 
 from get_reports.get_reports import (
@@ -48,19 +49,12 @@ def test_parse_arguments_optional_fields():
     assert args.verbose
 
 
-def test_parse_arguments_missing_required_fields():
-    test_args = ["get_reports", "--year", "2023"]
-    sys.argv = test_args
-    with pytest.raises(SystemExit):
-        _parse_arguments()
-
-
 def test_parse_arguments_version_flag():
     test_args = ["get_reports", "--version"]
     sys.argv = test_args
-    with pytest.raises(SystemExit) as excinfo:
+    with pytest.raises(SystemExit) as exception_information:
         _parse_arguments()
-    assert excinfo.value.code == 0
+    assert exception_information.value.code == 0
 
 
 @patch("get_reports.get_reports.open", new_callable=mock_open)

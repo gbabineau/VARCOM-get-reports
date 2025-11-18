@@ -4,8 +4,9 @@ from datetime import date
 
 from ebird.api import get_historic_observations, get_checklist
 from time import sleep
-
-
+from get_reports import (
+    continuation_record,
+    )
 
 def get_checklist_with_retry(api_key: str, observation: str) -> list:
     attempts = 0
@@ -340,6 +341,7 @@ def _iterate_days_in_month(year: int, month: int, day):
         yield date(year, month, day)
 
 
+
 def get_records_to_review(
     ebird_api_key: str,
     state_list: list,
@@ -369,8 +371,9 @@ def get_records_to_review(
             - "records" (list): A list of records for the county that match the
               review criteria.
     """
-    records_to_review = []
-    for county in counties:
+    continuation = continuation_record.ContinuationRecord(counties)
+    records_to_review = continuation.records()
+    for county in continuation.counties():
         county_records = []
         if month == 0:
             month_range = range(1, 13)
@@ -388,4 +391,6 @@ def get_records_to_review(
             records_to_review.append(
                 {"county": county["name"], "records": county_records}
             )
+        continuation.update(county, records_to_review)
+    continuation.complete()
     return records_to_review
