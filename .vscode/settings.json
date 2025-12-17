@@ -1,5 +1,6 @@
 {
     "cSpell.words": [
+        "caplog",
         "columnspan",
         "comchi",
         "initialdir",
@@ -7,6 +8,7 @@
         "subnational",
         "tearoff",
         "textvariable",
+        "unvetted",
         "VARCOM"
     ],
     "python.testing.pytestArgs": [

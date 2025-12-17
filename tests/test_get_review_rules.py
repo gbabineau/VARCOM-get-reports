@@ -35,43 +35,6 @@ def test_check_counties_in_groups_county_not_in_any_group(caplog):
     assert "County CountyC not found in any county group" in caplog.text
 
 
-def test_check_counties_in_groups_county_in_multiple_groups(caplog):
-    county_list = [{"name": "CountyA"}, {"name": "CountyB"}]
-    review_species = {
-        "county_groups": [
-            {"counties": ["CountyA", "CountyB"]},
-            {"counties": ["CountyA"]},
-        ]
-    }
-
-    with caplog.at_level(logging.WARNING):
-        _check_counties_in_groups(county_list, review_species)
-
-    assert len(caplog.records) == 1
-    assert "County CountyA found in multiple county groups" in caplog.text
-
-
-def test_check_counties_in_groups_mixed_warnings(caplog):
-    county_list = [
-        {"name": "CountyA"},
-        {"name": "CountyB"},
-        {"name": "CountyC"},
-    ]
-    review_species = {
-        "county_groups": [
-            {"counties": ["CountyA", "CountyB"]},
-            {"counties": ["CountyA"]},
-        ]
-    }
-
-    with caplog.at_level(logging.WARNING):
-        _check_counties_in_groups(county_list, review_species)
-
-    assert len(caplog.records) == 2
-    assert "County CountyA found in multiple county groups" in caplog.text
-    assert "County CountyC not found in any county group" in caplog.text
-
-
 def test_check_species_in_taxonomy_no_warnings(caplog):
     review_species = {
         "review_species": [

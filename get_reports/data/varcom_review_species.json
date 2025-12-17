@@ -1,797 +1,2661 @@
 {
-    "_comment" : "This file contains the species that are reviewed in the VARCOM report. There are two sections, review_species and exclude_groups.",
-    "source" : "https://www.virginiabirds.org/varcom-review-list",
-    "effective_date" : "2021-04-06",
-    "state_list" : [
-        {"comName": "Black-bellied Whistling-Duck"},
-        {"comName": "West Indian Whistling-Duck"},
-        {"comName": "Fulvous Whistling-Duck"},
-        {"comName": "Snow Goose"},
-        {"comName": "Snow Goose (Lesser)"},
-        {"comName": "Snow Goose (Greater)"},
-        {"comName": "Ross's Goose"},
-        {"comName": "Greater White-fronted Goose"},
-        {"comName": "Pink-footed Goose"},
-        {"comName": "Brant"},
-        {"comName": "Barnacle Goose"},
-        {"comName": "Cackling Goose"},
-        {"comName": "Canada Goose"},
-        {"comName": "Mute Swan"},
-        {"comName": "Trumpeter Swan"},
-        {"comName": "Tundra Swan"},
-        {"comName": "Wood Duck"},
-        {"comName": "Garganey"},
-        {"comName": "Blue-winged Teal"},
-        {"comName": "Cinnamon Teal"},
-        {"comName": "Northern Shoveler"},
-        {"comName": "Gadwall"},
-        {"comName": "Eurasian Wigeon"},
-        {"comName": "American Wigeon"},
-        {"comName": "Mallard"},
-        {"comName": "American Black Duck"},
-        {"comName": "Mottled Duck"},
-        {"comName": "White-cheeked Pintail"},
-        {"comName": "Northern Pintail"},
-        {"comName": "Green-winged Teal"},
-        {"comName": "Green-winged Teal (American)"},
-        {"comName": "Green-winged Teal (Eurasian)"},
-        {"comName": "Canvasback"},
-        {"comName": "Redhead"},
-        {"comName": "Ring-necked Duck"},
-        {"comName": "Tufted Duck"},
-        {"comName": "Greater Scaup"},
-        {"comName": "Lesser Scaup"},
-        {"comName": "King Eider"},
-        {"comName": "Common Eider"},
-        {"comName": "Harlequin Duck"},
-        {"comName": "Surf Scoter"},
-        {"comName": "White-winged Scoter"},
-        {"comName": "Black Scoter"},
-        {"comName": "Long-tailed Duck"},
-        {"comName": "Bufflehead"},
-        {"comName": "Common Goldeneye"},
-        {"comName": "Barrow's Goldeneye"},
-        {"comName": "Hooded Merganser"},
-        {"comName": "Common Merganser"},
-        {"comName": "Red-breasted Merganser"},
-        {"comName": "Ruddy Duck"},
-        {"comName": "Northern Bobwhite"},
-        {"comName": "Wild Turkey"},
-        {"comName": "Ruffed Grouse"},
-        {"comName": "Ring-necked Pheasant"},
-        {"comName": "American Flamingo"},
-        {"comName": "Pied-billed Grebe"},
-        {"comName": "Horned Grebe"},
-        {"comName": "Red-necked Grebe"},
-        {"comName": "Eared Grebe"},
-        {"comName": "Western Grebe"},
-        {"comName": "Clark's Grebe"},
-        {"comName": "Rock Pigeon"},
-        {"comName": "White-crowned Pigeon"},
-        {"comName": "Eurasian Collared-Dove"},
-        {"comName": "Common Ground Dove"},
-        {"comName": "White-winged Dove"},
-        {"comName": "Mourning Dove"},
-        {"comName": "Groove-billed Ani"},
-        {"comName": "Yellow-billed Cuckoo"},
-        {"comName": "Black-billed Cuckoo"},
-        {"comName": "Common Nighthawk"},
-        {"comName": "Chuck-will's-widow"},
-        {"comName": "Eastern Whip-poor-will"},
-        {"comName": "Chimney Swift"},
-        {"comName": "Rivoli's Hummingbird"},
-        {"comName": "Ruby-throated Hummingbird"},
-        {"comName": "Black-chinned Hummingbird"},
-        {"comName": "Anna's Hummingbird"},
-        {"comName": "Calliope Hummingbird"},
-        {"comName": "Rufous Hummingbird"},
-        {"comName": "Allen's Hummingbird"},
-        {"comName": "Violet-crowned Hummingbird"},
-        {"comName": "Buff-bellied Hummingbird"},
-        {"comName": "Paint-billed Crake"},
-        {"comName": "Clapper Rail"},
-        {"comName": "King Rail"},
-        {"comName": "Virginia Rail"},
-        {"comName": "Sora"},
-        {"comName": "Common Gallinule"},
-        {"comName": "American Coot"},
-        {"comName": "Purple Gallinule"},
-        {"comName": "Yellow Rail"},
-        {"comName": "Black Rail"},
-        {"comName": "Limpkin"},
-        {"comName": "Sandhill Crane"},
-        {"comName": "Black-necked Stilt"},
-        {"comName": "American Avocet"},
-        {"comName": "American Oystercatcher"},
-        {"comName": "Northern Lapwing"},
-        {"comName": "Black-bellied Plover"},
-        {"comName": "American Golden-Plover"},
-        {"comName": "Killdeer"},
-        {"comName": "Semipalmated Plover"},
-        {"comName": "Piping Plover"},
-        {"comName": "Lesser/Greater Sand-Plover"},
-        {"comName": "Wilson's Plover"},
-        {"comName": "Mountain Plover"},
-        {"comName": "Snowy Plover"},
-        {"comName": "Upland Sandpiper"},
-        {"comName": "Hudsonian Whimbrel"},
-        {"comName": "Eurasian Whimbrel"},
-        {"comName": "Long-billed Curlew"},
-        {"comName": "Bar-tailed Godwit"},
-        {"comName": "Bar-tailed Godwit (European)"},
-        {"comName": "Bar-tailed Godwit (Siberian)"},
-        {"comName": "Black-tailed Godwit"},
-        {"comName": "Hudsonian Godwit"},
-        {"comName": "Marbled Godwit"},
-        {"comName": "Ruddy Turnstone"},
-        {"comName": "Red Knot"},
-        {"comName": "Ruff"},
-        {"comName": "Sharp-tailed Sandpiper"},
-        {"comName": "Stilt Sandpiper"},
-        {"comName": "Curlew Sandpiper"},
-        {"comName": "Red-necked Stint"},
-        {"comName": "Sanderling"},
-        {"comName": "Dunlin"},
-        {"comName": "Purple Sandpiper"},
-        {"comName": "Baird's Sandpiper"},
-        {"comName": "Least Sandpiper"},
-        {"comName": "White-rumped Sandpiper"},
-        {"comName": "Buff-breasted Sandpiper"},
-        {"comName": "Pectoral Sandpiper"},
-        {"comName": "Semipalmated Sandpiper"},
-        {"comName": "Western Sandpiper"},
-        {"comName": "Short-billed Dowitcher"},
-        {"comName": "Short-billed Dowitcher (griseus)"},
-        {"comName": "Short-billed Dowitcher (hendersoni)"},
-        {"comName": "Long-billed Dowitcher"},
-        {"comName": "Eurasian Woodcock"},
-        {"comName": "American Woodcock"},
-        {"comName": "Wilson's Snipe"},
-        {"comName": "Terek Sandpiper"},
-        {"comName": "Spotted Sandpiper"},
-        {"comName": "Solitary Sandpiper"},
-        {"comName": "Lesser Yellowlegs"},
-        {"comName": "Willet"},
-        {"comName": "Willet (Eastern)"},
-        {"comName": "Willet (Western)"},
-        {"comName": "Greater Yellowlegs"},
-        {"comName": "Wilson's Phalarope"},
-        {"comName": "Red-necked Phalarope"},
-        {"comName": "Red Phalarope"},
-        {"comName": "Great Skua"},
-        {"comName": "South Polar Skua"},
-        {"comName": "Pomarine Jaeger"},
-        {"comName": "Parasitic Jaeger"},
-        {"comName": "Long-tailed Jaeger"},
-        {"comName": "Dovekie"},
-        {"comName": "Common Murre"},
-        {"comName": "Thick-billed Murre"},
-        {"comName": "Razorbill"},
-        {"comName": "Black Guillemot"},
-        {"comName": "Ancient Murrelet"},
-        {"comName": "Atlantic Puffin"},
-        {"comName": "Black-legged Kittiwake"},
-        {"comName": "Sabine's Gull"},
-        {"comName": "Bonaparte's Gull"},
-        {"comName": "Black-headed Gull"},
-        {"comName": "Little Gull"},
-        {"comName": "Laughing Gull"},
-        {"comName": "Franklin's Gull"},
-        {"comName": "Black-tailed Gull"},
-        {"comName": "Heermann's Gull"},
-        {"comName": "Common Gull"},
-        {"comName": "Ring-billed Gull"},
-        {"comName": "California Gull"},
-        {"comName": "American Herring Gull"},
-        {"comName": "Yellow-legged Gull"},
-        {"comName": "Iceland Gull"},
-        {"comName": "Iceland Gull (kumlieni)"},
-        {"comName": "Iceland Gull (Thayer's)"},
-        {"comName": "Lesser Black-backed Gull"},
-        {"comName": "Glaucous Gull"},
-        {"comName": "Great Black-backed Gull"},
-        {"comName": "Brown Noddy"},
-        {"comName": "Sooty Tern"},
-        {"comName": "Bridled Tern"},
-        {"comName": "Least Tern"},
-        {"comName": "Gull-billed Tern"},
-        {"comName": "Caspian Tern"},
-        {"comName": "Black Tern"},
-        {"comName": "White-winged Tern"},
-        {"comName": "Roseate Tern"},
-        {"comName": "Common Tern"},
-        {"comName": "Arctic Tern"},
-        {"comName": "Forster's Tern"},
-        {"comName": "Royal Tern"},
-        {"comName": "Sandwich Tern"},
-        {"comName": "Elegant Tern"},
-        {"comName": "Black Skimmer"},
-        {"comName": "White-tailed Tropicbird"},
-        {"comName": "Red-billed Tropicbird"},
-        {"comName": "Red-throated Loon"},
-        {"comName": "Pacific Loon"},
-        {"comName": "Common Loon"},
-        {"comName": "Atlantic Yellow-nosed Albatross"},
-        {"comName": "Black-browed Albatross"},
-        {"comName": "Wilson's Storm-Petrel"},
-        {"comName": "White-faced Storm-Petrel"},
-        {"comName": "European Storm-Petrel"},
-        {"comName": "Leach's Storm-Petrel"},
-        {"comName": "Band-rumped Storm-Petrel"},
-        {"comName": "Northern Fulmar"},
-        {"comName": "Trindade Petrel"},
-        {"comName": "Bermuda Petrel"},
-        {"comName": "Black-capped Petrel"},
-        {"comName": "Desertas Petrel"},
-        {"comName": "Bulwer's Petrel"},
-        {"comName": "Cory's Shearwater"},
-        {"comName": "Sooty Shearwater"},
-        {"comName": "Great Shearwater"},
-        {"comName": "Manx Shearwater"},
-        {"comName": "Sargasso Shearwater"},
-        {"comName": "Wood Stork"},
-        {"comName": "Magnificent Frigatebird"},
-        {"comName": "Masked Booby"},
-        {"comName": "Brown Booby"},
-        {"comName": "Northern Gannet"},
-        {"comName": "Anhinga"},
-        {"comName": "Great Cormorant"},
-        {"comName": "Double-crested Cormorant"},
-        {"comName": "Neotropic Cormorant"},
-        {"comName": "American White Pelican"},
-        {"comName": "Brown Pelican"},
-        {"comName": "American Bittern"},
-        {"comName": "Least Bittern"},
-        {"comName": "Great Blue Heron"},
-        {"comName": "Great Blue Heron (Great White)"},
-        {"comName": "Gray Heron"},
-        {"comName": "Great Egret"},
-        {"comName": "Little Egret"},
-        {"comName": "Snowy Egret"},
-        {"comName": "Little Blue Heron"},
-        {"comName": "Tricolored Heron"},
-        {"comName": "Reddish Egret"},
-        {"comName": "Western Cattle-Egret"},
-        {"comName": "Green Heron"},
-        {"comName": "Black-crowned Night Heron"},
-        {"comName": "Yellow-crowned Night Heron"},
-        {"comName": "White Ibis"},
-        {"comName": "Glossy Ibis"},
-        {"comName": "White-faced Ibis"},
-        {"comName": "Roseate Spoonbill"},
-        {"comName": "Black Vulture"},
-        {"comName": "Turkey Vulture"},
-        {"comName": "Osprey"},
-        {"comName": "White-tailed Kite"},
-        {"comName": "Swallow-tailed Kite"},
-        {"comName": "Golden Eagle"},
-        {"comName": "Northern Harrier"},
-        {"comName": "Western Marsh Harrier"},
-        {"comName": "Sharp-shinned Hawk"},
-        {"comName": "Cooper's Hawk"},
-        {"comName": "American Goshawk"},
-        {"comName": "Bald Eagle"},
-        {"comName": "Mississippi Kite"},
-        {"comName": "Red-shouldered Hawk"},
-        {"comName": "Broad-winged Hawk"},
-        {"comName": "Swainson's Hawk"},
-        {"comName": "Zone-tailed Hawk"},
-        {"comName": "Red-tailed Hawk"},
-        {"comName": "Red-tailed Hawk (Harlan's)"},
-        {"comName": "Rough-legged Hawk"},
-        {"comName": "Ferruginous Hawk"},
-        {"comName": "American Barn Owl"},
-        {"comName": "Eastern Screech-Owl"},
-        {"comName": "Great Horned Owl"},
-        {"comName": "Snowy Owl"},
-        {"comName": "Burrowing Owl"},
-        {"comName": "Barred Owl"},
-        {"comName": "Long-eared Owl"},
-        {"comName": "Short-eared Owl"},
-        {"comName": "Northern Saw-whet Owl"},
-        {"comName": "Belted Kingfisher"},
-        {"comName": "Lewis's Woodpecker"},
-        {"comName": "Red-headed Woodpecker"},
-        {"comName": "Red-bellied Woodpecker"},
-        {"comName": "Yellow-bellied Sapsucker"},
-        {"comName": "Downy Woodpecker"},
-        {"comName": "Red-cockaded Woodpecker"},
-        {"comName": "Hairy Woodpecker"},
-        {"comName": "Northern Flicker"},
-        {"comName": "Pileated Woodpecker"},
-        {"comName": "Crested Caracara"},
-        {"comName": "American Kestrel"},
-        {"comName": "Merlin"},
-        {"comName": "Merlin (Taiga)"},
-        {"comName": "Merlin (Prairie)"},
-        {"comName": "Gyrfalcon"},
-        {"comName": "Peregrine Falcon"},
-        {"comName": "Prairie Falcon"},
-        {"comName": "Monk Parakeet"},
-        {"comName": "Ash-throated Flycatcher"},
-        {"comName": "Great Crested Flycatcher"},
-        {"comName": "Tropical Kingbird"},
-        {"comName": "Couch's Kingbird"},
-        {"comName": "Western Kingbird"},
-        {"comName": "Eastern Kingbird"},
-        {"comName": "Gray Kingbird"},
-        {"comName": "Scissor-tailed Flycatcher"},
-        {"comName": "Fork-tailed Flycatcher"},
-        {"comName": "Olive-sided Flycatcher"},
-        {"comName": "Western Wood-Pewee"},
-        {"comName": "Eastern Wood-Pewee"},
-        {"comName": "Yellow-bellied Flycatcher"},
-        {"comName": "Acadian Flycatcher"},
-        {"comName": "Alder Flycatcher"},
-        {"comName": "Willow Flycatcher"},
-        {"comName": "Least Flycatcher"},
-        {"comName": "Dusky Flycatcher"},
-        {"comName": "Western Flycatcher"},
-        {"comName": "Eastern Phoebe"},
-        {"comName": "Say's Phoebe"},
-        {"comName": "Vermilion Flycatcher"},
-        {"comName": "White-eyed Vireo"},
-        {"comName": "Bell's Vireo"},
-        {"comName": "Yellow-throated Vireo"},
-        {"comName": "Blue-headed Vireo"},
-        {"comName": "Philadelphia Vireo"},
-        {"comName": "Eastern Warbling Vireo"},
-        {"comName": "Red-eyed Vireo"},
-        {"comName": "Black-whiskered Vireo"},
-        {"comName": "Loggerhead Shrike"},
-        {"comName": "Northern Shrike"},
-        {"comName": "Blue Jay"},
-        {"comName": "Black-billed Magpie"},
-        {"comName": "American Crow"},
-        {"comName": "Fish Crow"},
-        {"comName": "Common Raven"},
-        {"comName": "Carolina Chickadee"},
-        {"comName": "Black-capped Chickadee"},
-        {"comName": "Boreal Chickadee"},
-        {"comName": "Tufted Titmouse"},
-        {"comName": "Horned Lark"},
-        {"comName": "Bank Swallow"},
-        {"comName": "Tree Swallow"},
-        {"comName": "Violet-green Swallow"},
-        {"comName": "Northern Rough-winged Swallow"},
-        {"comName": "Brown-chested Martin"},
-        {"comName": "Purple Martin"},
-        {"comName": "Barn Swallow"},
-        {"comName": "Cliff Swallow"},
-        {"comName": "Cave Swallow"},
-        {"comName": "Ruby-crowned Kinglet"},
-        {"comName": "Golden-crowned Kinglet"},
-        {"comName": "Bohemian Waxwing"},
-        {"comName": "Cedar Waxwing"},
-        {"comName": "Red-breasted Nuthatch"},
-        {"comName": "White-breasted Nuthatch"},
-        {"comName": "Brown-headed Nuthatch"},
-        {"comName": "Brown Creeper"},
-        {"comName": "Blue-gray Gnatcatcher"},
-        {"comName": "Rock Wren"},
-        {"comName": "Bewick's Wren"},
-        {"comName": "Carolina Wren"},
-        {"comName": "Northern House Wren"},
-        {"comName": "Winter Wren"},
-        {"comName": "Sedge Wren"},
-        {"comName": "Marsh Wren"},
-        {"comName": "Gray Catbird"},
-        {"comName": "Brown Thrasher"},
-        {"comName": "Sage Thrasher"},
-        {"comName": "Northern Mockingbird"},
-        {"comName": "European Starling"},
-        {"comName": "Eastern Bluebird"},
-        {"comName": "Mountain Bluebird"},
-        {"comName": "Townsend's Solitaire"},
-        {"comName": "Veery"},
-        {"comName": "Gray-cheeked Thrush"},
-        {"comName": "Bicknell's Thrush"},
-        {"comName": "Swainson's Thrush"},
-        {"comName": "Hermit Thrush"},
-        {"comName": "Wood Thrush"},
-        {"comName": "American Robin"},
-        {"comName": "Varied Thrush"},
-        {"comName": "Northern Wheatear"},
-        {"comName": "House Sparrow"},
-        {"comName": "White Wagtail"},
-        {"comName": "American Pipit"},
-        {"comName": "Sprague's Pipit"},
-        {"comName": "Evening Grosbeak"},
-        {"comName": "Pine Grosbeak"},
-        {"comName": "Gray-crowned Rosy-Finch"},
-        {"comName": "House Finch"},
-        {"comName": "Purple Finch"},
-        {"comName": "Redpoll"},
-        {"comName": "Red Crossbill"},
-        {"comName": "White-winged Crossbill"},
-        {"comName": "Pine Siskin"},
-        {"comName": "Lesser Goldfinch"},
-        {"comName": "American Goldfinch"},
-        {"comName": "Lapland Longspur"},
-        {"comName": "Chestnut-collared Longspur"},
-        {"comName": "Smith's Longspur"},
-        {"comName": "Snow Bunting"},
-        {"comName": "Bachman's Sparrow"},
-        {"comName": "Grasshopper Sparrow"},
-        {"comName": "Black-throated Sparrow"},
-        {"comName": "Lark Sparrow"},
-        {"comName": "Lark Bunting"},
-        {"comName": "Chipping Sparrow"},
-        {"comName": "Clay-colored Sparrow"},
-        {"comName": "Field Sparrow"},
-        {"comName": "Brewer's Sparrow"},
-        {"comName": "Fox Sparrow"},
-        {"comName": "Fox Sparrow (Red)"},
-        {"comName": "American Tree Sparrow"},
-        {"comName": "Dark-eyed Junco"},
-        {"comName": "Dark-eyed Junco (Oregon)"},
-        {"comName": "Dark-eyed Junco (Pink-sided)"},
-        {"comName": "White-crowned Sparrow"},
-        {"comName": "White-crowned Sparrow (Gambel's)"},
-        {"comName": "Harris's Sparrow"},
-        {"comName": "White-throated Sparrow"},
-        {"comName": "Vesper Sparrow"},
-        {"comName": "LeConte's Sparrow"},
-        {"comName": "Seaside Sparrow"},
-        {"comName": "Nelson's Sparrow"},
-        {"comName": "Nelson's Sparrow (Nelson's)"},
-        {"comName": "Nelson's Sparrow (Interior)"},
-        {"comName": "Nelson's Sparrow (Atlantic Coast)"},
-        {"comName": "Saltmarsh Sparrow"},
-        {"comName": "Henslow's Sparrow"},
-        {"comName": "Savannah Sparrow"},
-        {"comName": "Savannah Sparrow (Ipswich)"},
-        {"comName": "Song Sparrow"},
-        {"comName": "Lincoln's Sparrow"},
-        {"comName": "Swamp Sparrow"},
-        {"comName": "Green-tailed Towhee"},
-        {"comName": "Spotted Towhee"},
-        {"comName": "Eastern Towhee"},
-        {"comName": "Yellow-breasted Chat"},
-        {"comName": "Yellow-headed Blackbird"},
-        {"comName": "Bobolink"},
-        {"comName": "Eastern Meadowlark"},
-        {"comName": "Western Meadowlark"},
-        {"comName": "Orchard Oriole"},
-        {"comName": "Bullock's Oriole"},
-        {"comName": "Baltimore Oriole"},
-        {"comName": "Scott's Oriole"},
-        {"comName": "Red-winged Blackbird"},
-        {"comName": "Shiny Cowbird"},
-        {"comName": "Brown-headed Cowbird"},
-        {"comName": "Rusty Blackbird"},
-        {"comName": "Brewer's Blackbird"},
-        {"comName": "Common Grackle"},
-        {"comName": "Boat-tailed Grackle"},
-        {"comName": "Ovenbird"},
-        {"comName": "Worm-eating Warbler"},
-        {"comName": "Louisiana Waterthrush"},
-        {"comName": "Northern Waterthrush"},
-        {"comName": "Golden-winged Warbler"},
-        {"comName": "Blue-winged Warbler"},
-        {"comName": "Black-and-white Warbler"},
-        {"comName": "Prothonotary Warbler"},
-        {"comName": "Swainson's Warbler"},
-        {"comName": "Tennessee Warbler"},
-        {"comName": "Orange-crowned Warbler"},
-        {"comName": "Lucy's Warbler"},
-        {"comName": "Nashville Warbler"},
-        {"comName": "Virginia's Warbler"},
-        {"comName": "Connecticut Warbler"},
-        {"comName": "MacGillivray's Warbler"},
-        {"comName": "Mourning Warbler"},
-        {"comName": "Kentucky Warbler"},
-        {"comName": "Common Yellowthroat"},
-        {"comName": "Hooded Warbler"},
-        {"comName": "American Redstart"},
-        {"comName": "Kirtland's Warbler"},
-        {"comName": "Cape May Warbler"},
-        {"comName": "Cerulean Warbler"},
-        {"comName": "Northern Parula"},
-        {"comName": "Magnolia Warbler"},
-        {"comName": "Bay-breasted Warbler"},
-        {"comName": "Blackburnian Warbler"},
-        {"comName": "Northern Yellow Warbler"},
-        {"comName": "Chestnut-sided Warbler"},
-        {"comName": "Blackpoll Warbler"},
-        {"comName": "Black-throated Blue Warbler"},
-        {"comName": "Palm Warbler"},
-        {"comName": "Palm Warbler (Western)"},
-        {"comName": "Palm Warbler (Yellow)"},
-        {"comName": "Pine Warbler"},
-        {"comName": "Yellow-rumped Warbler"},
-        {"comName": "Yellow-rumped Warbler (Myrtle)"},
-        {"comName": "Yellow-rumped Warbler (Audubon's)"},
-        {"comName": "Yellow-throated Warbler"},
-        {"comName": "Prairie Warbler"},
-        {"comName": "Black-throated Gray Warbler"},
-        {"comName": "Townsend's Warbler"},
-        {"comName": "Black-throated Green Warbler"},
-        {"comName": "Canada Warbler"},
-        {"comName": "Wilson's Warbler"},
-        {"comName": "Summer Tanager"},
-        {"comName": "Scarlet Tanager"},
-        {"comName": "Western Tanager"},
-        {"comName": "Northern Cardinal"},
-        {"comName": "Rose-breasted Grosbeak"},
-        {"comName": "Black-headed Grosbeak"},
-        {"comName": "Blue Grosbeak"},
-        {"comName": "Lazuli Bunting"},
-        {"comName": "Indigo Bunting"},
-        {"comName": "Painted Bunting"},
-        {"comName": "Dickcissel"}
-        ],
-    "review_species" : [
-        { "comName" : "Gray-crowned Rosy-Finch"},
-        { "comName" : "Mexican Violetear"},
-        { "comName" : "Tropical Kingbird"	},
-        { "comName" : "Black-bellied Whistling-Duck", "exclude" : ["Coastal Plain", "Piedmont"]},
-        { "comName" : "West Indian Whistling-Duck"},
-        { "comName" : "Fulvous Whistling-Duck"},
-        { "comName" : "Ross's Goose (blue morph)"},
-        { "comName" : "Pink-footed Goose"},
-        { "comName" : "Brant", "flag subspecies other than": ["hrota"], "exclude" : ["Eastern Coastal Plain"], "unique_exclude_notes" :"except Eastern Coastal Plain & York Co. east of Rt. 17."},
-        { "comName" : "Barnacle Goose"},
-        { "comName" : "Trumpeter Swan", "exclude" : ["Mountains & Valleys", "Albemarle"], "unique_exclude_notes" : "except west of I-95 and north of I-64."},
-        { "comName" : "Garganey"},
-        { "comName" : "Cinnamon Teal"},
-        { "comName" : "Eurasian Wigeon", "exclude" : ["Eastern Coastal Plain"]},
-        { "comName" : "Mottled Duck"},
-        { "comName" : "White-cheeked Pintail"},
-        { "comName" : "Green-winged Teal (Eurasian)"},
-        { "comName" : "Tufted Duck"},
-        { "comName" : "King Eider", "exclude" : ["Eastern Shore"], "unique_exclude_notes" : "except Chesapeake Bay-Bridge Tunnel, Eastern Shore, Norfolk and Virginia Beach."},
-        { "comName" : "Common Eider", "exclude" : ["Norfolk", "Virginia Beach","Eastern Shore"], "unique_exclude_notes" : "except Chesapeake Bay-Bridge Tunnel, Eastern Shore, Norfolk and Virginia Beach."},
-        { "comName" : "Harlequin Duck", "exclude" : ["Norfolk", "Virginia Beach","Eastern Shore"], "unique_exclude_notes" : "except Chesapeake Bay-Bridge Tunnel, Eastern Shore, Norfolk and Virginia Beach."},
-        { "comName" : "Barrow's Goldeneye"},
-        { "comName" : "Ruffed Grouse", "exclude": ["Mountains & Valleys"]},
-        { "comName" : "American Flamingo"},
-        { "comName" : "Phoenicopterus sp. (unidentified flamingo)"},
-        { "comName" : "Eared Grebe", "exclude" : ["Eastern Coastal Plain"], "unique_exclude_notes" : "except Eastern Coastal Plain & South Holston Lake."},
-        { "comName" : "Western Grebe", "exclude": ["Coastal Plain"]},
-        { "comName" : "Clark's Grebe"},
-        { "comName" : "White-crowned Pigeon"},
-        { "comName" : "Common Ground Dove"},
-        { "comName" : "White-winged Dove", "exclude": ["Coastal Plain"]},
-        { "comName" : "Groove-billed Ani"},
-        { "comName" : "Rivoli's Hummingbird"},
-        { "comName" : "Black-chinned Hummingbird"},
-        { "comName" : "Anna's Hummingbird"},
-        { "comName" : "Calliope Hummingbird"},
-        { "comName" : "Allen's Hummingbird"},
-        { "comName" : "Violet-crowned Hummingbird"},
-        { "comName" : "Buff-bellied Hummingbird"},
-        { "comName" : "Paint-billed Crake"},
-        { "comName" : "Clapper Rail", "exclude": ["Isle of Wight", "James City", "York", "Eastern Coastal Plain"], "unique_exclude_notes" : "except Eastern Coastal Plain, York Co. James City Co. Isle of Wight Co. & Hog Island, Surry Co."},
-        { "comName" : "Purple Gallinule"},
-        { "comName" : "Yellow Rail"},
-        { "comName" : "Black Rail"},
-        { "comName" : "Limpkin"},
-        { "comName" : "Black-necked Stilt", "exclude" : ["Eastern Coastal Plain"]},
-        { "comName" : "American Oystercatcher", "exclude" : ["Eastern Coastal Plain"], "unique_exclude_notes" : "except Eastern Coastal Plain & York Co. east of Rt. 17."},
-        { "comName" : "Northern Lapwing"},
-        { "comName" : "Piping Plover", "exclude" : ["Eastern Coastal Plain"]},
-        { "comName" : "Lesser/Greater Sand-Plover"},
-        { "comName" : "Wilson's Plover", "unique_exclude_notes" : "Except barrier islands of Accomack County."},
-        { "comName" : "Mountain Plover"},
-        { "comName" : "Snowy Plover"},
-        { "comName" : "Hudsonian Whimbrel", "exclude": ["Eastern Coastal Plain"],"unique_exclude_notes" : "except Eastern Coastal Plain & Hog Island, Surry Co."},
-        { "comName" : "Eurasian Whimbrel"},
-        { "comName" : "Long-billed Curlew", "unique_exclude_notes" : "except barrier island lagoon system."},
-        { "comName" : "Bar-tailed Godwit"},
-        { "comName" : "Black-tailed Godwit"},
-        { "comName" : "Hudsonian Godwit", "exclude" : ["Eastern Coastal Plain"]},
-        { "comName" : "Marbled Godwit", "exclude" : ["Eastern Coastal Plain"]},
-        { "comName" : "Ruddy Turnstone", "exclude": ["Coastal Plain"]},
-        { "comName" : "Red Knot", "exclude" : ["Eastern Coastal Plain"]},
-        { "comName" : "Ruff", "exclude": ["Coastal Plain"]},
-        { "comName" : "Sharp-tailed Sandpiper"},
-        { "comName" : "Curlew Sandpiper"},
-        { "comName" : "Red-necked Stint"},
-        { "comName" : "Purple Sandpiper", "exclude" : ["Eastern Coastal Plain"]},
-        { "comName" : "White-rumped Sandpiper", "exclude": ["Mountains & Valleys", "Coastal Plain"]},
-        { "comName" : "Buff-breasted Sandpiper", "exclude": ["Coastal Plain", "Piedmont"]},
-        { "comName" : "Long-billed Dowitcher", "exclude": ["Coastal Plain"]},
-        { "comName" : "Eurasian Woodcock"},
-        { "comName" : "Terek Sandpiper"},
-        { "comName" : "Willet", "exclude": ["Coastal Plain"]},
-        { "comName" : "Wilson's Phalarope", "exclude": ["Mountains & Valleys", "Eastern Coastal Plain"]},
-        { "comName" : "Red Phalarope", "exclude" : ["Eastern Coastal Plain"]},
-        { "comName" : "Great Skua", "unique_exclude_notes" : "except pelagic"},
-        { "comName" : "South Polar Skua"},
-        { "comName" : "Pomarine Jaeger", "exclude" : ["Eastern Coastal Plain"]},
-        { "comName" : "Parasitic Jaeger", "exclude" : ["Eastern Coastal Plain"]},
-        { "comName" : "Long-tailed Jaeger", "unique_exclude_notes" : "except pelagic"},
-        { "comName" : "Dovekie", "unique_exclude_notes" : "except pelagic"},
-        { "comName" : "Common Murre"},
-        { "comName" : "Thick-billed Murre"},
-        { "comName" : "Uria sp. (unidentified murre)"},
-        { "comName" : "Razorbill", "exclude" : ["Virginia Beach", "Eastern Shore"], "unique_exclude_notes" : "pelagic, CBBT, Eastern Shore and VA Beach."},
-        { "comName" : "Black Guillemot"},
-        { "comName" : "Ancient Murrelet"},
-        { "comName" : "Atlantic Puffin", "unique_exclude_notes" : "except pelagic"},
-        { "comName" : "Black-legged Kittiwake", "unique_exclude_notes" : "except pelagic"},
-        { "comName" : "Sabine's Gull"},
-        { "comName" : "Black-headed Gull", "exclude" : ["Eastern Coastal Plain"]},
-        { "comName" : "Little Gull", "exclude" : ["Eastern Coastal Plain"]},
-        { "comName" : "Laughing Gull", "exclude" : ["Coastal Plain", "Piedmont"]},
-        { "comName" : "Franklin's Gull", "exclude" : ["Eastern Coastal Plain"]},
-        { "comName" : "Black-tailed Gull"},
-        { "comName" : "Heermann's Gull"},
-        { "comName" : "Common Gull"},
-        { "comName" : "California Gull"},
-        { "comName" : "Yellow-legged Gull"},
-        { "comName" : "Iceland Gull"},
-        { "comName" : "Iceland Gull (Thayer's)"},
-        { "comName" : "Iceland Gull (kumlieni)", "exclude" : ["Coastal Plain", "Prince William"]},
-        { "comName" : "Iceland Gull (thayeri/kumlieni)"},
-        { "comName" : "Lesser Black-backed Gull", "exclude" : ["Coastal Plain", "Piedmont"]},
-        { "comName" : "Glaucous Gull", "exclude" : ["Coastal Plain", "Prince William"]},
-        { "comName" : "Great Black-backed Gull", "exclude" : ["Coastal Plain", "Henrico", "Richmond"], "unique_exclude_notes" : "except Coastal Plain, Henrico, Richmond City & Piedmont north of I-64."},
-        { "comName" : "Brown Noddy"},
-        { "comName" : "Sooty Tern", "unique_exclude_notes" : "except pelagic"},
-        { "comName" : "Bridled Tern", "unique_exclude_notes" : "except pelagic"},
-        { "comName" : "Least Tern", "exclude": ["James City", "York", "Surry", "Eastern Coastal Plain"], "unique_exclude_notes" : "except Eastern Coastal Plain, Isle of Wight County east of Rt. 17, James City Co. York Co. Hog Island, Surry Co."},
-        { "comName" : "Gull-billed Tern", "exclude" : ["Eastern Coastal Plain"]},
-        { "comName" : "White-winged Tern"},
-        { "comName" : "Roseate Tern", "exclude": ["Virginia Beach", "Northampton", "Accomack"]},
-        { "comName" : "Arctic Tern"},
-        { "comName" : "Royal Tern", "exclude": ["Coastal Plain"]},
-        { "comName" : "Sandwich Tern", "exclude" : ["Eastern Coastal Plain"]},
-        { "comName" : "Elegant Tern"},
-        { "comName" : "Black Skimmer", "exclude" : ["Eastern Coastal Plain"]},
-        { "comName" : "White-tailed Tropicbird"},
-        { "comName" : "Red-billed Tropicbird"},
-        { "comName" : "Red-throated Loon", "exclude": ["Coastal Plain"], "unique_exclude_notes" : "except Coastal Plain & Kerr Reservoir."},
-        { "comName" : "Pacific Loon"},
-        { "comName" : "Atlantic Yellow-nosed Albatross"},
-        { "comName" : "Black-browed Albatross"},
-        { "comName" : "Wilson's Storm-Petrel", "exclude" : ["Eastern Coastal Plain"]},
-        { "comName" : "White-faced Storm-Petrel"},
-        { "comName" : "European Storm-Petrel"},
-        { "comName" : "Leach's Storm-Petrel", "unique_exclude_notes" : "except pelagic"},
-        { "comName" : "Band-rumped Storm-Petrel"},
-        { "comName" : "Northern Fulmar", "unique_exclude_notes" : "except pelagic"},
-        { "comName" : "Trindade Petrel"},
-        { "comName" : "Bermuda Petrel"},
-        { "comName" : "Black-capped Petrel"},
-        { "comName" : "Desertas Petrel"},
-        { "comName" : "Cape Verde Petrel"},
-        { "comName" : "Cory's Shearwater", "unique_exclude_notes" : "except pelagic"},
-        { "comName" : "Sooty Shearwater", "exclude": ["Virginia Beach", "Northampton"], "unique_exclude_notes" : "except Virginia Beach, Northampton & coastal Accomack."},
-        { "comName" : "Great Shearwater", "exclude": ["Virginia Beach", "Northampton", "Accomack"], "unique_exclude_notes" : "except pelagic"},
-        { "comName" : "Manx Shearwater", "unique_exclude_notes" : "except pelagic"},
-        { "comName" : "Sargasso Shearwater", "unique_exclude_notes" : "except pelagic"},
-        { "comName" : "Wood Stork"},
-        { "comName" : "Magnificent Frigatebird"},
-        { "comName" : "frigatebird sp."},
-        { "comName" : "Masked Booby"},
-        { "comName" : "Brown Booby", "exclude": ["Virginia Beach", "Northampton", "Accomack"]},
-        { "comName" : "Northern Gannet", "exclude": ["Eastern Coastal Plain", "York"], "unique_exclude_notes" : "except Eastern Coastal Plain, York Co. Isle of Wight Co. east of Rt. 17."},
-        { "comName" : "Anhinga", "exclude": ["Coastal Plain", "Piedmont"]},
-        { "comName" : "Great Cormorant", "exclude" : ["Eastern Coastal Plain"]},
-        { "comName" : "Neotropic Cormorant"},
-        { "comName" : "American White Pelican", "exclude": ["Coastal Plain", "Piedmont"]},
-        { "comName" : "Brown Pelican", "exclude": ["James City", "Eastern Coastal Plain"], "unique_exclude_notes" : "except Eastern Coastal Plain, Isle of Wight Co. east of Rt. 17, James City Co. & Hog Island, Surry Co."},
-        { "comName" : "Gray Heron"},
-        { "comName" : "Little Egret"},
-        { "comName" : "Snowy Egret", "exclude": ["Coastal Plain", "Piedmont"]},
-        { "comName" : "Tricolored Heron", "exclude": ["Coastal Plain", "Piedmont"]},
-        { "comName" : "Reddish Egret"},
-        { "comName" : "White Ibis", "exclude": ["Coastal Plain", "Piedmont"]},
-        { "comName" : "Glossy Ibis", "exclude": ["Coastal Plain"], "unique_exclude_notes" : "except Coastal Plain & Piedmont north of I-64."},
-        { "comName" : "White-faced Ibis"},
-        { "comName" : "Roseate Spoonbill", "exclude": ["Coastal Plain"]},
-        { "comName" : "White-tailed Kite"},
-        { "comName" : "Western Marsh Harrier"},
-        { "comName" : "American Goshawk"},
-        { "comName" : "Broad-winged Hawk (dark morph)"},
-        { "comName" : "Swainson's Hawk", "exclude": ["Northampton"]},
-        { "comName" : "Zone-tailed Hawk"},
-        { "comName" : "Red-tailed Hawk (forms/taxa other than borealis)"},
-        { "comName" : "Ferruginous Hawk"},
-        { "comName" : "Burrowing Owl"},
-        { "comName" : "Lewis's Woodpecker"},
-        { "comName" : "Red-cockaded Woodpecker", "exclude": ["Sussex"]},
-        { "comName" : "Crested Caracara"},
-        { "comName" : "Merlin (richardsonii)"},
-        { "comName" : "Gyrfalcon"},
-        { "comName" : "Prairie Falcon"},
-        { "comName" : "Ash-throated Flycatcher", "exclude": ["Coastal Plain"]},
-        { "comName" : "Couch's Kingbird"},
-        { "comName" : "Western Kingbird", "exclude": ["Coastal Plain"]},
-        { "comName" : "Gray Kingbird"},
-        { "comName" : "Scissor-tailed Flycatcher", "exclude": ["Coastal Plain"]},
-        { "comName" : "Fork-tailed Flycatcher"},
-        { "comName" : "Western Wood-Pewee"},
-        { "comName" : "Alder Flycatcher", "exclude": ["Mountains & Valleys"]},
-        { "comName" : "Dusky Flycatcher"},
-        { "comName" : "Western Flycatcher"},
-        { "comName" : "Say's Phoebe"},
-        { "comName" : "Vermilion Flycatcher"},
-        { "comName" : "Bell's Vireo"},
-        { "comName" : "Black-whiskered Vireo"},
-        { "comName" : "Loggerhead Shrike", "exclude": ["Mountains & Valleys", "Piedmont"]},
-        { "comName" : "Northern Shrike"},
-        { "comName" : "Black-billed Magpie"},
-        { "comName" : "Common Raven", "only": ["Eastern Coastal Plain"]},
-        { "comName" : "Black-capped Chickadee", "exclude": ["Mountains & Valleys"]},
-        { "comName" : "Boreal Chickadee"},
-        { "comName" : "Violet-green Swallow"},
-        { "comName" : "Brown-chested Martin"},
-        { "comName" : "Cave Swallow", "exclude": ["Northampton"]},
-        { "comName" : "Bohemian Waxwing"},
-        { "comName" : "Rock Wren"},
-        { "comName" : "Bewick's Wren"},
-        { "comName" : "Sage Thrasher"},
-        { "comName" : "Mountain Bluebird"},
-        { "comName" : "Townsend's Solitaire"},
-        { "comName" : "Bicknell's Thrush"},
-        { "comName" : "Varied Thrush"},
-        { "comName" : "Northern Wheatear"},
-        { "comName" : "White Wagtail"},
-        { "comName" : "Sprague's Pipit"},
-        { "comName" : "Pine Grosbeak"},
-        { "comName" : "White-winged Crossbill"},
-        { "comName" : "Lesser Goldfinch"},
-        { "comName" : "Chestnut-collared Longspur"},
-        { "comName" : "Smith's Longspur"},
-        { "comName" : "Bachman's Sparrow"},
-        { "comName" : "Black-throated Sparrow"},
-        { "comName" : "Lark Bunting"},
-        { "comName" : "Brewer's Sparrow"},
-        { "comName" : "Dark-eyed Junco (ssp. other than )","flag subspecies other than": ["hyemalis", "carolinensis"]},
-        { "comName" : "White-crowned Sparrow (Gambel's)"},
-        { "comName" : "Harris's Sparrow"},
-        { "comName" : "LeConte's Sparrow", "exclude" : ["Eastern Coastal Plain"]},
-        { "comName" : "Seaside Sparrow", "exclude" :["Eastern Coastal Plain", "Isle of Wight", "York"],"unique_exclude_notes" : "except Eastern Coastal Plain and York Co. & Isle of Wight Co. east of Rt. 17."},
-        { "comName" : "Nelson's Sparrow", "exclude" :["Eastern Coastal Plain","Isle of Wight", "York"],"unique_exclude_notes" : "except Eastern Coastal Plain, Isle of Wight Co. east of Rt. 17 & York Co."},
-        { "comName" : "Saltmarsh Sparrow", "exclude" :["Eastern Coastal Plain"], "unique_exclude_notes" : "except Eastern Coastal Plain & Isle of Wight Co. east of Rt. 17."},
-        { "comName" : "Henslow's Sparrow"},
-        { "comName" : "Savannah Sparrow (Ipswich)", "exclude" : ["Eastern Coastal Plain"]},
-        { "comName" : "Green-tailed Towhee"},
-        { "comName" : "Spotted Towhee"},
-        { "comName" : "Yellow-headed Blackbird", "exclude" : ["Eastern Coastal Plain"]},
-        { "comName" : "Western Meadowlark"},
-        { "comName" : "Bullock's Oriole"},
-        { "comName" : "Scott's Oriole"},
-        { "comName" : "Shiny Cowbird"},
-        { "comName" : "Brewer's Blackbird"},
-        { "comName" : "Boat-tailed Grackle", "exclude" :["Eastern Coastal Plain", "Isle of Wight"], "unique_exclude_notes" : "except Eastern Coastal Plain, Isle of Wight Co. & York Co. east of Rt. 17."},
-        { "comName" : "Lucy's Warbler"},
-        { "comName" : "Virginia's Warbler"},
-        { "comName" : "MacGillivray's Warbler"},
-        { "comName" : "Kirtland's Warbler"},
-        { "comName" : "Yellow-rumped Warbler (Audubon's)"},
-        { "comName" : "Black-throated Gray Warbler"},
-        { "comName" : "Townsend's Warbler"},
-        { "comName" : "Western Tanager", "exclude": ["Coastal Plain"]},
-        { "comName" : "Black-headed Grosbeak"},
-        { "comName" : "Lazuli Bunting"},
-        { "comName" : "Painted Bunting", "exclude": ["Coastal Plain", "Piedmont"]}
-    ],
-    "county_groups" : [
+    "_comment": "This file contains the species that are reviewed in the VARCOM report. There are two sections, review_species and exclude_groups.",
+    "source": "https://www.virginiabirds.org/varcom-review-list",
+    "effective_date": "2021-04-06",
+    "state_list": [
         {
-            "name" : "Eastern Shore",
-            "description" : "Counties which are on the Eastern Shore.",
-            "counties" : [
+            "comName": "Black-bellied Whistling-Duck"
+        },
+        {
+            "comName": "West Indian Whistling-Duck"
+        },
+        {
+            "comName": "Fulvous Whistling-Duck"
+        },
+        {
+            "comName": "Snow Goose"
+        },
+        {
+            "comName": "Snow Goose (Lesser)"
+        },
+        {
+            "comName": "Snow Goose (Greater)"
+        },
+        {
+            "comName": "Ross's Goose"
+        },
+        {
+            "comName": "Greater White-fronted Goose"
+        },
+        {
+            "comName": "Pink-footed Goose"
+        },
+        {
+            "comName": "Brant"
+        },
+        {
+            "comName": "Barnacle Goose"
+        },
+        {
+            "comName": "Cackling Goose"
+        },
+        {
+            "comName": "Canada Goose"
+        },
+        {
+            "comName": "Mute Swan"
+        },
+        {
+            "comName": "Trumpeter Swan"
+        },
+        {
+            "comName": "Tundra Swan"
+        },
+        {
+            "comName": "Wood Duck"
+        },
+        {
+            "comName": "Garganey"
+        },
+        {
+            "comName": "Blue-winged Teal"
+        },
+        {
+            "comName": "Cinnamon Teal"
+        },
+        {
+            "comName": "Northern Shoveler"
+        },
+        {
+            "comName": "Gadwall"
+        },
+        {
+            "comName": "Eurasian Wigeon"
+        },
+        {
+            "comName": "American Wigeon"
+        },
+        {
+            "comName": "Mallard"
+        },
+        {
+            "comName": "American Black Duck"
+        },
+        {
+            "comName": "Mottled Duck"
+        },
+        {
+            "comName": "White-cheeked Pintail"
+        },
+        {
+            "comName": "Northern Pintail"
+        },
+        {
+            "comName": "Green-winged Teal"
+        },
+        {
+            "comName": "Green-winged Teal (American)"
+        },
+        {
+            "comName": "Green-winged Teal (Eurasian)"
+        },
+        {
+            "comName": "Canvasback"
+        },
+        {
+            "comName": "Redhead"
+        },
+        {
+            "comName": "Ring-necked Duck"
+        },
+        {
+            "comName": "Tufted Duck"
+        },
+        {
+            "comName": "Greater Scaup"
+        },
+        {
+            "comName": "Lesser Scaup"
+        },
+        {
+            "comName": "King Eider"
+        },
+        {
+            "comName": "Common Eider"
+        },
+        {
+            "comName": "Harlequin Duck"
+        },
+        {
+            "comName": "Surf Scoter"
+        },
+        {
+            "comName": "White-winged Scoter"
+        },
+        {
+            "comName": "Black Scoter"
+        },
+        {
+            "comName": "Long-tailed Duck"
+        },
+        {
+            "comName": "Bufflehead"
+        },
+        {
+            "comName": "Common Goldeneye"
+        },
+        {
+            "comName": "Barrow's Goldeneye"
+        },
+        {
+            "comName": "Hooded Merganser"
+        },
+        {
+            "comName": "Common Merganser"
+        },
+        {
+            "comName": "Red-breasted Merganser"
+        },
+        {
+            "comName": "Ruddy Duck"
+        },
+        {
+            "comName": "Northern Bobwhite"
+        },
+        {
+            "comName": "Wild Turkey"
+        },
+        {
+            "comName": "Ruffed Grouse"
+        },
+        {
+            "comName": "Ring-necked Pheasant"
+        },
+        {
+            "comName": "American Flamingo"
+        },
+        {
+            "comName": "Pied-billed Grebe"
+        },
+        {
+            "comName": "Horned Grebe"
+        },
+        {
+            "comName": "Red-necked Grebe"
+        },
+        {
+            "comName": "Eared Grebe"
+        },
+        {
+            "comName": "Western Grebe"
+        },
+        {
+            "comName": "Clark's Grebe"
+        },
+        {
+            "comName": "Rock Pigeon"
+        },
+        {
+            "comName": "White-crowned Pigeon"
+        },
+        {
+            "comName": "Eurasian Collared-Dove"
+        },
+        {
+            "comName": "Common Ground Dove"
+        },
+        {
+            "comName": "White-winged Dove"
+        },
+        {
+            "comName": "Mourning Dove"
+        },
+        {
+            "comName": "Groove-billed Ani"
+        },
+        {
+            "comName": "Yellow-billed Cuckoo"
+        },
+        {
+            "comName": "Black-billed Cuckoo"
+        },
+        {
+            "comName": "Common Nighthawk"
+        },
+        {
+            "comName": "Chuck-will's-widow"
+        },
+        {
+            "comName": "Eastern Whip-poor-will"
+        },
+        {
+            "comName": "Chimney Swift"
+        },
+        {
+            "comName": "Rivoli's Hummingbird"
+        },
+        {
+            "comName": "Ruby-throated Hummingbird"
+        },
+        {
+            "comName": "Black-chinned Hummingbird"
+        },
+        {
+            "comName": "Anna's Hummingbird"
+        },
+        {
+            "comName": "Calliope Hummingbird"
+        },
+        {
+            "comName": "Rufous Hummingbird"
+        },
+        {
+            "comName": "Allen's Hummingbird"
+        },
+        {
+            "comName": "Violet-crowned Hummingbird"
+        },
+        {
+            "comName": "Buff-bellied Hummingbird"
+        },
+        {
+            "comName": "Paint-billed Crake"
+        },
+        {
+            "comName": "Clapper Rail"
+        },
+        {
+            "comName": "King Rail"
+        },
+        {
+            "comName": "Virginia Rail"
+        },
+        {
+            "comName": "Sora"
+        },
+        {
+            "comName": "Common Gallinule"
+        },
+        {
+            "comName": "American Coot"
+        },
+        {
+            "comName": "Purple Gallinule"
+        },
+        {
+            "comName": "Yellow Rail"
+        },
+        {
+            "comName": "Black Rail"
+        },
+        {
+            "comName": "Limpkin"
+        },
+        {
+            "comName": "Sandhill Crane"
+        },
+        {
+            "comName": "Black-necked Stilt"
+        },
+        {
+            "comName": "American Avocet"
+        },
+        {
+            "comName": "American Oystercatcher"
+        },
+        {
+            "comName": "Northern Lapwing"
+        },
+        {
+            "comName": "Black-bellied Plover"
+        },
+        {
+            "comName": "American Golden-Plover"
+        },
+        {
+            "comName": "Killdeer"
+        },
+        {
+            "comName": "Semipalmated Plover"
+        },
+        {
+            "comName": "Piping Plover"
+        },
+        {
+            "comName": "Lesser/Greater Sand-Plover"
+        },
+        {
+            "comName": "Wilson's Plover"
+        },
+        {
+            "comName": "Mountain Plover"
+        },
+        {
+            "comName": "Snowy Plover"
+        },
+        {
+            "comName": "Upland Sandpiper"
+        },
+        {
+            "comName": "Hudsonian Whimbrel"
+        },
+        {
+            "comName": "Eurasian Whimbrel"
+        },
+        {
+            "comName": "Long-billed Curlew"
+        },
+        {
+            "comName": "Bar-tailed Godwit"
+        },
+        {
+            "comName": "Bar-tailed Godwit (European)"
+        },
+        {
+            "comName": "Bar-tailed Godwit (Siberian)"
+        },
+        {
+            "comName": "Black-tailed Godwit"
+        },
+        {
+            "comName": "Hudsonian Godwit"
+        },
+        {
+            "comName": "Marbled Godwit"
+        },
+        {
+            "comName": "Ruddy Turnstone"
+        },
+        {
+            "comName": "Red Knot"
+        },
+        {
+            "comName": "Ruff"
+        },
+        {
+            "comName": "Sharp-tailed Sandpiper"
+        },
+        {
+            "comName": "Stilt Sandpiper"
+        },
+        {
+            "comName": "Curlew Sandpiper"
+        },
+        {
+            "comName": "Red-necked Stint"
+        },
+        {
+            "comName": "Sanderling"
+        },
+        {
+            "comName": "Dunlin"
+        },
+        {
+            "comName": "Purple Sandpiper"
+        },
+        {
+            "comName": "Baird's Sandpiper"
+        },
+        {
+            "comName": "Least Sandpiper"
+        },
+        {
+            "comName": "White-rumped Sandpiper"
+        },
+        {
+            "comName": "Buff-breasted Sandpiper"
+        },
+        {
+            "comName": "Pectoral Sandpiper"
+        },
+        {
+            "comName": "Semipalmated Sandpiper"
+        },
+        {
+            "comName": "Western Sandpiper"
+        },
+        {
+            "comName": "Short-billed Dowitcher"
+        },
+        {
+            "comName": "Short-billed Dowitcher (griseus)"
+        },
+        {
+            "comName": "Short-billed Dowitcher (hendersoni)"
+        },
+        {
+            "comName": "Long-billed Dowitcher"
+        },
+        {
+            "comName": "Eurasian Woodcock"
+        },
+        {
+            "comName": "American Woodcock"
+        },
+        {
+            "comName": "Wilson's Snipe"
+        },
+        {
+            "comName": "Terek Sandpiper"
+        },
+        {
+            "comName": "Spotted Sandpiper"
+        },
+        {
+            "comName": "Solitary Sandpiper"
+        },
+        {
+            "comName": "Lesser Yellowlegs"
+        },
+        {
+            "comName": "Willet"
+        },
+        {
+            "comName": "Willet (Eastern)"
+        },
+        {
+            "comName": "Willet (Western)"
+        },
+        {
+            "comName": "Greater Yellowlegs"
+        },
+        {
+            "comName": "Wilson's Phalarope"
+        },
+        {
+            "comName": "Red-necked Phalarope"
+        },
+        {
+            "comName": "Red Phalarope"
+        },
+        {
+            "comName": "Great Skua"
+        },
+        {
+            "comName": "South Polar Skua"
+        },
+        {
+            "comName": "Pomarine Jaeger"
+        },
+        {
+            "comName": "Parasitic Jaeger"
+        },
+        {
+            "comName": "Long-tailed Jaeger"
+        },
+        {
+            "comName": "Dovekie"
+        },
+        {
+            "comName": "Common Murre"
+        },
+        {
+            "comName": "Thick-billed Murre"
+        },
+        {
+            "comName": "Razorbill"
+        },
+        {
+            "comName": "Black Guillemot"
+        },
+        {
+            "comName": "Ancient Murrelet"
+        },
+        {
+            "comName": "Atlantic Puffin"
+        },
+        {
+            "comName": "Black-legged Kittiwake"
+        },
+        {
+            "comName": "Sabine's Gull"
+        },
+        {
+            "comName": "Bonaparte's Gull"
+        },
+        {
+            "comName": "Black-headed Gull"
+        },
+        {
+            "comName": "Little Gull"
+        },
+        {
+            "comName": "Laughing Gull"
+        },
+        {
+            "comName": "Franklin's Gull"
+        },
+        {
+            "comName": "Black-tailed Gull"
+        },
+        {
+            "comName": "Heermann's Gull"
+        },
+        {
+            "comName": "Common Gull"
+        },
+        {
+            "comName": "Ring-billed Gull"
+        },
+        {
+            "comName": "California Gull"
+        },
+        {
+            "comName": "American Herring Gull"
+        },
+        {
+            "comName": "Yellow-legged Gull"
+        },
+        {
+            "comName": "Iceland Gull"
+        },
+        {
+            "comName": "Iceland Gull (kumlieni)"
+        },
+        {
+            "comName": "Iceland Gull (Thayer's)"
+        },
+        {
+            "comName": "Lesser Black-backed Gull"
+        },
+        {
+            "comName": "Glaucous Gull"
+        },
+        {
+            "comName": "Great Black-backed Gull"
+        },
+        {
+            "comName": "Brown Noddy"
+        },
+        {
+            "comName": "Sooty Tern"
+        },
+        {
+            "comName": "Bridled Tern"
+        },
+        {
+            "comName": "Least Tern"
+        },
+        {
+            "comName": "Gull-billed Tern"
+        },
+        {
+            "comName": "Caspian Tern"
+        },
+        {
+            "comName": "Black Tern"
+        },
+        {
+            "comName": "White-winged Tern"
+        },
+        {
+            "comName": "Roseate Tern"
+        },
+        {
+            "comName": "Common Tern"
+        },
+        {
+            "comName": "Arctic Tern"
+        },
+        {
+            "comName": "Forster's Tern"
+        },
+        {
+            "comName": "Royal Tern"
+        },
+        {
+            "comName": "Sandwich Tern"
+        },
+        {
+            "comName": "Elegant Tern"
+        },
+        {
+            "comName": "Black Skimmer"
+        },
+        {
+            "comName": "White-tailed Tropicbird"
+        },
+        {
+            "comName": "Red-billed Tropicbird"
+        },
+        {
+            "comName": "Red-throated Loon"
+        },
+        {
+            "comName": "Pacific Loon"
+        },
+        {
+            "comName": "Common Loon"
+        },
+        {
+            "comName": "Atlantic Yellow-nosed Albatross"
+        },
+        {
+            "comName": "Black-browed Albatross"
+        },
+        {
+            "comName": "Wilson's Storm-Petrel"
+        },
+        {
+            "comName": "White-faced Storm-Petrel"
+        },
+        {
+            "comName": "European Storm-Petrel"
+        },
+        {
+            "comName": "Leach's Storm-Petrel"
+        },
+        {
+            "comName": "Band-rumped Storm-Petrel"
+        },
+        {
+            "comName": "Northern Fulmar"
+        },
+        {
+            "comName": "Trindade Petrel"
+        },
+        {
+            "comName": "Bermuda Petrel"
+        },
+        {
+            "comName": "Black-capped Petrel"
+        },
+        {
+            "comName": "Desertas Petrel"
+        },
+        {
+            "comName": "Bulwer's Petrel"
+        },
+        {
+            "comName": "Cory's Shearwater"
+        },
+        {
+            "comName": "Sooty Shearwater"
+        },
+        {
+            "comName": "Great Shearwater"
+        },
+        {
+            "comName": "Manx Shearwater"
+        },
+        {
+            "comName": "Sargasso Shearwater"
+        },
+        {
+            "comName": "Wood Stork"
+        },
+        {
+            "comName": "Magnificent Frigatebird"
+        },
+        {
+            "comName": "Masked Booby"
+        },
+        {
+            "comName": "Brown Booby"
+        },
+        {
+            "comName": "Northern Gannet"
+        },
+        {
+            "comName": "Anhinga"
+        },
+        {
+            "comName": "Great Cormorant"
+        },
+        {
+            "comName": "Double-crested Cormorant"
+        },
+        {
+            "comName": "Neotropic Cormorant"
+        },
+        {
+            "comName": "American White Pelican"
+        },
+        {
+            "comName": "Brown Pelican"
+        },
+        {
+            "comName": "American Bittern"
+        },
+        {
+            "comName": "Least Bittern"
+        },
+        {
+            "comName": "Great Blue Heron"
+        },
+        {
+            "comName": "Great Blue Heron (Great White)"
+        },
+        {
+            "comName": "Gray Heron"
+        },
+        {
+            "comName": "Great Egret"
+        },
+        {
+            "comName": "Little Egret"
+        },
+        {
+            "comName": "Snowy Egret"
+        },
+        {
+            "comName": "Little Blue Heron"
+        },
+        {
+            "comName": "Tricolored Heron"
+        },
+        {
+            "comName": "Reddish Egret"
+        },
+        {
+            "comName": "Western Cattle-Egret"
+        },
+        {
+            "comName": "Green Heron"
+        },
+        {
+            "comName": "Black-crowned Night Heron"
+        },
+        {
+            "comName": "Yellow-crowned Night Heron"
+        },
+        {
+            "comName": "White Ibis"
+        },
+        {
+            "comName": "Glossy Ibis"
+        },
+        {
+            "comName": "White-faced Ibis"
+        },
+        {
+            "comName": "Roseate Spoonbill"
+        },
+        {
+            "comName": "Black Vulture"
+        },
+        {
+            "comName": "Turkey Vulture"
+        },
+        {
+            "comName": "Osprey"
+        },
+        {
+            "comName": "White-tailed Kite"
+        },
+        {
+            "comName": "Swallow-tailed Kite"
+        },
+        {
+            "comName": "Golden Eagle"
+        },
+        {
+            "comName": "Northern Harrier"
+        },
+        {
+            "comName": "Western Marsh Harrier"
+        },
+        {
+            "comName": "Sharp-shinned Hawk"
+        },
+        {
+            "comName": "Cooper's Hawk"
+        },
+        {
+            "comName": "American Goshawk"
+        },
+        {
+            "comName": "Bald Eagle"
+        },
+        {
+            "comName": "Mississippi Kite"
+        },
+        {
+            "comName": "Red-shouldered Hawk"
+        },
+        {
+            "comName": "Broad-winged Hawk"
+        },
+        {
+            "comName": "Swainson's Hawk"
+        },
+        {
+            "comName": "Zone-tailed Hawk"
+        },
+        {
+            "comName": "Red-tailed Hawk"
+        },
+        {
+            "comName": "Red-tailed Hawk (Harlan's)"
+        },
+        {
+            "comName": "Rough-legged Hawk"
+        },
+        {
+            "comName": "Ferruginous Hawk"
+        },
+        {
+            "comName": "American Barn Owl"
+        },
+        {
+            "comName": "Eastern Screech-Owl"
+        },
+        {
+            "comName": "Great Horned Owl"
+        },
+        {
+            "comName": "Snowy Owl"
+        },
+        {
+            "comName": "Burrowing Owl"
+        },
+        {
+            "comName": "Barred Owl"
+        },
+        {
+            "comName": "Long-eared Owl"
+        },
+        {
+            "comName": "Short-eared Owl"
+        },
+        {
+            "comName": "Northern Saw-whet Owl"
+        },
+        {
+            "comName": "Belted Kingfisher"
+        },
+        {
+            "comName": "Lewis's Woodpecker"
+        },
+        {
+            "comName": "Red-headed Woodpecker"
+        },
+        {
+            "comName": "Red-bellied Woodpecker"
+        },
+        {
+            "comName": "Yellow-bellied Sapsucker"
+        },
+        {
+            "comName": "Downy Woodpecker"
+        },
+        {
+            "comName": "Red-cockaded Woodpecker"
+        },
+        {
+            "comName": "Hairy Woodpecker"
+        },
+        {
+            "comName": "Northern Flicker"
+        },
+        {
+            "comName": "Pileated Woodpecker"
+        },
+        {
+            "comName": "Crested Caracara"
+        },
+        {
+            "comName": "American Kestrel"
+        },
+        {
+            "comName": "Merlin"
+        },
+        {
+            "comName": "Merlin (Taiga)"
+        },
+        {
+            "comName": "Merlin (Prairie)"
+        },
+        {
+            "comName": "Gyrfalcon"
+        },
+        {
+            "comName": "Peregrine Falcon"
+        },
+        {
+            "comName": "Prairie Falcon"
+        },
+        {
+            "comName": "Monk Parakeet"
+        },
+        {
+            "comName": "Ash-throated Flycatcher"
+        },
+        {
+            "comName": "Great Crested Flycatcher"
+        },
+        {
+            "comName": "Tropical Kingbird"
+        },
+        {
+            "comName": "Couch's Kingbird"
+        },
+        {
+            "comName": "Western Kingbird"
+        },
+        {
+            "comName": "Eastern Kingbird"
+        },
+        {
+            "comName": "Gray Kingbird"
+        },
+        {
+            "comName": "Scissor-tailed Flycatcher"
+        },
+        {
+            "comName": "Fork-tailed Flycatcher"
+        },
+        {
+            "comName": "Olive-sided Flycatcher"
+        },
+        {
+            "comName": "Western Wood-Pewee"
+        },
+        {
+            "comName": "Eastern Wood-Pewee"
+        },
+        {
+            "comName": "Yellow-bellied Flycatcher"
+        },
+        {
+            "comName": "Acadian Flycatcher"
+        },
+        {
+            "comName": "Alder Flycatcher"
+        },
+        {
+            "comName": "Willow Flycatcher"
+        },
+        {
+            "comName": "Least Flycatcher"
+        },
+        {
+            "comName": "Dusky Flycatcher"
+        },
+        {
+            "comName": "Western Flycatcher"
+        },
+        {
+            "comName": "Eastern Phoebe"
+        },
+        {
+            "comName": "Say's Phoebe"
+        },
+        {
+            "comName": "Vermilion Flycatcher"
+        },
+        {
+            "comName": "White-eyed Vireo"
+        },
+        {
+            "comName": "Bell's Vireo"
+        },
+        {
+            "comName": "Yellow-throated Vireo"
+        },
+        {
+            "comName": "Blue-headed Vireo"
+        },
+        {
+            "comName": "Philadelphia Vireo"
+        },
+        {
+            "comName": "Eastern Warbling Vireo"
+        },
+        {
+            "comName": "Red-eyed Vireo"
+        },
+        {
+            "comName": "Black-whiskered Vireo"
+        },
+        {
+            "comName": "Loggerhead Shrike"
+        },
+        {
+            "comName": "Northern Shrike"
+        },
+        {
+            "comName": "Blue Jay"
+        },
+        {
+            "comName": "Black-billed Magpie"
+        },
+        {
+            "comName": "American Crow"
+        },
+        {
+            "comName": "Fish Crow"
+        },
+        {
+            "comName": "Common Raven"
+        },
+        {
+            "comName": "Carolina Chickadee"
+        },
+        {
+            "comName": "Black-capped Chickadee"
+        },
+        {
+            "comName": "Boreal Chickadee"
+        },
+        {
+            "comName": "Tufted Titmouse"
+        },
+        {
+            "comName": "Horned Lark"
+        },
+        {
+            "comName": "Bank Swallow"
+        },
+        {
+            "comName": "Tree Swallow"
+        },
+        {
+            "comName": "Violet-green Swallow"
+        },
+        {
+            "comName": "Northern Rough-winged Swallow"
+        },
+        {
+            "comName": "Brown-chested Martin"
+        },
+        {
+            "comName": "Purple Martin"
+        },
+        {
+            "comName": "Barn Swallow"
+        },
+        {
+            "comName": "Cliff Swallow"
+        },
+        {
+            "comName": "Cave Swallow"
+        },
+        {
+            "comName": "Ruby-crowned Kinglet"
+        },
+        {
+            "comName": "Golden-crowned Kinglet"
+        },
+        {
+            "comName": "Bohemian Waxwing"
+        },
+        {
+            "comName": "Cedar Waxwing"
+        },
+        {
+            "comName": "Red-breasted Nuthatch"
+        },
+        {
+            "comName": "White-breasted Nuthatch"
+        },
+        {
+            "comName": "Brown-headed Nuthatch"
+        },
+        {
+            "comName": "Brown Creeper"
+        },
+        {
+            "comName": "Blue-gray Gnatcatcher"
+        },
+        {
+            "comName": "Rock Wren"
+        },
+        {
+            "comName": "Bewick's Wren"
+        },
+        {
+            "comName": "Carolina Wren"
+        },
+        {
+            "comName": "Northern House Wren"
+        },
+        {
+            "comName": "Winter Wren"
+        },
+        {
+            "comName": "Sedge Wren"
+        },
+        {
+            "comName": "Marsh Wren"
+        },
+        {
+            "comName": "Gray Catbird"
+        },
+        {
+            "comName": "Brown Thrasher"
+        },
+        {
+            "comName": "Sage Thrasher"
+        },
+        {
+            "comName": "Northern Mockingbird"
+        },
+        {
+            "comName": "European Starling"
+        },
+        {
+            "comName": "Eastern Bluebird"
+        },
+        {
+            "comName": "Mountain Bluebird"
+        },
+        {
+            "comName": "Townsend's Solitaire"
+        },
+        {
+            "comName": "Veery"
+        },
+        {
+            "comName": "Gray-cheeked Thrush"
+        },
+        {
+            "comName": "Bicknell's Thrush"
+        },
+        {
+            "comName": "Swainson's Thrush"
+        },
+        {
+            "comName": "Hermit Thrush"
+        },
+        {
+            "comName": "Wood Thrush"
+        },
+        {
+            "comName": "American Robin"
+        },
+        {
+            "comName": "Varied Thrush"
+        },
+        {
+            "comName": "Northern Wheatear"
+        },
+        {
+            "comName": "House Sparrow"
+        },
+        {
+            "comName": "White Wagtail"
+        },
+        {
+            "comName": "American Pipit"
+        },
+        {
+            "comName": "Sprague's Pipit"
+        },
+        {
+            "comName": "Evening Grosbeak"
+        },
+        {
+            "comName": "Pine Grosbeak"
+        },
+        {
+            "comName": "Gray-crowned Rosy-Finch"
+        },
+        {
+            "comName": "House Finch"
+        },
+        {
+            "comName": "Purple Finch"
+        },
+        {
+            "comName": "Redpoll"
+        },
+        {
+            "comName": "Red Crossbill"
+        },
+        {
+            "comName": "White-winged Crossbill"
+        },
+        {
+            "comName": "Pine Siskin"
+        },
+        {
+            "comName": "Lesser Goldfinch"
+        },
+        {
+            "comName": "American Goldfinch"
+        },
+        {
+            "comName": "Lapland Longspur"
+        },
+        {
+            "comName": "Chestnut-collared Longspur"
+        },
+        {
+            "comName": "Smith's Longspur"
+        },
+        {
+            "comName": "Snow Bunting"
+        },
+        {
+            "comName": "Bachman's Sparrow"
+        },
+        {
+            "comName": "Grasshopper Sparrow"
+        },
+        {
+            "comName": "Black-throated Sparrow"
+        },
+        {
+            "comName": "Lark Sparrow"
+        },
+        {
+            "comName": "Lark Bunting"
+        },
+        {
+            "comName": "Chipping Sparrow"
+        },
+        {
+            "comName": "Clay-colored Sparrow"
+        },
+        {
+            "comName": "Field Sparrow"
+        },
+        {
+            "comName": "Brewer's Sparrow"
+        },
+        {
+            "comName": "Fox Sparrow"
+        },
+        {
+            "comName": "Fox Sparrow (Red)"
+        },
+        {
+            "comName": "American Tree Sparrow"
+        },
+        {
+            "comName": "Dark-eyed Junco"
+        },
+        {
+            "comName": "Dark-eyed Junco (Oregon)"
+        },
+        {
+            "comName": "Dark-eyed Junco (Pink-sided)"
+        },
+        {
+            "comName": "White-crowned Sparrow"
+        },
+        {
+            "comName": "White-crowned Sparrow (Gambel's)"
+        },
+        {
+            "comName": "Harris's Sparrow"
+        },
+        {
+            "comName": "White-throated Sparrow"
+        },
+        {
+            "comName": "Vesper Sparrow"
+        },
+        {
+            "comName": "LeConte's Sparrow"
+        },
+        {
+            "comName": "Seaside Sparrow"
+        },
+        {
+            "comName": "Nelson's Sparrow"
+        },
+        {
+            "comName": "Nelson's Sparrow (Nelson's)"
+        },
+        {
+            "comName": "Nelson's Sparrow (Interior)"
+        },
+        {
+            "comName": "Nelson's Sparrow (Atlantic Coast)"
+        },
+        {
+            "comName": "Saltmarsh Sparrow"
+        },
+        {
+            "comName": "Henslow's Sparrow"
+        },
+        {
+            "comName": "Savannah Sparrow"
+        },
+        {
+            "comName": "Savannah Sparrow (Ipswich)"
+        },
+        {
+            "comName": "Song Sparrow"
+        },
+        {
+            "comName": "Lincoln's Sparrow"
+        },
+        {
+            "comName": "Swamp Sparrow"
+        },
+        {
+            "comName": "Green-tailed Towhee"
+        },
+        {
+            "comName": "Spotted Towhee"
+        },
+        {
+            "comName": "Eastern Towhee"
+        },
+        {
+            "comName": "Yellow-breasted Chat"
+        },
+        {
+            "comName": "Yellow-headed Blackbird"
+        },
+        {
+            "comName": "Bobolink"
+        },
+        {
+            "comName": "Eastern Meadowlark"
+        },
+        {
+            "comName": "Western Meadowlark"
+        },
+        {
+            "comName": "Orchard Oriole"
+        },
+        {
+            "comName": "Bullock's Oriole"
+        },
+        {
+            "comName": "Baltimore Oriole"
+        },
+        {
+            "comName": "Scott's Oriole"
+        },
+        {
+            "comName": "Red-winged Blackbird"
+        },
+        {
+            "comName": "Shiny Cowbird"
+        },
+        {
+            "comName": "Brown-headed Cowbird"
+        },
+        {
+            "comName": "Rusty Blackbird"
+        },
+        {
+            "comName": "Brewer's Blackbird"
+        },
+        {
+            "comName": "Common Grackle"
+        },
+        {
+            "comName": "Boat-tailed Grackle"
+        },
+        {
+            "comName": "Ovenbird"
+        },
+        {
+            "comName": "Worm-eating Warbler"
+        },
+        {
+            "comName": "Louisiana Waterthrush"
+        },
+        {
+            "comName": "Northern Waterthrush"
+        },
+        {
+            "comName": "Golden-winged Warbler"
+        },
+        {
+            "comName": "Blue-winged Warbler"
+        },
+        {
+            "comName": "Black-and-white Warbler"
+        },
+        {
+            "comName": "Prothonotary Warbler"
+        },
+        {
+            "comName": "Swainson's Warbler"
+        },
+        {
+            "comName": "Tennessee Warbler"
+        },
+        {
+            "comName": "Orange-crowned Warbler"
+        },
+        {
+            "comName": "Lucy's Warbler"
+        },
+        {
+            "comName": "Nashville Warbler"
+        },
+        {
+            "comName": "Virginia's Warbler"
+        },
+        {
+            "comName": "Connecticut Warbler"
+        },
+        {
+            "comName": "MacGillivray's Warbler"
+        },
+        {
+            "comName": "Mourning Warbler"
+        },
+        {
+            "comName": "Kentucky Warbler"
+        },
+        {
+            "comName": "Common Yellowthroat"
+        },
+        {
+            "comName": "Hooded Warbler"
+        },
+        {
+            "comName": "American Redstart"
+        },
+        {
+            "comName": "Kirtland's Warbler"
+        },
+        {
+            "comName": "Cape May Warbler"
+        },
+        {
+            "comName": "Cerulean Warbler"
+        },
+        {
+            "comName": "Northern Parula"
+        },
+        {
+            "comName": "Magnolia Warbler"
+        },
+        {
+            "comName": "Bay-breasted Warbler"
+        },
+        {
+            "comName": "Blackburnian Warbler"
+        },
+        {
+            "comName": "Northern Yellow Warbler"
+        },
+        {
+            "comName": "Chestnut-sided Warbler"
+        },
+        {
+            "comName": "Blackpoll Warbler"
+        },
+        {
+            "comName": "Black-throated Blue Warbler"
+        },
+        {
+            "comName": "Palm Warbler"
+        },
+        {
+            "comName": "Palm Warbler (Western)"
+        },
+        {
+            "comName": "Palm Warbler (Yellow)"
+        },
+        {
+            "comName": "Pine Warbler"
+        },
+        {
+            "comName": "Yellow-rumped Warbler"
+        },
+        {
+            "comName": "Yellow-rumped Warbler (Myrtle)"
+        },
+        {
+            "comName": "Yellow-rumped Warbler (Audubon's)"
+        },
+        {
+            "comName": "Yellow-throated Warbler"
+        },
+        {
+            "comName": "Prairie Warbler"
+        },
+        {
+            "comName": "Black-throated Gray Warbler"
+        },
+        {
+            "comName": "Townsend's Warbler"
+        },
+        {
+            "comName": "Black-throated Green Warbler"
+        },
+        {
+            "comName": "Canada Warbler"
+        },
+        {
+            "comName": "Wilson's Warbler"
+        },
+        {
+            "comName": "Summer Tanager"
+        },
+        {
+            "comName": "Scarlet Tanager"
+        },
+        {
+            "comName": "Western Tanager"
+        },
+        {
+            "comName": "Northern Cardinal"
+        },
+        {
+            "comName": "Rose-breasted Grosbeak"
+        },
+        {
+            "comName": "Black-headed Grosbeak"
+        },
+        {
+            "comName": "Blue Grosbeak"
+        },
+        {
+            "comName": "Lazuli Bunting"
+        },
+        {
+            "comName": "Indigo Bunting"
+        },
+        {
+            "comName": "Painted Bunting"
+        },
+        {
+            "comName": "Dickcissel"
+        }
+    ],
+    "review_species": [
+        {
+            "comName": "Gray-crowned Rosy-Finch"
+        },
+        {
+            "comName": "Mexican Violetear"
+        },
+        {
+            "comName": "Tropical Kingbird"
+        },
+        {
+            "comName": "Black-bellied Whistling-Duck",
+            "exclude": [
+                "Coastal Plain",
+                "Piedmont"
+            ]
+        },
+        {
+            "comName": "West Indian Whistling-Duck"
+        },
+        {
+            "comName": "Fulvous Whistling-Duck"
+        },
+        {
+            "comName": "Ross's Goose (blue morph)"
+        },
+        {
+            "comName": "Pink-footed Goose"
+        },
+        {
+            "comName": "Brant",
+            "flag subspecies other than": [
+                "hrota"
+            ],
+            "exclude": [
+                "Eastern Coastal Plain"
+            ],
+            "unique_exclude_notes": "except Eastern Coastal Plain & York Co. east of Rt. 17."
+        },
+        {
+            "comName": "Barnacle Goose"
+        },
+        {
+            "comName": "Trumpeter Swan",
+            "exclude": [
+                "Mountains & Valleys",
+                "Albemarle",
+                "Piedmont north of I-64"
+            ],
+            "unique_exclude_notes": "except west of I-95 and north of I-64."
+        },
+        {
+            "comName": "Garganey"
+        },
+        {
+            "comName": "Cinnamon Teal"
+        },
+        {
+            "comName": "Eurasian Wigeon",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Mottled Duck"
+        },
+        {
+            "comName": "White-cheeked Pintail"
+        },
+        {
+            "comName": "Green-winged Teal (Eurasian)"
+        },
+        {
+            "comName": "Tufted Duck"
+        },
+        {
+            "comName": "King Eider",
+            "exclude": [
+                "Eastern Shore"
+            ],
+            "unique_exclude_notes": "except Chesapeake Bay-Bridge Tunnel, Eastern Shore, Norfolk and Virginia Beach."
+        },
+        {
+            "comName": "Common Eider",
+            "exclude": [
+                "Norfolk",
+                "Virginia Beach",
+                "Eastern Shore"
+            ],
+            "unique_exclude_notes": "except Chesapeake Bay-Bridge Tunnel, Eastern Shore, Norfolk and Virginia Beach."
+        },
+        {
+            "comName": "Harlequin Duck",
+            "exclude": [
+                "Norfolk",
+                "Virginia Beach",
+                "Eastern Shore"
+            ],
+            "unique_exclude_notes": "except Chesapeake Bay-Bridge Tunnel, Eastern Shore, Norfolk and Virginia Beach."
+        },
+        {
+            "comName": "Barrow's Goldeneye"
+        },
+        {
+            "comName": "Ruffed Grouse",
+            "exclude": [
+                "Mountains & Valleys"
+            ]
+        },
+        {
+            "comName": "American Flamingo"
+        },
+        {
+            "comName": "Phoenicopterus sp. (unidentified flamingo)"
+        },
+        {
+            "comName": "Eared Grebe",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ],
+            "unique_exclude_notes": "except Eastern Coastal Plain & South Holston Lake."
+        },
+        {
+            "comName": "Western Grebe",
+            "exclude": [
+                "Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Clark's Grebe"
+        },
+        {
+            "comName": "White-crowned Pigeon"
+        },
+        {
+            "comName": "Common Ground Dove"
+        },
+        {
+            "comName": "White-winged Dove",
+            "exclude": [
+                "Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Groove-billed Ani"
+        },
+        {
+            "comName": "Rivoli's Hummingbird"
+        },
+        {
+            "comName": "Black-chinned Hummingbird"
+        },
+        {
+            "comName": "Anna's Hummingbird"
+        },
+        {
+            "comName": "Calliope Hummingbird"
+        },
+        {
+            "comName": "Allen's Hummingbird"
+        },
+        {
+            "comName": "Violet-crowned Hummingbird"
+        },
+        {
+            "comName": "Buff-bellied Hummingbird"
+        },
+        {
+            "comName": "Paint-billed Crake"
+        },
+        {
+            "comName": "Clapper Rail",
+            "exclude": [
+                "Isle of Wight",
+                "James City",
+                "York",
+                "Eastern Coastal Plain"
+            ],
+            "unique_exclude_notes": "except Eastern Coastal Plain, York Co. James City Co. Isle of Wight Co. & Hog Island, Surry Co."
+        },
+        {
+            "comName": "Purple Gallinule"
+        },
+        {
+            "comName": "Yellow Rail"
+        },
+        {
+            "comName": "Black Rail"
+        },
+        {
+            "comName": "Limpkin"
+        },
+        {
+            "comName": "Black-necked Stilt",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ]
+        },
+        {
+            "comName": "American Oystercatcher",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ],
+            "unique_exclude_notes": "except Eastern Coastal Plain & York Co. east of Rt. 17."
+        },
+        {
+            "comName": "Northern Lapwing"
+        },
+        {
+            "comName": "Piping Plover",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Lesser/Greater Sand-Plover"
+        },
+        {
+            "comName": "Wilson's Plover",
+            "unique_exclude_notes": "Except barrier islands of Accomack County."
+        },
+        {
+            "comName": "Mountain Plover"
+        },
+        {
+            "comName": "Snowy Plover"
+        },
+        {
+            "comName": "Hudsonian Whimbrel",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ],
+            "unique_exclude_notes": "except Eastern Coastal Plain & Hog Island, Surry Co."
+        },
+        {
+            "comName": "Eurasian Whimbrel"
+        },
+        {
+            "comName": "Long-billed Curlew",
+            "unique_exclude_notes": "except barrier island lagoon system."
+        },
+        {
+            "comName": "Bar-tailed Godwit"
+        },
+        {
+            "comName": "Black-tailed Godwit"
+        },
+        {
+            "comName": "Hudsonian Godwit",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Marbled Godwit",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Ruddy Turnstone",
+            "exclude": [
+                "Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Red Knot",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Ruff",
+            "exclude": [
+                "Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Sharp-tailed Sandpiper"
+        },
+        {
+            "comName": "Curlew Sandpiper"
+        },
+        {
+            "comName": "Red-necked Stint"
+        },
+        {
+            "comName": "Purple Sandpiper",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ]
+        },
+        {
+            "comName": "White-rumped Sandpiper",
+            "exclude": [
+                "Mountains & Valleys",
+                "Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Buff-breasted Sandpiper",
+            "exclude": [
+                "Coastal Plain",
+                "Piedmont"
+            ]
+        },
+        {
+            "comName": "Long-billed Dowitcher",
+            "exclude": [
+                "Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Eurasian Woodcock"
+        },
+        {
+            "comName": "Terek Sandpiper"
+        },
+        {
+            "comName": "Willet",
+            "exclude": [
+                "Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Wilson's Phalarope",
+            "exclude": [
+                "Mountains & Valleys",
+                "Eastern Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Red Phalarope",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Great Skua",
+            "unique_exclude_notes": "except pelagic"
+        },
+        {
+            "comName": "South Polar Skua"
+        },
+        {
+            "comName": "Pomarine Jaeger",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Parasitic Jaeger",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Long-tailed Jaeger",
+            "unique_exclude_notes": "except pelagic"
+        },
+        {
+            "comName": "Dovekie",
+            "unique_exclude_notes": "except pelagic"
+        },
+        {
+            "comName": "Common Murre"
+        },
+        {
+            "comName": "Thick-billed Murre"
+        },
+        {
+            "comName": "Uria sp. (unidentified murre)"
+        },
+        {
+            "comName": "Razorbill",
+            "exclude": [
+                "Virginia Beach",
+                "Eastern Shore"
+            ],
+            "unique_exclude_notes": "pelagic, CBBT, Eastern Shore and VA Beach."
+        },
+        {
+            "comName": "Black Guillemot"
+        },
+        {
+            "comName": "Ancient Murrelet"
+        },
+        {
+            "comName": "Atlantic Puffin",
+            "unique_exclude_notes": "except pelagic"
+        },
+        {
+            "comName": "Black-legged Kittiwake",
+            "unique_exclude_notes": "except pelagic"
+        },
+        {
+            "comName": "Sabine's Gull"
+        },
+        {
+            "comName": "Black-headed Gull",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Little Gull",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Laughing Gull",
+            "exclude": [
+                "Coastal Plain",
+                "Piedmont"
+            ]
+        },
+        {
+            "comName": "Franklin's Gull",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Black-tailed Gull"
+        },
+        {
+            "comName": "Heermann's Gull"
+        },
+        {
+            "comName": "Common Gull"
+        },
+        {
+            "comName": "California Gull"
+        },
+        {
+            "comName": "Yellow-legged Gull"
+        },
+        {
+            "comName": "Iceland Gull"
+        },
+        {
+            "comName": "Iceland Gull (Thayer's)"
+        },
+        {
+            "comName": "Iceland Gull (kumlieni)",
+            "exclude": [
+                "Coastal Plain",
+                "Prince William"
+            ]
+        },
+        {
+            "comName": "Iceland Gull (thayeri/kumlieni)"
+        },
+        {
+            "comName": "Lesser Black-backed Gull",
+            "exclude": [
+                "Coastal Plain",
+                "Piedmont"
+            ]
+        },
+        {
+            "comName": "Glaucous Gull",
+            "exclude": [
+                "Coastal Plain",
+                "Prince William"
+            ]
+        },
+        {
+            "comName": "Great Black-backed Gull",
+            "exclude": [
+                "Coastal Plain",
+                "Henrico",
+                "Richmond",
+                "Piedmont north of I-64"
+            ],
+            "unique_exclude_notes": "except Piedmont north of I-64."
+        },
+        {
+            "comName": "Brown Noddy"
+        },
+        {
+            "comName": "Sooty Tern",
+            "unique_exclude_notes": "except pelagic"
+        },
+        {
+            "comName": "Bridled Tern",
+            "unique_exclude_notes": "except pelagic"
+        },
+        {
+            "comName": "Least Tern",
+            "exclude": [
+                "James City",
+                "York",
+                "Surry",
+                "Eastern Coastal Plain"
+            ],
+            "unique_exclude_notes": "except Eastern Coastal Plain, Isle of Wight County east of Rt. 17, James City Co. York Co. Hog Island, Surry Co."
+        },
+        {
+            "comName": "Gull-billed Tern",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ]
+        },
+        {
+            "comName": "White-winged Tern"
+        },
+        {
+            "comName": "Roseate Tern",
+            "exclude": [
+                "Virginia Beach",
+                "Northampton",
+                "Accomack"
+            ]
+        },
+        {
+            "comName": "Arctic Tern"
+        },
+        {
+            "comName": "Royal Tern",
+            "exclude": [
+                "Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Sandwich Tern",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Elegant Tern"
+        },
+        {
+            "comName": "Black Skimmer",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ]
+        },
+        {
+            "comName": "White-tailed Tropicbird"
+        },
+        {
+            "comName": "Red-billed Tropicbird"
+        },
+        {
+            "comName": "Red-throated Loon",
+            "exclude": [
+                "Coastal Plain"
+            ],
+            "unique_exclude_notes": "except Coastal Plain & Kerr Reservoir."
+        },
+        {
+            "comName": "Pacific Loon"
+        },
+        {
+            "comName": "Atlantic Yellow-nosed Albatross"
+        },
+        {
+            "comName": "Black-browed Albatross"
+        },
+        {
+            "comName": "Wilson's Storm-Petrel",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ]
+        },
+        {
+            "comName": "White-faced Storm-Petrel"
+        },
+        {
+            "comName": "European Storm-Petrel"
+        },
+        {
+            "comName": "Leach's Storm-Petrel",
+            "unique_exclude_notes": "except pelagic"
+        },
+        {
+            "comName": "Band-rumped Storm-Petrel"
+        },
+        {
+            "comName": "Northern Fulmar",
+            "unique_exclude_notes": "except pelagic"
+        },
+        {
+            "comName": "Trindade Petrel"
+        },
+        {
+            "comName": "Bermuda Petrel"
+        },
+        {
+            "comName": "Black-capped Petrel"
+        },
+        {
+            "comName": "Desertas Petrel"
+        },
+        {
+            "comName": "Cape Verde Petrel"
+        },
+        {
+            "comName": "Cory's Shearwater",
+            "unique_exclude_notes": "except pelagic"
+        },
+        {
+            "comName": "Sooty Shearwater",
+            "exclude": [
+                "Virginia Beach",
+                "Northampton"
+            ],
+            "unique_exclude_notes": "except Virginia Beach, Northampton & coastal Accomack."
+        },
+        {
+            "comName": "Great Shearwater",
+            "exclude": [
+                "Virginia Beach",
+                "Northampton",
+                "Accomack"
+            ],
+            "unique_exclude_notes": "except pelagic"
+        },
+        {
+            "comName": "Manx Shearwater",
+            "unique_exclude_notes": "except pelagic"
+        },
+        {
+            "comName": "Sargasso Shearwater",
+            "unique_exclude_notes": "except pelagic"
+        },
+        {
+            "comName": "Wood Stork"
+        },
+        {
+            "comName": "Magnificent Frigatebird"
+        },
+        {
+            "comName": "frigatebird sp."
+        },
+        {
+            "comName": "Masked Booby"
+        },
+        {
+            "comName": "Brown Booby",
+            "exclude": [
+                "Virginia Beach",
+                "Northampton",
+                "Accomack"
+            ]
+        },
+        {
+            "comName": "Northern Gannet",
+            "exclude": [
+                "Eastern Coastal Plain",
+                "York"
+            ],
+            "unique_exclude_notes": "except Eastern Coastal Plain, York Co. Isle of Wight Co. east of Rt. 17."
+        },
+        {
+            "comName": "Anhinga",
+            "exclude": [
+                "Coastal Plain",
+                "Piedmont"
+            ]
+        },
+        {
+            "comName": "Great Cormorant",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Neotropic Cormorant"
+        },
+        {
+            "comName": "American White Pelican",
+            "exclude": [
+                "Coastal Plain",
+                "Piedmont"
+            ]
+        },
+        {
+            "comName": "Brown Pelican",
+            "exclude": [
+                "James City",
+                "Eastern Coastal Plain"
+            ],
+            "unique_exclude_notes": "except Eastern Coastal Plain, Isle of Wight Co. east of Rt. 17, James City Co. & Hog Island, Surry Co."
+        },
+        {
+            "comName": "Gray Heron"
+        },
+        {
+            "comName": "Little Egret"
+        },
+        {
+            "comName": "Snowy Egret",
+            "exclude": [
+                "Coastal Plain",
+                "Piedmont"
+            ]
+        },
+        {
+            "comName": "Tricolored Heron",
+            "exclude": [
+                "Coastal Plain",
+                "Piedmont"
+            ]
+        },
+        {
+            "comName": "Reddish Egret"
+        },
+        {
+            "comName": "White Ibis",
+            "exclude": [
+                "Coastal Plain",
+                "Piedmont"
+            ]
+        },
+        {
+            "comName": "Glossy Ibis",
+            "exclude": [
+                "Coastal Plain",
+                "Piedmont north of I-64"
+            ],
+            "unique_exclude_notes": "except Piedmont north of I-64."
+        },
+        {
+            "comName": "White-faced Ibis"
+        },
+        {
+            "comName": "Roseate Spoonbill",
+            "exclude": [
+                "Coastal Plain"
+            ]
+        },
+        {
+            "comName": "White-tailed Kite"
+        },
+        {
+            "comName": "Western Marsh Harrier"
+        },
+        {
+            "comName": "American Goshawk"
+        },
+        {
+            "comName": "Broad-winged Hawk (dark morph)"
+        },
+        {
+            "comName": "Swainson's Hawk",
+            "exclude": [
+                "Northampton"
+            ]
+        },
+        {
+            "comName": "Zone-tailed Hawk"
+        },
+        {
+            "comName": "Red-tailed Hawk (forms/taxa other than borealis)"
+        },
+        {
+            "comName": "Ferruginous Hawk"
+        },
+        {
+            "comName": "Burrowing Owl"
+        },
+        {
+            "comName": "Lewis's Woodpecker"
+        },
+        {
+            "comName": "Red-cockaded Woodpecker",
+            "exclude": [
+                "Sussex"
+            ]
+        },
+        {
+            "comName": "Crested Caracara"
+        },
+        {
+            "comName": "Merlin (richardsonii)"
+        },
+        {
+            "comName": "Gyrfalcon"
+        },
+        {
+            "comName": "Prairie Falcon"
+        },
+        {
+            "comName": "Ash-throated Flycatcher",
+            "exclude": [
+                "Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Couch's Kingbird"
+        },
+        {
+            "comName": "Western Kingbird",
+            "exclude": [
+                "Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Gray Kingbird"
+        },
+        {
+            "comName": "Scissor-tailed Flycatcher",
+            "exclude": [
+                "Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Fork-tailed Flycatcher"
+        },
+        {
+            "comName": "Western Wood-Pewee"
+        },
+        {
+            "comName": "Alder Flycatcher",
+            "exclude": [
+                "Mountains & Valleys"
+            ]
+        },
+        {
+            "comName": "Dusky Flycatcher"
+        },
+        {
+            "comName": "Western Flycatcher"
+        },
+        {
+            "comName": "Say's Phoebe"
+        },
+        {
+            "comName": "Vermilion Flycatcher"
+        },
+        {
+            "comName": "Bell's Vireo"
+        },
+        {
+            "comName": "Black-whiskered Vireo"
+        },
+        {
+            "comName": "Loggerhead Shrike",
+            "exclude": [
+                "Mountains & Valleys",
+                "Piedmont"
+            ]
+        },
+        {
+            "comName": "Northern Shrike"
+        },
+        {
+            "comName": "Black-billed Magpie"
+        },
+        {
+            "comName": "Common Raven",
+            "only": [
+                "Eastern Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Black-capped Chickadee",
+            "exclude": [
+                "Mountains & Valleys"
+            ]
+        },
+        {
+            "comName": "Boreal Chickadee"
+        },
+        {
+            "comName": "Violet-green Swallow"
+        },
+        {
+            "comName": "Brown-chested Martin"
+        },
+        {
+            "comName": "Cave Swallow",
+            "exclude": [
+                "Northampton"
+            ]
+        },
+        {
+            "comName": "Bohemian Waxwing"
+        },
+        {
+            "comName": "Rock Wren"
+        },
+        {
+            "comName": "Bewick's Wren"
+        },
+        {
+            "comName": "Sage Thrasher"
+        },
+        {
+            "comName": "Mountain Bluebird"
+        },
+        {
+            "comName": "Townsend's Solitaire"
+        },
+        {
+            "comName": "Bicknell's Thrush"
+        },
+        {
+            "comName": "Varied Thrush"
+        },
+        {
+            "comName": "Northern Wheatear"
+        },
+        {
+            "comName": "White Wagtail"
+        },
+        {
+            "comName": "Sprague's Pipit"
+        },
+        {
+            "comName": "Pine Grosbeak"
+        },
+        {
+            "comName": "White-winged Crossbill"
+        },
+        {
+            "comName": "Lesser Goldfinch"
+        },
+        {
+            "comName": "Chestnut-collared Longspur"
+        },
+        {
+            "comName": "Smith's Longspur"
+        },
+        {
+            "comName": "Bachman's Sparrow"
+        },
+        {
+            "comName": "Black-throated Sparrow"
+        },
+        {
+            "comName": "Lark Bunting"
+        },
+        {
+            "comName": "Brewer's Sparrow"
+        },
+        {
+            "comName": "Dark-eyed Junco (ssp. other than )",
+            "flag subspecies other than": [
+                "hyemalis",
+                "carolinensis"
+            ]
+        },
+        {
+            "comName": "White-crowned Sparrow (Gambel's)"
+        },
+        {
+            "comName": "Harris's Sparrow"
+        },
+        {
+            "comName": "LeConte's Sparrow",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Seaside Sparrow",
+            "exclude": [
+                "Eastern Coastal Plain",
+                "Isle of Wight",
+                "York"
+            ],
+            "unique_exclude_notes": "except Eastern Coastal Plain and York Co. & Isle of Wight Co. east of Rt. 17."
+        },
+        {
+            "comName": "Nelson's Sparrow",
+            "exclude": [
+                "Eastern Coastal Plain",
+                "Isle of Wight",
+                "York"
+            ],
+            "unique_exclude_notes": "except Eastern Coastal Plain, Isle of Wight Co. east of Rt. 17 & York Co."
+        },
+        {
+            "comName": "Saltmarsh Sparrow",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ],
+            "unique_exclude_notes": "except Eastern Coastal Plain & Isle of Wight Co. east of Rt. 17."
+        },
+        {
+            "comName": "Henslow's Sparrow"
+        },
+        {
+            "comName": "Savannah Sparrow (Ipswich)",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Green-tailed Towhee"
+        },
+        {
+            "comName": "Spotted Towhee"
+        },
+        {
+            "comName": "Yellow-headed Blackbird",
+            "exclude": [
+                "Eastern Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Western Meadowlark"
+        },
+        {
+            "comName": "Bullock's Oriole"
+        },
+        {
+            "comName": "Scott's Oriole"
+        },
+        {
+            "comName": "Shiny Cowbird"
+        },
+        {
+            "comName": "Brewer's Blackbird"
+        },
+        {
+            "comName": "Boat-tailed Grackle",
+            "exclude": [
+                "Eastern Coastal Plain",
+                "Isle of Wight"
+            ],
+            "unique_exclude_notes": "except Eastern Coastal Plain, Isle of Wight Co. & York Co. east of Rt. 17."
+        },
+        {
+            "comName": "Lucy's Warbler"
+        },
+        {
+            "comName": "Virginia's Warbler"
+        },
+        {
+            "comName": "MacGillivray's Warbler"
+        },
+        {
+            "comName": "Kirtland's Warbler"
+        },
+        {
+            "comName": "Yellow-rumped Warbler (Audubon's)"
+        },
+        {
+            "comName": "Black-throated Gray Warbler"
+        },
+        {
+            "comName": "Townsend's Warbler"
+        },
+        {
+            "comName": "Western Tanager",
+            "exclude": [
+                "Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Black-headed Grosbeak"
+        },
+        {
+            "comName": "Lazuli Bunting"
+        },
+        {
+            "comName": "Painted Bunting",
+            "exclude": [
+                "Coastal Plain",
+                "Piedmont"
+            ]
+        }
+    ],
+    "county_groups": [
+        {
+            "name": "Piedmont north of I-64",
+            "description": "Counties in the Piedmont which are fully North of Interstate 64.",
+            "counties": [
+                "Fairfax",
+                "Hanover",
+                "Loudoun",
+                "Prince William"
+            ]
+        },
+        {
+            "name": "Eastern Shore",
+            "description": "Counties which are on the Eastern Shore.",
+            "counties": [
                 "Accomack",
                 "Northampton"
             ]
         },
         {
-            "name" : "Pelagic Counties",
-            "description" : "Counties which have boundaries that include pelagic.",
-            "counties" : [
+            "name": "Pelagic Counties",
+            "description": "Counties which have boundaries that include pelagic.",
+            "counties": [
                 "Accomack",
                 "Northampton",
                 "Virginia Beach"
             ]
         },
         {
-            "name" : "Eastern Coastal Plain",
-            "description" : "Counties and cities which are a subset Coastal Plain region of Virginia and are Easternmost.",
-            "counties" : [
+            "name": "Eastern Coastal Plain",
+            "description": "Counties and cities which are a subset Coastal Plain region of Virginia and are Easternmost.",
+            "counties": [
                 "Accomack",
                 "Chesapeake",
                 "Gloucester",
@@ -812,8 +2676,8 @@
             ]
         },
         {
-            "name" : "Coastal Plain",
-            "description" : "Counties and cities included in the Coastal Plain region of Virginia.",
+            "name": "Coastal Plain",
+            "description": "Counties and cities included in the Coastal Plain region of Virginia.",
             "counties": [
                 "Accomack",
                 "Alexandria",
@@ -856,8 +2720,8 @@
             ]
         },
         {
-            "name" : "Piedmont",
-            "description" : "Counties and cities included in the Piedmont region of Virginia.",
+            "name": "Piedmont",
+            "description": "Counties and cities included in the Piedmont region of Virginia.",
             "counties": [
                 "Albemarle",
                 "Amelia",
@@ -909,11 +2773,11 @@
                 "Prince William",
                 "Rappahannock",
                 "Spotsylvania"
-                ]
+            ]
         },
         {
-            "name" : "Mountains & Valleys",
-            "description" : "Counties and cities included in the Mountains & Valleys region of Virginia.",
+            "name": "Mountains & Valleys",
+            "description": "Counties and cities included in the Mountains & Valleys region of Virginia.",
             "counties": [
                 "Alleghany",
                 "Augusta",
@@ -960,8 +2824,7 @@
                 "Winchester",
                 "Wise",
                 "Wythe"
-                ]
+            ]
         }
     ]
-
 }

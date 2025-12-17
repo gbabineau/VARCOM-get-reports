@@ -134,7 +134,7 @@
             ]
         },
         {
-            "name": "review file 2024",
+            "name": "review file 2025",
             "type": "debugpy",
             "request": "launch",
             "module": "get_reports.create_review_document",
@@ -142,12 +142,12 @@
             "justMyCode": true,
             "args": [
                 "--verbose",
-                "--input", "reports/records_to_review_2024.json",
-                "--output", "reports/review_2024.docx"
+                "--input", "reports/records_to_review_2025.json",
+                "--output", "reports/review_2025.docx"
             ]
         },
         {
-            "name": "Review year 2024 (Whole State)",
+            "name": "Review year 2025 (Whole State)",
             "type": "debugpy",
             "request": "launch",
             "module": "get_reports.get_reports",
@@ -155,7 +155,7 @@
             "justMyCode": true,
             "args": [
                 "--verbose",
-                "--year", "2024",
+                "--year", "2025",
                 "--region", "US-VA"
             ]
         },

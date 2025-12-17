@@ -8,7 +8,7 @@ import os
 def _check_counties_in_groups(county_list, review_species):
     """
     Checks the presence of counties in specified county groups and logs warnings
-    if a county is not found in any group or is found in multiple groups.
+    if a county is not found in any group.
     Args:
         county_list (list): A list of dictionaries, where each dictionary
             represents a county with at least a "name" key.
@@ -18,7 +18,6 @@ def _check_counties_in_groups(county_list, review_species):
             names.
     Logs:
         - A warning if a county is not found in any county group.
-        - A warning if a county is found in multiple county groups.
     """
     county_group_count = {county["name"]: 0 for county in county_list}
     for county in county_list:
@@ -29,8 +28,6 @@ def _check_counties_in_groups(county_list, review_species):
     for county, count in county_group_count.items():
         if count == 0:
             logging.warning("County %s not found in any county group", county)
-        elif count > 1:
-            logging.warning("County %s found in multiple county groups", county)
 
 
 def _check_species_in_taxonomy(review_species, taxonomy):
