@@ -63,7 +63,7 @@ def test_load_observations_valid_file(tmp_path):
     test_data = {"key": "value"}
     file_path = tmp_path / "test.json"
     with open(file_path, "w", encoding="utf-8") as file:
-        json.dump(test_data, file)
+        json.dump(test_data, indent=4, fp=file)
 
     result = _load_observations(str(file_path))
     assert result == test_data

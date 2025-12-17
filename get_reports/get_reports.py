@@ -39,7 +39,11 @@ def _parse_arguments() -> argparse.Namespace:
         "--year", type=int, help="Year to review YYYY", required=True
     )
     arg_parser.add_argument(
-        "--month", type=int, help="Month to review MM", required=True
+        "--month",
+        type=int,
+        help="Month to review MM. Defaults to 00 for all days in month.",
+        required=False,
+        default=0,
     )
     arg_parser.add_argument(
         "--day",
@@ -81,7 +85,8 @@ def _save_records_to_file(
         year (int): The year associated with the records.
         day (int): The day associated with the records. 0, indicates all days
             in the month.
-        month (int): The month associated with the records.
+        month (int): The month associated with the records. 0, indicates all months
+            in the year.
         region (str): The region associated with the records.
     Returns:
         None
@@ -90,23 +95,21 @@ def _save_records_to_file(
 
         def get_current_date_string():
             return datetime.now().strftime("%Y-%m-%d")
-
-        observation_date = (
-            datetime(year, month, day).strftime("%Y-%m-%d")
-            if day != 0
-            else datetime(year, month, 1).strftime("%Y-%m")
-        )
+        if month == 0:
+            observation_date = datetime(year, 1, 1).strftime("%Y")
+            save_file_name = f"reports/records_to_review_{year:04d}.json"
+        elif day == 0:
+            observation_date = datetime(year, month, 1).strftime("%Y-%m")
+            save_file_name = f"reports/records_to_review_{year:04d}_{month:02d}.json"
+        else:
+            save_file_name = f"reports/records_to_review_{year:04d}_{month:02d}_{day:02d}.json"
+            observation_date = datetime(year, month, day).strftime("%Y-%m-%d")
         output_json = {
             "date of observations": observation_date,
             "region": region,
             "date of report": get_current_date_string(),
             "records": records,
         }
-        save_file_name = (
-            f"reports/records_to_review_{year:04d}_{month:02d}.json"
-            if day == 0
-            else f"reports/records_to_review_{year:04d}_{month:02d}_{day:02d}.json"
-        )
         with open(
             save_file_name,
             "wt",
@@ -166,7 +169,7 @@ def main():
             return
         counties = [matching_county]
     species = get_review_rules.get_review_rules(
-        args.input, taxonomy, counties, state
+        args.input, taxonomy, county_list, state
     )
     records_to_review = get_records_to_review.get_records_to_review(
         ebird_api_key=ebird_api_key,
