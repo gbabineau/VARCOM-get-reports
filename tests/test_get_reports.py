@@ -129,6 +129,40 @@ def test_save_records_to_file_all_days(mock_datetime, mock_file_open):
     handle = mock_file_open()
     assert handle.write.call_count == 32
 
+@patch("get_reports.get_reports.open", new_callable=mock_open)
+@patch("get_reports.get_reports.datetime")
+def test_save_records_to_file_all_year(mock_datetime, mock_file_open):
+    # Mock the current date
+    mock_datetime.now.return_value.strftime.return_value = "2023-10-15"
+    mock_datetime.return_value.strftime.side_effect = lambda fmt: "2023"
+
+    # Input data
+    records = [{"species": "Mock Bird", "location": "Mock Location"}]
+    year = 2023
+    month = 0
+    day = 0
+    region = "US-VA"
+
+    # Call the function
+    _save_records_to_file(records, year, month, day, region)
+
+    # Expected output
+    expected_filename = "reports/records_to_review_2023.json"
+    _ = {
+        "date of observations": "2023",
+        "region": "US-VA",
+        "date of report": "2023-10-15",
+        "records": records,
+    }
+
+    # Assert the file was opened with the correct filename and mode
+    mock_file_open.assert_called_once_with(
+        expected_filename, "wt", encoding="utf-8"
+    )
+
+    # Assert the correct data was written to the file
+    handle = mock_file_open()
+    assert handle.write.call_count == 32
 
 @patch("get_reports.get_reports.open", new_callable=mock_open)
 def test_save_records_to_file_no_records(mock_file_open):

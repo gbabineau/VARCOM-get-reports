@@ -9,14 +9,12 @@ from time import sleep
 
 from ebird.api import get_checklist, get_historic_observations
 
-from get_reports import (
-    continuation_record,
-)
+from get_reports import continuation_record
 
 
-def get_checklist_with_retry(api_key: str, observation: str) -> list:
+def _get_checklist_with_retry(api_key: str, observation: str) -> list:
     """
-        Calls the eBird API get_checklist with retries
+    Calls the eBird API get_checklist with retries
     """
     attempts = 0
     while attempts < 3:
@@ -41,7 +39,7 @@ def get_checklist_with_retry(api_key: str, observation: str) -> list:
                 raise
 
 
-def get_historic_observations_with_retry(
+def _get_historic_observations_with_retry(
     token: str,
     area: str,
     day: date,
@@ -50,7 +48,7 @@ def get_historic_observations_with_retry(
     detail: str,
 ) -> list:
     """
-        Calls the eBird API get_historic_observations with retries
+    Calls the eBird API get_historic_observations with retries
     """
     attempts = 0
     while attempts < 3:
@@ -212,7 +210,7 @@ def _pelagic_record(
     """
     if observation["subnational2Name"] in pelagic_counties:
         # get checklist and see if it uses the pelagic protocol
-        checklist = get_checklist_with_retry(
+        checklist = _get_checklist_with_retry(
             ebird_api_key, observation=observation["subId"]
         )
         return checklist.get("protocolId", "") == "P60"
@@ -230,7 +228,7 @@ def _observation_has_media(ebird_api_key: str, observation: dict) -> bool:
     Returns:
         bool: True if the observation has associated media, False otherwise.
     """
-    checklist = get_checklist_with_retry(
+    checklist = _get_checklist_with_retry(
         ebird_api_key, observation=observation["subId"]
     )
     return any(
@@ -270,7 +268,7 @@ def _find_record_of_interest(
             - "review_species" (list, optional): Matching reviewable species.
     """
 
-    observations = get_historic_observations_with_retry(
+    observations = _get_historic_observations_with_retry(
         token=ebird_api_key,
         area=county["code"],
         day=day,

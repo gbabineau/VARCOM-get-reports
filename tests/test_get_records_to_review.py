@@ -1,3 +1,4 @@
+# tests/test_get_records_to_review_main.py
 # pylint: disable=W0613, W0212, C0116, C0114, C0115
 from datetime import date
 from unittest.mock import patch
@@ -5,6 +6,8 @@ from unittest.mock import patch
 from get_reports.get_records_to_review import (
     _county_in_list_or_group,
     _find_record_of_interest,
+    _get_checklist_with_retry,
+    _get_historic_observations_with_retry,
     _is_new_record,
     _iterate_days_in_month,
     _observation_has_media,
@@ -456,24 +459,30 @@ def test_iterate_days_in_month_specific_day_30_days():
     assert len(days) == 1
     assert days[0] == date(2023, 6, 15)
 
+
 class MockContinuationRecord:
     def __init__(self, initial_list) -> None:
         self._to_review = initial_list
         return
+
     def records(self) -> list:
         return []
+
     def counties(self) -> list:
         return self._to_review
+
     def complete(self) -> None:
         return
+
     def update(self, county: dict, review_records: list) -> None:
         return
+
 
 @patch("get_reports.get_records_to_review._iterate_days_in_month")
 @patch("get_reports.get_records_to_review._find_record_of_interest")
 @patch(
     "get_reports.get_records_to_review.continuation_record.ContinuationRecord",
-    new=MockContinuationRecord
+    new=MockContinuationRecord,
 )
 def test_get_records_to_review_single_county_single_day(
     mock_find_record_of_interest, mock_iterate_days_in_month
@@ -501,6 +510,37 @@ def test_get_records_to_review_single_county_single_day(
     assert result[0]["records"][0]["observation"]["comName"] == "SpeciesB"
     assert result[0]["records"][0]["new"] is True
 
+@patch("get_reports.get_records_to_review._iterate_days_in_month")
+@patch("get_reports.get_records_to_review._find_record_of_interest")
+@patch(
+    "get_reports.get_records_to_review.continuation_record.ContinuationRecord",
+    new=MockContinuationRecord,
+)
+def test_get_records_to_review_single_county_all_year(
+    mock_find_record_of_interest, mock_iterate_days_in_month
+):
+    ebird_api_key = "test_key"
+    state_list = [{"comName": "SpeciesA"}]
+    counties = [{"name": "CountyA", "code": "CountyCodeA"}]
+    year = 2023
+    month = 0
+    day = 1
+    review_species = {"review_species": [], "county_groups": []}
+
+    mock_iterate_days_in_month.return_value = [date(year, 1, 1)]
+    mock_find_record_of_interest.return_value = [
+        {"observation": {"comName": "SpeciesB"}, "new": True}
+    ]
+
+    result = get_records_to_review(
+        ebird_api_key, state_list, counties, year, month, day, review_species
+    )
+
+    assert len(result) == 1
+    assert result[0]["county"] == "CountyA"
+    assert len(result[0]["records"]) == 12
+    assert result[0]["records"][0]["observation"]["comName"] == "SpeciesB"
+    assert result[0]["records"][0]["new"] is True
 
 @patch("get_reports.get_records_to_review._iterate_days_in_month")
 @patch("get_reports.get_records_to_review._find_record_of_interest")
@@ -548,7 +588,7 @@ def test_get_records_to_review_multiple_counties(
 @patch("get_reports.get_records_to_review._find_record_of_interest")
 @patch(
     "get_reports.get_records_to_review.continuation_record.ContinuationRecord",
-    new=MockContinuationRecord
+    new=MockContinuationRecord,
 )
 def test_get_records_to_review_no_records(
     mock_find_record_of_interest, mock_iterate_days_in_month
@@ -575,7 +615,7 @@ def test_get_records_to_review_no_records(
 @patch("get_reports.get_records_to_review._find_record_of_interest")
 @patch(
     "get_reports.get_records_to_review.continuation_record.ContinuationRecord",
-    new=MockContinuationRecord
+    new=MockContinuationRecord,
 )
 def test_get_records_to_review_multiple_days(
     mock_find_record_of_interest, mock_iterate_days_in_month
@@ -736,3 +776,271 @@ def test_observation_has_media_false_empty_checklist(mock_get_checklist):
     mock_get_checklist.assert_called_once_with(
         token=ebird_api_key, sub_id="sub123"
     )
+
+
+@patch("get_reports.get_records_to_review.get_checklist")
+def test__get_checklist_with_retry_success_first_attempt(mock_get_checklist):
+    api_key = "test_key"
+    observation = "sub123"
+    mock_get_checklist.return_value = {"protocolId": "P22"}
+
+    result = _get_checklist_with_retry(api_key, observation)
+
+    assert result == {"protocolId": "P22"}
+    mock_get_checklist.assert_called_once_with(
+        token=api_key, sub_id=observation
+    )
+
+
+@patch("get_reports.get_records_to_review.sleep")
+@patch("get_reports.get_records_to_review.get_checklist")
+def test__get_checklist_with_retry_success_second_attempt(
+    mock_get_checklist, mock_sleep
+):
+    api_key = "test_key"
+    observation = "sub123"
+    mock_get_checklist.side_effect = [
+        OSError("Connection failed"),
+        {"protocolId": "P22"},
+    ]
+
+    result = _get_checklist_with_retry(api_key, observation)
+
+    assert result == {"protocolId": "P22"}
+    assert mock_get_checklist.call_count == 2
+    mock_sleep.assert_called_once_with(0.1)
+
+
+@patch("get_reports.get_records_to_review.sleep")
+@patch("get_reports.get_records_to_review.get_checklist")
+def test__get_checklist_with_retry_success_third_attempt(
+    mock_get_checklist, mock_sleep
+):
+    api_key = "test_key"
+    observation = "sub123"
+    mock_get_checklist.side_effect = [
+        OSError("Connection failed"),
+        OSError("Timeout"),
+        {"protocolId": "P22"},
+    ]
+
+    result = _get_checklist_with_retry(api_key, observation)
+
+    assert result == {"protocolId": "P22"}
+    assert mock_get_checklist.call_count == 3
+    assert mock_sleep.call_count == 2
+
+
+@patch("get_reports.get_records_to_review.sleep")
+@patch("get_reports.get_records_to_review.get_checklist")
+def test__get_checklist_with_retry_all_attempts_fail(
+    mock_get_checklist, mock_sleep
+):
+    api_key = "test_key"
+    observation = "sub123"
+    mock_get_checklist.side_effect = OSError("Connection failed")
+
+    try:
+        _get_checklist_with_retry(api_key, observation)
+        assert False, "Expected OSError to be raised"
+    except OSError:
+        pass
+
+    assert mock_get_checklist.call_count == 3
+    assert mock_sleep.call_count == 3
+
+
+@patch("get_reports.get_records_to_review.sleep")
+@patch("get_reports.get_records_to_review.get_checklist")
+def test__get_checklist_with_retry_sleep_progression(
+    mock_get_checklist, mock_sleep
+):
+    api_key = "test_key"
+    observation = "sub123"
+    mock_get_checklist.side_effect = OSError("Connection failed")
+
+    try:
+        _get_checklist_with_retry(api_key, observation)
+    except OSError:
+        pass
+
+    mock_sleep.assert_any_call(0.1)
+    mock_sleep.assert_any_call(0.2)
+    assert mock_sleep.call_count == 3
+@patch("get_reports.get_records_to_review.sleep")
+@patch("get_reports.get_records_to_review.get_historic_observations")
+def test__get_historic_observations_with_retry_success_first_attempt(
+    mock_get_historic_observations, mock_sleep
+):
+    token = "test_key"
+    area = "US-VA"
+    day = date(2023, 10, 1)
+    category = "species"
+    rank = "create"
+    detail = "full"
+    mock_get_historic_observations.return_value = [
+        {"comName": "SpeciesA", "speciesCode": "speca"}
+    ]
+
+    result = _get_historic_observations_with_retry(
+        token, area, day, category, rank, detail
+    )
+
+    assert result == [{"comName": "SpeciesA", "speciesCode": "speca"}]
+    mock_get_historic_observations.assert_called_once_with(
+        token=token,
+        area=area,
+        date=day,
+        category=category,
+        rank=rank,
+        detail=detail,
+    )
+    mock_sleep.assert_not_called()
+
+
+@patch("get_reports.get_records_to_review.sleep")
+@patch("get_reports.get_records_to_review.get_historic_observations")
+def test__get_historic_observations_with_retry_success_second_attempt(
+    mock_get_historic_observations, mock_sleep
+):
+    token = "test_key"
+    area = "US-VA"
+    day = date(2023, 10, 1)
+    category = "species"
+    rank = "create"
+    detail = "full"
+    mock_get_historic_observations.side_effect = [
+        OSError("Connection failed"),
+        [{"comName": "SpeciesA", "speciesCode": "speca"}],
+    ]
+
+    result = _get_historic_observations_with_retry(
+        token, area, day, category, rank, detail
+    )
+
+    assert result == [{"comName": "SpeciesA", "speciesCode": "speca"}]
+    assert mock_get_historic_observations.call_count == 2
+    mock_sleep.assert_called_once_with(0.1)
+
+
+@patch("get_reports.get_records_to_review.sleep")
+@patch("get_reports.get_records_to_review.get_historic_observations")
+def test__get_historic_observations_with_retry_success_third_attempt(
+    mock_get_historic_observations, mock_sleep
+):
+    token = "test_key"
+    area = "US-VA"
+    day = date(2023, 10, 1)
+    category = "species"
+    rank = "create"
+    detail = "full"
+    mock_get_historic_observations.side_effect = [
+        OSError("Connection failed"),
+        OSError("Timeout"),
+        [{"comName": "SpeciesA", "speciesCode": "speca"}],
+    ]
+
+    result = _get_historic_observations_with_retry(
+        token, area, day, category, rank, detail
+    )
+
+    assert result == [{"comName": "SpeciesA", "speciesCode": "speca"}]
+    assert mock_get_historic_observations.call_count == 3
+    assert mock_sleep.call_count == 2
+
+
+@patch("get_reports.get_records_to_review.sleep")
+@patch("get_reports.get_records_to_review.get_historic_observations")
+def test__get_historic_observations_with_retry_all_attempts_fail(
+    mock_get_historic_observations, mock_sleep
+):
+    token = "test_key"
+    area = "US-VA"
+    day = date(2023, 10, 1)
+    category = "species"
+    rank = "create"
+    detail = "full"
+    mock_get_historic_observations.side_effect = OSError("Connection failed")
+
+    try:
+        _get_historic_observations_with_retry(
+            token, area, day, category, rank, detail
+        )
+        assert False, "Expected OSError to be raised"
+    except OSError:
+        pass
+
+    assert mock_get_historic_observations.call_count == 3
+    assert mock_sleep.call_count == 3
+
+
+@patch("get_reports.get_records_to_review.sleep")
+@patch("get_reports.get_records_to_review.get_historic_observations")
+def test__get_historic_observations_with_retry_sleep_progression(
+    mock_get_historic_observations, mock_sleep
+):
+    token = "test_key"
+    area = "US-VA"
+    day = date(2023, 10, 1)
+    category = "species"
+    rank = "create"
+    detail = "full"
+    mock_get_historic_observations.side_effect = OSError("Connection failed")
+
+    try:
+        _get_historic_observations_with_retry(
+            token, area, day, category, rank, detail
+        )
+    except OSError:
+        pass
+
+    mock_sleep.assert_any_call(0.1)
+    mock_sleep.assert_any_call(0.2)
+    assert mock_sleep.call_count == 3
+    @patch("get_reports.get_records_to_review._iterate_days_in_month")
+    @patch("get_reports.get_records_to_review._find_record_of_interest")
+    @patch(
+        "get_reports.get_records_to_review.continuation_record.ContinuationRecord",
+        new=MockContinuationRecord,
+    )
+    def test_get_records_to_review_multiple_months(
+        mock_find_record_of_interest, mock_iterate_days_in_month
+    ):
+        ebird_api_key = "test_key"
+        state_list = [{"comName": "SpeciesA"}]
+        counties = [{"name": "CountyA", "code": "CountyCodeA"}]
+        year = 2023
+        month = 0  # All months
+        day = 1
+        review_species = {"review_species": [], "county_groups": []}
+
+        mock_iterate_days_in_month.side_effect = [
+            [date(2023, 1, 1)],
+            [date(2023, 2, 1)],
+            [date(2023, 3, 1)],
+            [date(2023, 4, 1)],
+            [date(2023, 5, 1)],
+            [date(2023, 6, 1)],
+            [date(2023, 7, 1)],
+            [date(2023, 8, 1)],
+            [date(2023, 9, 1)],
+            [date(2023, 10, 1)],
+            [date(2023, 11, 1)],
+            [date(2023, 12, 1)],
+        ]
+        mock_find_record_of_interest.return_value = [
+            {"observation": {"comName": "SpeciesB"}, "new": True}
+        ]
+
+        result = get_records_to_review(
+            ebird_api_key, state_list, counties, year, month, day, review_species
+        )
+
+        assert len(result) == 1
+        assert result[0]["county"] == "CountyA"
+        assert len(result[0]["records"]) == 12
+        assert mock_find_record_of_interest.call_count == 12
+
+
+
+
