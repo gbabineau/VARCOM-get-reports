@@ -172,5 +172,19 @@
                 "--region", "US-VA-760"
             ]
         },
+        {
+            "name": "get database May 2025 ",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "get_reports.get_reports",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--verbose",
+                "--year", "2025",
+                "--month", "05",
+                "--EBD", "EBD/ebd_US-VA_202501_202512_relNov-2025/ebd_US-VA_202501_202512_relNov-2025.txt"
+            ]
+        },
     ]
 }

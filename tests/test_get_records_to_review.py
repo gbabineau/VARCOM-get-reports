@@ -267,7 +267,7 @@ def test_find_record_of_interest_new_record(
     mock_observation_has_media.return_value = True
 
     result = _find_record_of_interest(
-        ebird_api_key, state_list, county, day, review_species
+        ebird_api_key, "", state_list, county, day, review_species
     )
 
     assert len(result) == 1
@@ -322,7 +322,7 @@ def test_find_record_of_interest_reviewable_species(
     mock_observation_has_media.return_value = True
 
     result = _find_record_of_interest(
-        ebird_api_key, state_list, county, day, review_species
+        ebird_api_key, "", state_list, county, day, review_species
     )
 
     assert len(result) == 1
@@ -367,7 +367,7 @@ def test_find_record_of_interest_no_records(
     mock_reviewable_species.return_value = None
 
     result = _find_record_of_interest(
-        ebird_api_key, state_list, county, day, review_species
+        ebird_api_key, "", state_list, county, day, review_species
     )
 
     assert len(result) == 0
@@ -501,7 +501,7 @@ def test_get_records_to_review_single_county_single_day(
     ]
 
     result = get_records_to_review(
-        ebird_api_key, state_list, counties, year, month, day, review_species
+        ebird_api_key, "", state_list, counties, year, month, day, review_species
     )
 
     assert len(result) == 1
@@ -533,7 +533,14 @@ def test_get_records_to_review_single_county_all_year(
     ]
 
     result = get_records_to_review(
-        ebird_api_key, state_list, counties, year, month, day, review_species
+        ebird_api_key,
+        "",
+        state_list,
+        counties,
+        year,
+        month,
+        day,
+        review_species,
     )
 
     assert len(result) == 1
@@ -569,7 +576,14 @@ def test_get_records_to_review_multiple_counties(
     ]
 
     result = get_records_to_review(
-        ebird_api_key, state_list, counties, year, month, day, review_species
+        ebird_api_key,
+        "",
+        state_list,
+        counties,
+        year,
+        month,
+        day,
+        review_species,
     )
 
     assert len(result) == 2
@@ -605,7 +619,14 @@ def test_get_records_to_review_no_records(
     mock_find_record_of_interest.return_value = []
 
     result = get_records_to_review(
-        ebird_api_key, state_list, counties, year, month, day, review_species
+        ebird_api_key,
+        "",
+        state_list,
+        counties,
+        year,
+        month,
+        day,
+        review_species,
     )
 
     assert len(result) == 0
@@ -638,7 +659,14 @@ def test_get_records_to_review_multiple_days(
     ]
 
     result = get_records_to_review(
-        ebird_api_key, state_list, counties, year, month, day, review_species
+        ebird_api_key,
+        "",
+        state_list,
+        counties,
+        year,
+        month,
+        day,
+        review_species,
     )
 
     assert len(result) == 1
@@ -657,7 +685,7 @@ def test_pelagic_record_true(mock_get_checklist):
     pelagic_counties = ["PelagicCounty"]
     mock_get_checklist.return_value = {"protocolId": "P60"}
 
-    result = _pelagic_record(ebird_api_key, observation, pelagic_counties)
+    result = _pelagic_record(ebird_api_key, "", observation, pelagic_counties)
 
     assert result is True
     mock_get_checklist.assert_called_once_with(
@@ -671,7 +699,7 @@ def test_pelagic_record_false_not_pelagic_county(mock_get_checklist):
     observation = {"subnational2Name": "NonPelagicCounty", "subId": "sub123"}
     pelagic_counties = ["PelagicCounty"]
 
-    result = _pelagic_record(ebird_api_key, observation, pelagic_counties)
+    result = _pelagic_record(ebird_api_key, "", observation, pelagic_counties)
 
     assert result is False
     mock_get_checklist.assert_not_called()
@@ -684,7 +712,7 @@ def test_pelagic_record_false_wrong_protocol(mock_get_checklist):
     pelagic_counties = ["PelagicCounty"]
     mock_get_checklist.return_value = {"protocolId": "P50"}
 
-    result = _pelagic_record(ebird_api_key, observation, pelagic_counties)
+    result = _pelagic_record(ebird_api_key, "", observation, pelagic_counties)
 
     assert result is False
     mock_get_checklist.assert_called_once_with(
@@ -699,7 +727,7 @@ def test_pelagic_record_false_no_protocol(mock_get_checklist):
     pelagic_counties = ["PelagicCounty"]
     mock_get_checklist.return_value = {}
 
-    result = _pelagic_record(ebird_api_key, observation, pelagic_counties)
+    result = _pelagic_record(ebird_api_key, "", observation, pelagic_counties)
 
     assert result is False
     mock_get_checklist.assert_called_once_with(
@@ -718,7 +746,7 @@ def test_observation_has_media_true(mock_get_checklist):
         ]
     }
 
-    result = _observation_has_media(ebird_api_key, observation)
+    result = _observation_has_media(ebird_api_key, "", observation)
 
     assert result is True
     mock_get_checklist.assert_called_once_with(
@@ -737,7 +765,7 @@ def test_observation_has_media_false_no_media(mock_get_checklist):
         ]
     }
 
-    result = _observation_has_media(ebird_api_key, observation)
+    result = _observation_has_media(ebird_api_key, "", observation)
 
     assert result is False
     mock_get_checklist.assert_called_once_with(
@@ -756,7 +784,7 @@ def test_observation_has_media_false_no_matching_species(mock_get_checklist):
         ]
     }
 
-    result = _observation_has_media(ebird_api_key, observation)
+    result = _observation_has_media(ebird_api_key, "", observation)
 
     assert result is False
     mock_get_checklist.assert_called_once_with(
@@ -770,7 +798,7 @@ def test_observation_has_media_false_empty_checklist(mock_get_checklist):
     observation = {"subId": "sub123", "speciesCode": "speciesA"}
     mock_get_checklist.return_value = {"obs": []}
 
-    result = _observation_has_media(ebird_api_key, observation)
+    result = _observation_has_media(ebird_api_key, "", observation)
 
     assert result is False
     mock_get_checklist.assert_called_once_with(
@@ -1033,7 +1061,7 @@ def test__get_historic_observations_with_retry_sleep_progression(
         ]
 
         result = get_records_to_review(
-            ebird_api_key, state_list, counties, year, month, day, review_species
+            ebird_api_key, "", state_list, counties, year, month, day, review_species
         )
 
         assert len(result) == 1

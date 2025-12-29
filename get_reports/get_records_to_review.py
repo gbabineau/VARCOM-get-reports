@@ -9,7 +9,7 @@ from time import sleep
 
 from ebird.api import get_checklist, get_historic_observations
 
-from get_reports import continuation_record
+from get_reports import continuation_record, get_from_database
 
 
 def _get_checklist_with_retry(api_key: str, observation: str) -> list:
@@ -192,7 +192,7 @@ def _reviewable_species_with_no_exclusions(
 
 
 def _pelagic_record(
-    ebird_api_key: str, observation: dict, pelagic_counties: list
+    ebird_api_key: str, database: str, observation: dict, pelagic_counties: list
 ) -> bool:
     """
     Determines if a given observation is a pelagic record.
@@ -202,6 +202,7 @@ def _pelagic_record(
 
     Args:
         ebird_api_key (str): The API key for accessing eBird data.
+        database (str): eBird database file.
         observation (dict): A dictionary containing observation details.
         pelagic_counties (list): A list of county names considered pelagic.
 
@@ -210,27 +211,41 @@ def _pelagic_record(
     """
     if observation["subnational2Name"] in pelagic_counties:
         # get checklist and see if it uses the pelagic protocol
-        checklist = _get_checklist_with_retry(
-            ebird_api_key, observation=observation["subId"]
-        )
+        if database == "":
+            checklist = _get_checklist_with_retry(
+                ebird_api_key, observation=observation["subId"]
+            )
+        else:
+            checklist = get_from_database.get_checklist_from_database(
+                database, observation=observation["subId"]
+            )
         return checklist.get("protocolId", "") == "P60"
     else:
         return False
 
 
-def _observation_has_media(ebird_api_key: str, observation: dict) -> bool:
+def _observation_has_media(
+    ebird_api_key: str, database: str, observation: dict
+) -> bool:
     """
     Determines if an observation has associated media (photos, videos, etc.).
 
     Args:
+        ebird_api_key: str.
+        database (str): eBird database file.
         observation (dict): A dictionary representing an observation.
 
     Returns:
         bool: True if the observation has associated media, False otherwise.
     """
-    checklist = _get_checklist_with_retry(
-        ebird_api_key, observation=observation["subId"]
-    )
+    if database == "":
+        checklist = _get_checklist_with_retry(
+            ebird_api_key, observation=observation["subId"]
+        )
+    else:
+        checklist = get_from_database.get_checklist_from_database(
+            database, observation=observation["subId"]
+        )
     return any(
         obs.get("speciesCode") == observation["speciesCode"]
         and obs.get("mediaCounts")
@@ -240,6 +255,7 @@ def _observation_has_media(ebird_api_key: str, observation: dict) -> bool:
 
 def _find_record_of_interest(
     ebird_api_key: str,
+    database: str,
     state_list: list,
     county: dict,
     day: date,
@@ -251,6 +267,7 @@ def _find_record_of_interest(
 
     Args:
         ebird_api_key (str): The API key for accessing eBird data.
+        database (str): eBird database file.
         state_list (list): A list of species already recorded in the state.
         county (dict): A dictionary containing county information, including
             "code" (county identifier) and "name" (county name).
@@ -268,14 +285,24 @@ def _find_record_of_interest(
             - "review_species" (list, optional): Matching reviewable species.
     """
 
-    observations = _get_historic_observations_with_retry(
-        token=ebird_api_key,
-        area=county["code"],
-        day=day,
-        category="species",
-        rank="create",
-        detail="full",
-    )
+    if database == "":
+        observations = _get_historic_observations_with_retry(
+            token=ebird_api_key,
+            area=county["code"],
+            day=day,
+            category="species",
+            rank="create",
+            detail="full",
+        )
+    else:
+        observations = get_from_database.get_historic_observations_from_database(
+            database=database,
+            area=county["code"],
+            day=day,
+            category="species",
+            rank="create",
+            detail="full",
+        )
     pelagic_counties = next(
         (
             group["counties"]
@@ -289,6 +316,7 @@ def _find_record_of_interest(
         if _is_new_record(observation, state_list):
             if not _pelagic_record(
                 ebird_api_key=ebird_api_key,
+                database=database,
                 observation=observation,
                 pelagic_counties=pelagic_counties,
             ):
@@ -302,6 +330,7 @@ def _find_record_of_interest(
                         "new": True,
                         "media": _observation_has_media(
                             ebird_api_key=ebird_api_key,
+                            database=database,
                             observation=observation,
                         ),
                     }
@@ -313,6 +342,7 @@ def _find_record_of_interest(
                 matching_species, review_species, county
             ) and not _pelagic_record(
                 ebird_api_key=ebird_api_key,
+                database=database,
                 observation=observation,
                 pelagic_counties=pelagic_counties,
             ):
@@ -329,6 +359,7 @@ def _find_record_of_interest(
                         "review_species": matching_species,
                         "media": _observation_has_media(
                             ebird_api_key=ebird_api_key,
+                            database=database,
                             observation=observation,
                         ),
                     }
@@ -362,6 +393,7 @@ def _iterate_days_in_month(year: int, month: int, day):
 
 def get_records_to_review(
     ebird_api_key: str,
+    database: str,
     state_list: list,
     counties: list,
     year: int,
@@ -375,6 +407,7 @@ def get_records_to_review(
 
     Args:
         ebird_api_key (str): The API key for accessing eBird data.
+        database (str): eBird Database file or "" if using API.
         state_list (list): A list of state abbreviations to filter the records.
         counties (list): A list of dictionaries representing counties, where each
             dictionary contains at least a "name" key.
@@ -404,6 +437,7 @@ def get_records_to_review(
             ):
                 records_for_county = _find_record_of_interest(
                     ebird_api_key,
+                    database,
                     state_list,
                     county,
                     day_in_month,
