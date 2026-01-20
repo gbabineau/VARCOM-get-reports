@@ -6,6 +6,7 @@ import logging
 from calendar import monthrange
 from datetime import date
 from time import sleep
+import pandas as pd
 
 from ebird.api import get_checklist, get_historic_observations
 
@@ -192,7 +193,10 @@ def _reviewable_species_with_no_exclusions(
 
 
 def _pelagic_record(
-    ebird_api_key: str, database: str, observation: dict, pelagic_counties: list
+    ebird_api_key: str,
+    database: list,
+    observation: dict,
+    pelagic_counties: list,
 ) -> bool:
     """
     Determines if a given observation is a pelagic record.
@@ -202,7 +206,7 @@ def _pelagic_record(
 
     Args:
         ebird_api_key (str): The API key for accessing eBird data.
-        database (str): eBird database file.
+        database (list): filtered eBird database.
         observation (dict): A dictionary containing observation details.
         pelagic_counties (list): A list of county names considered pelagic.
 
@@ -211,51 +215,46 @@ def _pelagic_record(
     """
     if observation["subnational2Name"] in pelagic_counties:
         # get checklist and see if it uses the pelagic protocol
-        if database == "":
+        if database == []:
             checklist = _get_checklist_with_retry(
                 ebird_api_key, observation=observation["subId"]
             )
-        else:
-            checklist = get_from_database.get_checklist_from_database(
-                database, observation=observation["subId"]
-            )
-        return checklist.get("protocolId", "") == "P60"
+            return checklist.get("protocolId", "") == "P60"
+        return observation["protocolId"] == "P60"
     else:
         return False
 
 
 def _observation_has_media(
-    ebird_api_key: str, database: str, observation: dict
+    ebird_api_key: str, database: list, observation: dict
 ) -> bool:
     """
     Determines if an observation has associated media (photos, videos, etc.).
 
     Args:
         ebird_api_key: str.
-        database (str): eBird database file.
+        database (list): filtered eBird database.
         observation (dict): A dictionary representing an observation.
 
     Returns:
         bool: True if the observation has associated media, False otherwise.
     """
-    if database == "":
+    if database == []:
         checklist = _get_checklist_with_retry(
             ebird_api_key, observation=observation["subId"]
         )
-    else:
-        checklist = get_from_database.get_checklist_from_database(
-            database, observation=observation["subId"]
+        return any(
+            obs.get("speciesCode") == observation["speciesCode"]
+            and obs.get("mediaCounts")
+            for obs in checklist.get("obs", [])
         )
-    return any(
-        obs.get("speciesCode") == observation["speciesCode"]
-        and obs.get("mediaCounts")
-        for obs in checklist.get("obs", [])
-    )
+    else:
+        return True  # filtered data all has media
 
 
 def _find_record_of_interest(
     ebird_api_key: str,
-    database: str,
+    database: list,
     state_list: list,
     county: dict,
     day: date,
@@ -267,7 +266,7 @@ def _find_record_of_interest(
 
     Args:
         ebird_api_key (str): The API key for accessing eBird data.
-        database (str): eBird database file.
+        database (list): filtered
         state_list (list): A list of species already recorded in the state.
         county (dict): A dictionary containing county information, including
             "code" (county identifier) and "name" (county name).
@@ -285,7 +284,7 @@ def _find_record_of_interest(
             - "review_species" (list, optional): Matching reviewable species.
     """
 
-    if database == "":
+    if database == []:
         observations = _get_historic_observations_with_retry(
             token=ebird_api_key,
             area=county["code"],
@@ -295,14 +294,17 @@ def _find_record_of_interest(
             detail="full",
         )
     else:
-        observations = get_from_database.get_historic_observations_from_database(
-            database=database,
-            area=county["code"],
-            day=day,
-            category="species",
-            rank="create",
-            detail="full",
+        observations = (
+            get_from_database.get_historic_observations_from_database(
+                database=database,
+                area=county["code"],
+                day=day,
+                category="species",
+                rank="create",
+                detail="full",
+            )
         )
+
     pelagic_counties = next(
         (
             group["counties"]
@@ -393,7 +395,7 @@ def _iterate_days_in_month(year: int, month: int, day):
 
 def get_records_to_review(
     ebird_api_key: str,
-    database: str,
+    database_file: str,
     state_list: list,
     counties: list,
     year: int,
@@ -407,7 +409,7 @@ def get_records_to_review(
 
     Args:
         ebird_api_key (str): The API key for accessing eBird data.
-        database (str): eBird Database file or "" if using API.
+        database_file (str): eBird database file or "" if using API.
         state_list (list): A list of state abbreviations to filter the records.
         counties (list): A list of dictionaries representing counties, where each
             dictionary contains at least a "name" key.
@@ -424,6 +426,36 @@ def get_records_to_review(
     """
     continuation = continuation_record.ContinuationRecord(counties)
     records_to_review = continuation.records()
+    if database_file == "":
+        database = []
+    else:
+        logging.info("Reading observations from %s", database_file)
+
+        try:
+            df = pd.read_csv(
+                database_file,
+                dtype={"24": str},
+                usecols=[3, 5, 19, 20, 30, 34, 37, 46, 47],
+            )
+            df.columns = [
+                "category",
+                "comName",
+                "subnational2Name",
+                "county",
+                "obsDt",
+                "subId",
+                "protocolId",
+                "media",
+                "approved",
+            ]
+
+            database = df.to_dict("records")
+        except FileNotFoundError:
+            logging.error("database file not found: %s", database)
+            return []
+        except OSError as e:
+            logging.error("Error reading database: %s. Error %s", database, e)
+            return []
     for county in continuation.counties():
         county_records = []
         if month == 0:

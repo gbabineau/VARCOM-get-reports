@@ -184,7 +184,7 @@ def main():
     )
     records_to_review = get_records_to_review.get_records_to_review(
         ebird_api_key=ebird_api_key,
-        database=args.EBD,
+        database_file=args.EBD,
         state_list=state_list,
         counties=counties,
         year=args.year,

@@ -5,6 +5,16 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "R-Debugger",
+            "request": "launch",
+            "name": "Filter EBD",
+            "workingDirectory": "${workspaceFolder}",
+            "file": "${workspaceFolder}/R_preprocess_database/preprocess.r",
+            "debuggedPackages": [],
+            "commandLineArgs": ["--args", "EBD/ebd_US-VA_202501_202512_relNov-2025/ebd_US-VA_202501_202512_relNov-2025.txt"],
+        },
+
+        {
             "name": "get reports May 2025 ",
             "type": "debugpy",
             "request": "launch",
@@ -173,7 +183,7 @@
             ]
         },
         {
-            "name": "get database May 2025 ",
+            "name": "REview with database May 2025 ",
             "type": "debugpy",
             "request": "launch",
             "module": "get_reports.get_reports",
@@ -183,8 +193,21 @@
                 "--verbose",
                 "--year", "2025",
                 "--month", "05",
-                "--EBD", "EBD/ebd_US-VA_202501_202512_relNov-2025/ebd_US-VA_202501_202512_relNov-2025.txt"
+                "--EBD", "EBD/ebird_filtered.csv"
             ]
         },
-    ]
+        {
+        "name": "REview with database ALL 2025 ",
+        "type": "debugpy",
+        "request": "launch",
+        "module": "get_reports.get_reports",
+        "console": "integratedTerminal",
+        "justMyCode": true,
+        "args": [
+            "--verbose",
+            "--year", "2025",
+            "--EBD", "EBD/ebird_filtered.csv"
+        ]
+    },
+   ]
 }

@@ -6,6 +6,16 @@ This code is shared so that any one else could use it. It is written so that ano
 
 ## Use
 
+This can be used in two ways.
+
+1. One way is using the eBird API. This has some issues because the API does not provide ALL the data. However it is much faster to use, for example for monthly reports to get a sense of what is going on. This can be fully automated.
+
+1. The second way is to use the EBD (eBird Database). This is slower but gets
+the all the data. Before being able to use this method you will have to download
+and use a program to filter the data. Downloading the data requires some manual
+work (requesting the data and waiting for a download link to be emailed) and
+and then running an R script to filter the data. See [downloading and filtering](#downloading-and-filtering-the-ebird-dataset) instructions.
+
 ### get_reports
 
 The `get_reports` script is used to generate reports of bird observations based on specific criteria. It queries the eBird API and processes the data to produce a report tailored to the needs of VARCOM or other organizations.
@@ -23,6 +33,7 @@ python get_reports.py --year YYYY -month MM [--day DD] -state STATE_CODE --input
 - '--day': The day of the report - defaults to 0 which will create a report for the entire month
 - `--region`: The eBird region (e.g., `US-VA` for Virginia, or `US-VA-003` for Albemarle County, virginia) for which the report is to be generated.
 - `--input`: The file path for the definition of state list and review rules
+- `--EBD <FILE>`: Optional file with filtered ebird data if EBD is to be used.
 
 #### Example
 
@@ -83,7 +94,9 @@ python create_review_document.py --input reports/records_to_review_2021_04.json 
 
     To be eligible for expedited review, a record must include media (audio, video, or photo). Currently the script does not check for media. However, (see above) only one observation per day is included per species. If there is a second observation that has media, it would not be found. So this will have to be manually reviewed. To assist the reviewer, the report lists whether the record has media because if they do have media, it is reviewable. If it doesn't have media, though, it is possible that another observation one of the days had media. In practice, even the information about the single observation per day does help.
 
-## Downloading the eBird Dataset
+## Downloading and filtering the eBird Dataset
+
+### Downloading
 
 If, rather than using the API, the entire dataset for the state is used, which allows more accurate reporting as for example using the API only provides the first (or last) observation on a given day and if that observation does not have media, the siting would not be reviewable even though there may be a later observation on the same day with media.
 
@@ -91,7 +104,18 @@ To download the data you have to obtain permission. See information about the [e
 
 Download the data for all species, in Virginia (or your state) only, with your date range of interest. Sampling event data and unvetted data are not needed. Minimizing the data set to only the area and dates of your interest will make a smaller dataset and help improve the speed of the report generation.
 
-You will then get an email when your download is ready.
+You will then get an email when your download is ready. Once you receive the email, download it and extract.
+
+### Filtering
+
+Filtering requires the R language to be installed. Once R is installed:
+
+```shell
+Rscript R_preprocess_database/preprocess.R [your downloaded file]
+```
+
+This will create the file EBD/ebird_filtered.csv which should be passed to
+get_reports with the --EBD argument.
 
 ## Customization and Maintenance
 

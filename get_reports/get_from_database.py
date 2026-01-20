@@ -1,17 +1,21 @@
 """ get information by reading EBD """
-import logging
-
-def get_checklist_from_database(database : str, observation: str) -> list:
-    logging.info("Not implemented")
-    return []
 
 def get_historic_observations_from_database(
-    database: str,
+    database: dict,
     area=str,
     day=str,
     category=str,
     rank=str,
     detail=str,
 ) -> list:
-    logging.info("Not implemented")
-    return []
+    """ Read observations from a filtered EBD """
+    day_string = day.strftime("%Y-%m-%d")
+    observations_of_interest = [
+        obs
+        for obs in database
+        if obs.get("county") == area
+        and obs.get("category") == category
+        and obs.get("obsDt") == day_string
+    ]
+    return observations_of_interest
+
