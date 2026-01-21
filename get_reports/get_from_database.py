@@ -5,8 +5,6 @@ def get_historic_observations_from_database(
     area=str,
     day=str,
     category=str,
-    rank=str,
-    detail=str,
 ) -> list:
     """ Read observations from a filtered EBD """
     day_string = day.strftime("%Y-%m-%d")
@@ -15,7 +13,6 @@ def get_historic_observations_from_database(
         for obs in database
         if obs.get("county") == area
         and obs.get("category") == category
-        and obs.get("obsDt") == day_string
+        and obs["obsDt"][:10] == day_string
     ]
     return observations_of_interest
-

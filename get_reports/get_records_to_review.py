@@ -5,88 +5,10 @@ Module gets the records to review based on VARCOM (or other) review rules.
 import logging
 from calendar import monthrange
 from datetime import date
-from time import sleep
+
 import pandas as pd
 
-from ebird.api import get_checklist, get_historic_observations
-
-from get_reports import continuation_record, get_from_database
-
-
-def _get_checklist_with_retry(api_key: str, observation: str) -> list:
-    """
-    Calls the eBird API get_checklist with retries
-    """
-    attempts = 0
-    while attempts < 3:
-        try:
-            return get_checklist(token=api_key, sub_id=observation)
-        except OSError as exc:
-            attempts += 1
-            sleep(0.1 * attempts)
-            logging.warning(
-                "get_checklist attempt %d failed for args %s, %s",
-                attempts,
-                observation,
-                exc,
-            )
-            if attempts >= 3:
-                logging.error(
-                    "get_checklist failed after %d attempts for args %s, %s",
-                    attempts,
-                    observation,
-                    exc,
-                )
-                raise
-
-
-def _get_historic_observations_with_retry(
-    token: str,
-    area: str,
-    day: date,
-    category: str,
-    rank: str,
-    detail: str,
-) -> list:
-    """
-    Calls the eBird API get_historic_observations with retries
-    """
-    attempts = 0
-    while attempts < 3:
-        try:
-            return get_historic_observations(
-                token=token,
-                area=area,
-                date=day,
-                category=category,
-                rank=rank,
-                detail=detail,
-            )
-        except OSError as exc:
-            attempts += 1
-            sleep(0.1 * attempts)
-            logging.warning(
-                "get_historic_observations attempt %d failed for args %s, %s, %s, %s, %s, %s",
-                attempts,
-                area,
-                day,
-                category,
-                rank,
-                detail,
-                exc,
-            )
-            if attempts >= 3:
-                logging.error(
-                    "get_checklist failed after %d attempts for args %s, %s, %s, %s, %s, %s",
-                    attempts,
-                    area,
-                    day,
-                    category,
-                    rank,
-                    detail,
-                    exc,
-                )
-                raise
+from get_reports import continuation_record, get_from_database, ebird_api_access
 
 
 def _county_in_list_or_group(
@@ -216,7 +138,7 @@ def _pelagic_record(
     if observation["subnational2Name"] in pelagic_counties:
         # get checklist and see if it uses the pelagic protocol
         if database == []:
-            checklist = _get_checklist_with_retry(
+            checklist = ebird_api_access.get_checklist_with_retry(
                 ebird_api_key, observation=observation["subId"]
             )
             return checklist.get("protocolId", "") == "P60"
@@ -240,7 +162,7 @@ def _observation_has_media(
         bool: True if the observation has associated media, False otherwise.
     """
     if database == []:
-        checklist = _get_checklist_with_retry(
+        checklist = ebird_api_access.get_checklist_with_retry(
             ebird_api_key, observation=observation["subId"]
         )
         return any(
@@ -285,7 +207,7 @@ def _find_record_of_interest(
     """
 
     if database == []:
-        observations = _get_historic_observations_with_retry(
+        observations = ebird_api_access.get_historic_observations_with_retry(
             token=ebird_api_key,
             area=county["code"],
             day=day,
@@ -300,8 +222,6 @@ def _find_record_of_interest(
                 area=county["code"],
                 day=day,
                 category="species",
-                rank="create",
-                detail="full",
             )
         )
 
@@ -435,14 +355,16 @@ def get_records_to_review(
             df = pd.read_csv(
                 database_file,
                 dtype={"24": str},
-                usecols=[3, 5, 19, 20, 30, 34, 37, 46, 47],
+                usecols=[3, 5, 10, 19, 20, 30, 31, 34, 37, 46, 47],
             )
             df.columns = [
                 "category",
                 "comName",
+                "howMany",
                 "subnational2Name",
                 "county",
                 "obsDt",
+                "obsTime",
                 "subId",
                 "protocolId",
                 "media",
@@ -456,6 +378,11 @@ def get_records_to_review(
         except OSError as e:
             logging.error("Error reading database: %s. Error %s", database, e)
             return []
+    # append time to date so that it works the same was as the api
+    for observation in database:
+        observation["obsDt"] = (
+            f"{observation['obsDt']} {observation['obsTime']}"
+        )
     for county in continuation.counties():
         county_records = []
         if month == 0:
