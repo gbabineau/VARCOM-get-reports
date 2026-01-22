@@ -6,9 +6,7 @@ import logging
 from calendar import monthrange
 from datetime import date
 
-import pandas as pd
-
-from get_reports import continuation_record, get_from_database, ebird_api_access
+from get_reports import (continuation_record, ebird_data_access)
 
 
 def _county_in_list_or_group(
@@ -138,7 +136,7 @@ def _pelagic_record(
     if observation["subnational2Name"] in pelagic_counties:
         # get checklist and see if it uses the pelagic protocol
         if database == []:
-            checklist = ebird_api_access.get_checklist_with_retry(
+            checklist = ebird_data_access.get_checklist_with_retry(
                 ebird_api_key, observation=observation["subId"]
             )
             return checklist.get("protocolId", "") == "P60"
@@ -162,7 +160,7 @@ def _observation_has_media(
         bool: True if the observation has associated media, False otherwise.
     """
     if database == []:
-        checklist = ebird_api_access.get_checklist_with_retry(
+        checklist = ebird_data_access.get_checklist_with_retry(
             ebird_api_key, observation=observation["subId"]
         )
         return any(
@@ -207,7 +205,7 @@ def _find_record_of_interest(
     """
 
     if database == []:
-        observations = ebird_api_access.get_historic_observations_with_retry(
+        observations = ebird_data_access.get_historic_observations_with_retry(
             token=ebird_api_key,
             area=county["code"],
             day=day,
@@ -217,7 +215,7 @@ def _find_record_of_interest(
         )
     else:
         observations = (
-            get_from_database.get_historic_observations_from_database(
+            ebird_data_access.get_historic_observations_from_database(
                 database=database,
                 area=county["code"],
                 day=day,
@@ -349,40 +347,8 @@ def get_records_to_review(
     if database_file == "":
         database = []
     else:
-        logging.info("Reading observations from %s", database_file)
+        database = ebird_data_access.read_database(database_file)
 
-        try:
-            df = pd.read_csv(
-                database_file,
-                dtype={"24": str},
-                usecols=[3, 5, 10, 19, 20, 30, 31, 34, 37, 46, 47],
-            )
-            df.columns = [
-                "category",
-                "comName",
-                "howMany",
-                "subnational2Name",
-                "county",
-                "obsDt",
-                "obsTime",
-                "subId",
-                "protocolId",
-                "media",
-                "approved",
-            ]
-
-            database = df.to_dict("records")
-        except FileNotFoundError:
-            logging.error("database file not found: %s", database)
-            return []
-        except OSError as e:
-            logging.error("Error reading database: %s. Error %s", database, e)
-            return []
-    # append time to date so that it works the same was as the api
-    for observation in database:
-        observation["obsDt"] = (
-            f"{observation['obsDt']} {observation['obsTime']}"
-        )
     for county in continuation.counties():
         county_records = []
         if month == 0:

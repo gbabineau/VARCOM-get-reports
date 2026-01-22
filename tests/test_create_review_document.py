@@ -1,21 +1,18 @@
 """Unit tests for create_review_document module."""
 
-from datetime import datetime
+from unittest.mock import patch
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock
 from docx import Document
 
-from get_reports.create_review_document import (
-    _parse_arguments,
-    _load_observations,
-    _create_document,
-    _add_document_header,
-    get_day_number,
-    _iterate_over_species,
-    _add_species_heading,
-    _add_observation_data,
-    _save_document,
-)
+from get_reports.create_review_document import (_add_document_header,
+                                                _add_observation_data,
+                                                _add_species_heading,
+                                                _create_document,
+                                                _iterate_over_species,
+                                                _load_observations,
+                                                _parse_arguments,
+                                                _save_document, get_day_number)
 
 
 class TestParseArguments:
@@ -175,7 +172,7 @@ class TestAddSpeciesHeading:
 class TestAddObservationData:
     """Tests for _add_observation_data function."""
 
-    @patch("get_reports.create_review_document.ebird_api_access.get_checklist_with_retry")
+    @patch("get_reports.create_review_document.ebird_data_access.get_checklist_with_retry")
     def test_observation_data_formatting(self, mock_checklist):
         """Test observation data is added with correct formatting."""
         mock_checklist.return_value = {
@@ -207,7 +204,7 @@ class TestAddObservationData:
         assert "2" in text
         assert "John Doe" in text
 
-    @patch("get_reports.create_review_document.ebird_api_access.get_checklist_with_retry")
+    @patch("get_reports.create_review_document.ebird_data_access.get_checklist_with_retry")
     def test_observation_hyperlink(self, mock_checklist):
         """Test that observation includes eBird checklist hyperlink."""
         mock_checklist.return_value = {
@@ -314,4 +311,5 @@ class TestSaveDocument:
 
         assert output_path.exists()
         # File should be valid DOCX now
+        assert output_path.stat().st_size > 0
         assert output_path.stat().st_size > 0

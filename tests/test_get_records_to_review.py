@@ -235,7 +235,9 @@ def test_reviewable_species_with_no_exclusions_no_only_or_exclude():
     )
 
 
-@patch("get_reports.get_records_to_review.ebird_api_access.get_historic_observations")
+@patch(
+    "get_reports.get_records_to_review.ebird_data_access.get_historic_observations"
+)
 @patch("get_reports.get_records_to_review._is_new_record")
 @patch("get_reports.get_records_to_review._pelagic_record")
 @patch("get_reports.get_records_to_review._observation_has_media")
@@ -285,7 +287,9 @@ def test_find_record_of_interest_new_record(
     mock_observation_has_media.assert_called_once()
 
 
-@patch("get_reports.get_records_to_review.ebird_api_access.get_historic_observations")
+@patch(
+    "get_reports.get_records_to_review.ebird_data_access.get_historic_observations"
+)
 @patch("get_reports.get_records_to_review._is_new_record")
 @patch("get_reports.get_records_to_review._pelagic_record")
 @patch("get_reports.get_records_to_review._observation_has_media")
@@ -345,7 +349,7 @@ def test_find_record_of_interest_reviewable_species(
 
 
 @patch(
-    "get_reports.get_records_to_review.ebird_api_access.get_historic_observations"
+    "get_reports.get_records_to_review.ebird_data_access.get_historic_observations"
 )
 @patch("get_reports.get_records_to_review._is_new_record")
 @patch("get_reports.get_records_to_review._pelagic_record")
@@ -687,7 +691,9 @@ def test_get_records_to_review_multiple_days(
     assert result[0]["records"][1]["new"] is False
 
 
-@patch("get_reports.get_records_to_review.ebird_api_access.get_checklist_with_retry")
+@patch(
+    "get_reports.get_records_to_review.ebird_data_access.get_checklist_with_retry"
+)
 def test_pelagic_record_true(mock_get_checklist):
     ebird_api_key = "test_key"
     observation = {
@@ -703,7 +709,7 @@ def test_pelagic_record_true(mock_get_checklist):
     mock_get_checklist.assert_called_once_with("test_key", observation="sub123")
 
 
-@patch("get_reports.get_records_to_review.ebird_api_access.get_checklist")
+@patch("get_reports.get_records_to_review.ebird_data_access.get_checklist")
 def test_pelagic_record_false_not_pelagic_county(mock_get_checklist):
     ebird_api_key = "test_key"
     observation = {"subnational2Name": "NonPelagicCounty", "subId": "sub123"}
@@ -715,7 +721,7 @@ def test_pelagic_record_false_not_pelagic_county(mock_get_checklist):
     mock_get_checklist.assert_not_called()
 
 
-@patch("get_reports.get_records_to_review.ebird_api_access.get_checklist")
+@patch("get_reports.get_records_to_review.ebird_data_access.get_checklist")
 def test_pelagic_record_false_wrong_protocol(mock_get_checklist):
     ebird_api_key = "test_key"
     observation = {"subnational2Name": "PelagicCounty", "subId": "sub123"}
@@ -730,7 +736,7 @@ def test_pelagic_record_false_wrong_protocol(mock_get_checklist):
     )
 
 
-@patch("get_reports.get_records_to_review.ebird_api_access.get_checklist")
+@patch("get_reports.get_records_to_review.ebird_data_access.get_checklist")
 def test_pelagic_record_false_no_protocol(mock_get_checklist):
     ebird_api_key = "test_key"
     observation = {"subnational2Name": "PelagicCounty", "subId": "sub123"}
@@ -745,7 +751,7 @@ def test_pelagic_record_false_no_protocol(mock_get_checklist):
     )
 
 
-@patch("get_reports.get_records_to_review.ebird_api_access.get_checklist")
+@patch("get_reports.get_records_to_review.ebird_data_access.get_checklist")
 def test_observation_has_media_true(mock_get_checklist):
     ebird_api_key = "test_key"
     observation = {"subId": "sub123", "speciesCode": "speciesA"}
@@ -764,7 +770,7 @@ def test_observation_has_media_true(mock_get_checklist):
     )
 
 
-@patch("get_reports.get_records_to_review.ebird_api_access.get_checklist")
+@patch("get_reports.get_records_to_review.ebird_data_access.get_checklist")
 def test_observation_has_media_false_no_media(mock_get_checklist):
     ebird_api_key = "test_key"
     observation = {"subId": "sub123", "speciesCode": "speciesA"}
@@ -783,7 +789,7 @@ def test_observation_has_media_false_no_media(mock_get_checklist):
     )
 
 
-@patch("get_reports.get_records_to_review.ebird_api_access.get_checklist")
+@patch("get_reports.get_records_to_review.ebird_data_access.get_checklist")
 def test_observation_has_media_false_no_matching_species(mock_get_checklist):
     ebird_api_key = "test_key"
     observation = {"subId": "sub123", "speciesCode": "speciesC"}
@@ -802,7 +808,7 @@ def test_observation_has_media_false_no_matching_species(mock_get_checklist):
     )
 
 
-@patch("get_reports.get_records_to_review.ebird_api_access.get_checklist")
+@patch("get_reports.get_records_to_review.ebird_data_access.get_checklist")
 def test_observation_has_media_false_empty_checklist(mock_get_checklist):
     ebird_api_key = "test_key"
     observation = {"subId": "sub123", "speciesCode": "speciesA"}
@@ -814,6 +820,7 @@ def test_observation_has_media_false_empty_checklist(mock_get_checklist):
     mock_get_checklist.assert_called_once_with(
         token=ebird_api_key, sub_id="sub123"
     )
+
 
 @patch("get_reports.get_records_to_review._iterate_days_in_month")
 @patch("get_reports.get_records_to_review._find_record_of_interest")

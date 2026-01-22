@@ -1,13 +1,15 @@
 """Module to create a human readable report for expedited review."""
 
 import argparse
-from datetime import datetime
 import json
 import logging
 import os
+from datetime import datetime
+
 from docx import Document
 from ebird.api import get_taxonomy
-from get_reports import get_ebird_api_key, ebird_api_access
+
+from get_reports import ebird_data_access, get_ebird_api_key
 
 
 def _parse_arguments() -> argparse.Namespace:
@@ -198,7 +200,7 @@ def _add_observation_data(
 ):
     """Add a hyperlink for a species record."""
     observation = record["observation"]
-    checklist = ebird_api_access.get_checklist_with_retry(
+    checklist = ebird_data_access.get_checklist_with_retry(
         ebird_api_key, observation=record["observation"]["subId"]
     )
     observer_name = checklist["userDisplayName"]
@@ -239,5 +241,7 @@ def main():
     _save_document(document, args.output)
 
 
+if __name__ == "__main__":
+    main()
 if __name__ == "__main__":
     main()
