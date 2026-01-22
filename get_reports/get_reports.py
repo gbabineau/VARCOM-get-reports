@@ -154,10 +154,9 @@ def main():
 
     ebird_api_key = get_ebird_api_key.get_ebird_api_key()
     taxonomy = get_taxonomy(ebird_api_key)
-    if args.EBD != "":
-        if not os.path.exists(args.EBD):
-            logging.error("eBird Database file %s not found. Exiting.", args.EBD)
-            return
+    if args.EBD != "" and not os.path.exists(args.EBD):
+        logging.error("eBird Database file %s not found. Exiting.", args.EBD)
+        return
     region = args.region
     state = region[:5]
     state_list = get_state_list.get_state_list(args.input, taxonomy=taxonomy)

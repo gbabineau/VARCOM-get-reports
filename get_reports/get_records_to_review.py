@@ -6,7 +6,7 @@ import logging
 from calendar import monthrange
 from datetime import date
 
-from get_reports import (continuation_record, ebird_data_access)
+from get_reports import continuation_record, ebird_data_access
 
 
 def _county_in_list_or_group(
@@ -311,6 +311,38 @@ def _iterate_days_in_month(year: int, month: int, day):
         yield date(year, month, day)
 
 
+def _get_county_records(
+    ebird_api_key: str,
+    database: list,
+    state_list: list,
+    county: str,
+    year: int,
+    month: int,
+    day: int,
+    review_species: dict,
+) -> list:
+    """ Get the records for a county over for a time period"""
+    county_records = []
+    if month == 0:
+        month_range = range(1, 13)
+    else:
+        month_range = range(month, month + 1)
+
+    for month_in_year in month_range:
+        for day_in_month in _iterate_days_in_month(year, month_in_year, day):
+            records_for_county = _find_record_of_interest(
+                ebird_api_key,
+                database,
+                state_list,
+                county,
+                day_in_month,
+                review_species,
+            )
+            if records_for_county:
+                county_records.extend(records_for_county)
+    return county_records
+
+
 def get_records_to_review(
     ebird_api_key: str,
     database_file: str,
@@ -350,26 +382,16 @@ def get_records_to_review(
         database = ebird_data_access.read_database(database_file)
 
     for county in continuation.counties():
-        county_records = []
-        if month == 0:
-            month_range = range(1, 13)
-        else:
-            month_range = range(month, month + 1)
-
-        for month_in_year in month_range:
-            for day_in_month in _iterate_days_in_month(
-                year, month_in_year, day
-            ):
-                records_for_county = _find_record_of_interest(
-                    ebird_api_key,
-                    database,
-                    state_list,
-                    county,
-                    day_in_month,
-                    review_species,
-                )
-                if records_for_county:
-                    county_records.extend(records_for_county)
+        county_records = _get_county_records(
+            ebird_api_key,
+            database,
+            state_list,
+            county,
+            year,
+            month,
+            day,
+            review_species,
+        )
         if county_records:
             records_to_review.append(
                 {"county": county["name"], "records": county_records}

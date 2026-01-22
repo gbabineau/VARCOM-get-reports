@@ -114,11 +114,8 @@ def get_day_number(date_string):
         print(f"Error: {e}")
         return None
 
-
-def _iterate_over_species(
-    ebird_api_key: str, document: Document, counties: list, taxonomy: list
-):
-    """Add records for each species to the document."""
+def _get_species_by_counties(counties: list, taxonomy: list) -> dict:
+    """ rearrange the document by species instead of counties """
     species_by_county = {}
     for county in counties:
         for record in county["records"]:
@@ -131,7 +128,13 @@ def _iterate_over_species(
                 species_by_county[species]["records"] = []
 
             species_by_county[species]["records"].append(record)
+    return species_by_county
 
+def _iterate_over_species(
+    ebird_api_key: str, document: Document, counties: list, taxonomy: list
+):
+    """Add records for each species to the document."""
+    species_by_county = _get_species_by_counties(counties=counties, taxonomy=taxonomy)
     for species in sorted(
         species_by_county.keys(),
         key=lambda s: species_by_county[s]["taxon"].get(
@@ -174,24 +177,24 @@ def _add_species_heading(
         document.add_paragraph(
             f"The species {species} is excluded from review in the following"
             f"counties and groups of counties: {exclude}",
-            style="List Bullet",
+            style=LIST_BULLET_STYLE,
         )
     if only := review_species.get("only", []):
         document.add_paragraph(
             f"The species {species}: is only reviewed in the following "
             f"counties or groups of counties: {only}",
-            style="List Bullet",
+            style=LIST_BULLET_STYLE,
         )
     if unique_exclude_notes := review_species.get("uniqueExcludeNotes", None):
         document.add_paragraph(
             "This species has unique Exclude Notes which could not be "
             f"automated. {unique_exclude_notes}",
-            style="List Bullet",
+            style=LIST_BULLET_STYLE,
         )
     if not exclude and not only and not unique_exclude_notes:
         document.add_paragraph(
             f"The species {species} is reviewable across the entire state.",
-            style="List Bullet",
+            style=LIST_BULLET_STYLE,
         )
 
 
