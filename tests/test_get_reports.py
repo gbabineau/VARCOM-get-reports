@@ -2,7 +2,7 @@
 
 import logging
 import sys
-from unittest.mock import MagicMock, mock_open, patch
+from unittest.mock import MagicMock, mock_open, patch, ANY
 
 import pytest
 
@@ -240,6 +240,7 @@ def test_main(
     )
     mock_get_records_to_review.assert_called_once_with(
         ebird_api_key="mock_api_key",
+        database_file=ANY,
         state_list=["mock_state_list"],
         counties=[{"code": "US-VA-03", "name": "Albemarle"}],
         year=2023,

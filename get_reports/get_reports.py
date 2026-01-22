@@ -3,6 +3,7 @@
 import argparse
 import json
 import logging
+import os
 from datetime import datetime
 
 from ebird.api import get_regions, get_taxonomy
@@ -29,6 +30,7 @@ def _parse_arguments() -> argparse.Namespace:
             Defaults to "get_reports/data/varcom_review_species.json".
         --region (str, optional): State or county to review in the format US-SS, or US-SS-CCC.
             Defaults to "US-VA".
+        --EBD (str, optional): Use eBird Database file rather than API
         --version: Displays the program version and exits.
         --verbose: Increases verbosity of the program output.
     """
@@ -61,6 +63,11 @@ def _parse_arguments() -> argparse.Namespace:
         "--region",
         help="Region to review in the format US-SS, or US-SS-CCC",
         default="US-VA",
+    )
+    arg_parser.add_argument(
+        "--EBD",
+        help="eBird Database file",
+        default=""
     )
     arg_parser.add_argument(
         "--version", action="version", version="%(prog)s 0.0.0"
@@ -147,6 +154,9 @@ def main():
 
     ebird_api_key = get_ebird_api_key.get_ebird_api_key()
     taxonomy = get_taxonomy(ebird_api_key)
+    if args.EBD != "" and not os.path.exists(args.EBD):
+        logging.error("eBird Database file %s not found. Exiting.", args.EBD)
+        return
     region = args.region
     state = region[:5]
     state_list = get_state_list.get_state_list(args.input, taxonomy=taxonomy)
@@ -173,6 +183,7 @@ def main():
     )
     records_to_review = get_records_to_review.get_records_to_review(
         ebird_api_key=ebird_api_key,
+        database_file=args.EBD,
         state_list=state_list,
         counties=counties,
         year=args.year,

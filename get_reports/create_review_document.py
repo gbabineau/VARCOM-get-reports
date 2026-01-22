@@ -4,7 +4,12 @@ import argparse
 import json
 import logging
 import os
+from datetime import datetime
+
 from docx import Document
+from ebird.api import get_taxonomy
+
+from get_reports import ebird_data_access, get_ebird_api_key
 
 
 def _parse_arguments() -> argparse.Namespace:
@@ -37,11 +42,15 @@ def _load_observations(file_path: str) -> dict:
         return json.load(file)
 
 
-def _create_document(observations: dict) -> Document:
+def _create_document(
+    ebird_api_key: str, observations: dict, taxonomy: list
+) -> Document:
     """Create a Word document based on observations."""
     document = Document()
     _add_document_header(document, observations)
-    _add_county_records(document, observations["records"])
+    _iterate_over_species(
+        ebird_api_key, document, observations["records"], taxonomy=taxonomy
+    )
     return document
 
 
@@ -80,97 +89,138 @@ def _add_document_header(document: Document, observations: dict):
     ).hyperlink = "https://github.com/gbabineau/VARCOM-get-reports"
 
 
-def _add_county_records(document: Document, counties: list):
-    """Add records for each county to the document."""
+def get_day_number(date_string):
+    """
+    Converts a date string in YYYY-MM-DD format to the day number of the year.
+
+    Args:
+        date_string (str): The date string in "YYYY-MM-DD" format (e.g., "2025-01-20").
+
+    Returns:
+        int: The day number of the year (e.g., 20 for Jan 20th, 365 for Dec 31st non-leap year).
+    """
+    try:
+        # Parse the string into a datetime object
+        date_object = datetime.strptime(date_string, "%Y-%m-%d")
+
+        # Use the strftime method to get the day of the year (%j)
+        # Note: %j returns a zero-padded string, so we convert it to an integer
+        day_number_str = date_object.strftime("%j")
+        day_number = int(day_number_str)
+
+        return day_number
+
+    except ValueError as e:
+        print(f"Error: {e}")
+        return None
+
+def _get_species_by_counties(counties: list, taxonomy: list) -> dict:
+    """ rearrange the document by species instead of counties """
+    species_by_county = {}
     for county in counties:
-        document.add_heading(
-            f"Reviewable records in {county['county']}", level=1
-        )
-        document.add_paragraph(f"Total records: {len(county['records'])}")
-        _add_species_records(document, county)
-
-
-def _add_species_records(document: Document, county: dict):
-    """Add species records for a specific county."""
-    county_records = county["records"]
-    sorted_records = sorted(
-        county_records,
-        key=lambda x: (
-            x["observation"]["comName"],
-            x["observation"]["obsDt"],
-            x["media"],
-        ),
-    )
-
-    current_species = ""
-    media_count = 0
-    no_media_count = 0
-    for record in sorted_records:
-        species = record["observation"]["comName"]
-        if species != current_species:
-            if media_count > 0 or no_media_count > 0:
-                document.add_paragraph(
-                    f"Total records with media: {media_count}."
-                    f" Total records without media: {no_media_count}"
+        for record in county["records"]:
+            species = record["observation"]["comName"]
+            if species not in species_by_county:
+                species_by_county[species] = {}
+                species_by_county[species]["taxon"] = next(
+                    (t for t in taxonomy if t.get("comName") == species), {}
                 )
-            _add_species_heading(document, species, record, county)
-            current_species = species
-            media_count = 0
-            no_media_count = 0
-            if record["observation"].get("subId"):
-                _add_observation_data(document, record)
-        if record["media"]:
-            media_count += 1
-        else:
-            no_media_count += 1
-    if media_count > 0 or no_media_count > 0:
-        document.add_paragraph(
-            f"Total records with media: {media_count}."
-            f"Total records without media: {no_media_count}"
+                species_by_county[species]["records"] = []
+
+            species_by_county[species]["records"].append(record)
+    return species_by_county
+
+def _iterate_over_species(
+    ebird_api_key: str, document: Document, counties: list, taxonomy: list
+):
+    """Add records for each species to the document."""
+    species_by_county = _get_species_by_counties(counties=counties, taxonomy=taxonomy)
+    for species in sorted(
+        species_by_county.keys(),
+        key=lambda s: species_by_county[s]["taxon"].get(
+            "taxonOrder", float("inf")
+        ),
+    ):
+        sorted_records = sorted(
+            species_by_county[species]["records"],
+            key=lambda x: (
+                x["observation"].get("subnational2Name", ""),
+                get_day_number(x["observation"]["obsDt"][:10]),
+            ),
         )
+        last_species = ""
+        for record in sorted_records:
+            if record.get("media"):
+                current_species = record["observation"]["comName"]
+                if current_species != last_species:
+                    _add_species_heading(
+                        document,
+                        current_species,
+                        review_species=record.get("review_species", {}),
+                    )
+                last_species = current_species
+                _add_observation_data(
+                    ebird_api_key,
+                    document,
+                    record,
+                    species_by_county[species]["taxon"],
+                )
 
 
 def _add_species_heading(
-    document: Document, species: str, record: dict, county: dict
+    document: Document, species: str, review_species: dict
 ):
     """Add a heading and details for a species."""
     document.add_heading(species, level=2)
-    review_species = record.get("review_species", {})
+
     if exclude := review_species.get("exclude", []):
         document.add_paragraph(
-            f"The species {species} is not excluded from review in "
-            f"{county['county']} because it is not in the following counties "
-            f"or groups of counties: {exclude}"
+            f"The species {species} is excluded from review in the following"
+            f"counties and groups of counties: {exclude}",
+            style=LIST_BULLET_STYLE,
         )
     if only := review_species.get("only", []):
         document.add_paragraph(
             f"The species {species}: is only reviewed in the following "
-            f"counties or groups of counties: {only}"
+            f"counties or groups of counties: {only}",
+            style=LIST_BULLET_STYLE,
         )
     if unique_exclude_notes := review_species.get("uniqueExcludeNotes", None):
         document.add_paragraph(
             "This species has unique Exclude Notes which could not be "
-            f"automated. {unique_exclude_notes}"
+            f"automated. {unique_exclude_notes}",
+            style=LIST_BULLET_STYLE,
         )
     if not exclude and not only and not unique_exclude_notes:
         document.add_paragraph(
-            f"The species {species} is reviewable across the entire state."
-        )
-    if record.get("new", False):
-        document.add_paragraph(
-            f"The species {species} is not in the state list. A new record?"
+            f"The species {species} is reviewable across the entire state.",
+            style=LIST_BULLET_STYLE,
         )
 
 
-def _add_observation_data(document: Document, record: dict):
+def _add_observation_data(
+    ebird_api_key: str, document: Document, record: dict, species_data: dict
+):
     """Add a hyperlink for a species record."""
     observation = record["observation"]
-    p = document.add_paragraph(style="List Bullet")
-    media_status = "Has media." if record.get("media") else "No media."
+    checklist = ebird_data_access.get_checklist_with_retry(
+        ebird_api_key, observation=record["observation"]["subId"]
+    )
+    observer_name = checklist["userDisplayName"]
+    locality = checklist["locId"]
+    checklist = observation.get("subId", "")
+    if checklist == "":
+        checklist = observation.get("SubId", "unknown")
+    p = document.add_paragraph()
+    p.add_run(f"{species_data['comName']}").bold = True
+    p.add_run(" (")
+    p.add_run(f"{species_data['sciName']}").italic = True
     p.add_run(
-        f"{observation['obsDt']}, {media_status}, "
-        f"Checklist: https://ebird.org/checklist/{observation['subId']}"
-    ).hyperlink = f"https://ebird.org/checklist/{observation['subId']}"
+        f"): {observation['howMany']}, {locality} "
+        f"{observation['subnational2Name']} [ph. {observer_name}] "
+        f"{observation['obsDt']};"
+        f"https://ebird.org/checklist/{checklist}"
+    ).hyperlink = f"https://ebird.org/checklist/{checklist}"
 
 
 def _save_document(document: Document, output: str):
@@ -186,11 +236,15 @@ def main():
 
     if args.verbose:
         logging.basicConfig(level=logging.INFO)
+    ebird_api_key = get_ebird_api_key.get_ebird_api_key()
+    taxonomy = get_taxonomy(ebird_api_key)
 
     observations = _load_observations(args.input)
-    document = _create_document(observations)
+    document = _create_document(ebird_api_key, observations, taxonomy=taxonomy)
     _save_document(document, args.output)
 
 
+if __name__ == "__main__":
+    main()
 if __name__ == "__main__":
     main()
