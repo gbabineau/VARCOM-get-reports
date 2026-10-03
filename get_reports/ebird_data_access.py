@@ -7,7 +7,7 @@ import pandas as pd
 from ebird.api.requests import get_checklist, get_historic_observations
 
 
-def get_checklist_with_retry(api_key: str, observation: str) -> list:
+def get_checklist_with_retry(api_key: str, observation: str) -> dict:
     """
     Calls the eBird API get_checklist with retries
     """
