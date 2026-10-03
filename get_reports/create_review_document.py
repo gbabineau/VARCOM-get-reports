@@ -7,7 +7,7 @@ import os
 from datetime import datetime
 
 from docx import Document
-from ebird.api import get_taxonomy
+from ebird.api.requests import get_taxonomy
 
 from get_reports import ebird_data_access, get_ebird_api_key
 
