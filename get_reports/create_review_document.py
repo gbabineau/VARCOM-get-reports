@@ -7,7 +7,7 @@ import os
 from datetime import datetime
 
 from docx import Document
-from ebird.api import get_taxonomy
+from ebird.api.requests import get_taxonomy
 
 from get_reports import ebird_data_access, get_ebird_api_key
 
@@ -208,9 +208,9 @@ def _add_observation_data(
     )
     observer_name = checklist["userDisplayName"]
     locality = checklist["locId"]
-    checklist = observation.get("subId", "")
-    if checklist == "":
-        checklist = observation.get("SubId", "unknown")
+    sub_id = observation.get("subId", "")
+    if sub_id == "":
+        sub_id = observation.get("SubId", "unknown")
     p = document.add_paragraph()
     p.add_run(f"{species_data['comName']}").bold = True
     p.add_run(" (")
@@ -219,8 +219,8 @@ def _add_observation_data(
         f"): {observation['howMany']}, {locality} "
         f"{observation['subnational2Name']} [ph. {observer_name}] "
         f"{observation['obsDt']};"
-        f"https://ebird.org/checklist/{checklist}"
-    ).hyperlink = f"https://ebird.org/checklist/{checklist}"
+        f"https://ebird.org/checklist/{sub_id}"
+    ).hyperlink = f"https://ebird.org/checklist/{sub_id}"
 
 
 def _save_document(document: Document, output: str):

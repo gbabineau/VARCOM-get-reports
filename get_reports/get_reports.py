@@ -6,7 +6,7 @@ import logging
 import os
 from datetime import datetime
 
-from ebird.api import get_regions, get_taxonomy
+from ebird.api.requests import get_regions, get_taxonomy
 
 from get_reports import (
     get_ebird_api_key,
