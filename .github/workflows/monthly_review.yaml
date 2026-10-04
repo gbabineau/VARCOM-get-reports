@@ -3,6 +3,7 @@ name: Monthly Report Generation
 on:
   schedule:
      - cron: '13 1 2 * *'  # Runs on the second day of every month at 1:13 AM (UTC)
+  workflow_dispatch:
   # comment out the above and uncomment the below to test the script
   # push:
   #   branches:
