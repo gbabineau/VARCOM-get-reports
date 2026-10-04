@@ -49,6 +49,7 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
+.pytest_tmp/
 cover/
 
 # Translations
@@ -175,4 +176,3 @@ reports/
 get_reports/demo.py
 junit/
 EBD/
-

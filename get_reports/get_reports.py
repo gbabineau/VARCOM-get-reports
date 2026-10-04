@@ -14,6 +14,7 @@ from get_reports import (
     get_state_list,
     get_records_to_review,
 )
+from get_reports.safe_path import safe_path
 
 
 def _parse_arguments() -> argparse.Namespace:
@@ -118,7 +119,7 @@ def _save_records_to_file(
             "records": records,
         }
         with open(
-            save_file_name,
+            safe_path(save_file_name),
             "wt",
             encoding="utf-8",
         ) as f:

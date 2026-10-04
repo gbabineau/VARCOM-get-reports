@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+from get_reports.safe_path import safe_path
 
 
 def get_state_list(file_name: str, taxonomy: list) -> dict:
@@ -24,7 +25,7 @@ def get_state_list(file_name: str, taxonomy: list) -> dict:
     if not os.path.exists(file_name):
         logging.error("File %s does not exist.", file_name)
         return {}
-    with open(file_name, "rt", encoding="utf-8") as f:
+    with open(safe_path(file_name), "rt", encoding="utf-8") as f:
         state_list = json.load(f)["state_list"]
     logging.info("Checking species in state list against eBird taxonomy.")
     for species in state_list:

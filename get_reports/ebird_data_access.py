@@ -21,6 +21,7 @@ def get_checklist_with_retry(api_key: str, observation: str) -> dict:
                 sleep_time = 60 * attempts
             else:
                 sleep_time = attempts
+
             logging.warning(
                 "get_checklist attempt %d failed for args %s, %s. Sleeping for %d seconds",
                 attempts,
@@ -31,11 +32,10 @@ def get_checklist_with_retry(api_key: str, observation: str) -> dict:
             sleep(sleep_time)
 
             if attempts >= 3:
-                logging.error(
-                    "get_checklist failed after %d attempts for args %s, %s",
+                logging.exception(
+                    "get_checklist failed after %d attempts for args %s",
                     attempts,
                     observation,
-                    exc,
                 )
                 raise
 
@@ -82,7 +82,7 @@ def get_historic_observations_with_retry(
             sleep(sleep_time)
 
             if attempts >= 3:
-                logging.error(
+                logging.exception(
                     "get_checklist failed after %d attempts for args %s, %s, %s, %s, %s, %s",
                     attempts,
                     area,
@@ -122,10 +122,10 @@ def read_database(database_file: str) -> list:
 
         database = df.to_dict("records")
     except FileNotFoundError:
-        logging.error("database file not found: %s", database_file)
+        logging.exception("database file not found: %s", database_file)
         return []
-    except OSError as e:
-        logging.error("Error reading database: %s. Error %s", database_file, e)
+    except OSError:
+        logging.exception("Error reading database: %s.", database_file)
         return []
 
     # append time to date so that it works the same was as the api

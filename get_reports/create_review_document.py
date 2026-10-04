@@ -10,6 +10,7 @@ from docx import Document
 from ebird.api.requests import get_taxonomy
 
 from get_reports import ebird_data_access, get_ebird_api_key
+from get_reports.safe_path import safe_path
 
 
 def _parse_arguments() -> argparse.Namespace:
@@ -38,7 +39,7 @@ def _parse_arguments() -> argparse.Namespace:
 
 def _load_observations(file_path: str) -> dict:
     """Load observations from a JSON file."""
-    with open(file_path, "rt", encoding="utf-8") as file:
+    with open(safe_path(file_path), "rt", encoding="utf-8") as file:
         return json.load(file)
 
 
@@ -226,7 +227,7 @@ def _add_observation_data(
 def _save_document(document: Document, output: str):
     """Save the document to a file."""
     if os.path.exists(output):
-        os.remove(output)
+        os.remove(safe_path(output))
     document.save(output)
 
 
