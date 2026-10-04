@@ -1,6 +1,9 @@
-""" Test the safe_path.py function """
+"""Test the safe_path.py function"""
+
 import os
+
 import pytest
+
 from get_reports.safe_path import safe_path
 
 
@@ -45,5 +48,7 @@ def test_safe_path_rejects_symlinks_that_escape_the_directory(
     outside_dir = tmp_path.parent / "escaped-target"
     outside_dir.mkdir(exist_ok=True)
     link_path = tmp_path / "link-to-outside"
-    with pytest.raises(OSError):
+
+    with pytest.raises((OSError, ValueError)):
         os.symlink(outside_dir, link_path)
+        safe_path(link_path)
