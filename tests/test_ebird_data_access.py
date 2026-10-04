@@ -62,6 +62,23 @@ def test_get_checklist_with_retry_success_second_attempt(
     assert mock_get_checklist.call_count == 2
     mock_sleep.assert_called_once_with(1)
 
+@patch("get_reports.ebird_data_access.sleep")
+@patch("get_reports.ebird_data_access.get_checklist")
+def test_get_checklist_with_retry_success_second_attempt_429(
+    mock_get_checklist, mock_sleep
+):
+    api_key = "test_key"
+    observation = "sub123"
+    mock_get_checklist.side_effect = [
+        OSError("HTTP Error 429: Too Many Requests"),
+        {"protocolId": "P22"},
+    ]
+
+    result = get_checklist_with_retry(api_key, observation)
+
+    assert result == {"protocolId": "P22"}
+    assert mock_get_checklist.call_count == 2
+    mock_sleep.assert_called_once_with(60)
 
 @patch("get_reports.ebird_data_access.sleep")
 @patch("get_reports.ebird_data_access.get_checklist")
@@ -176,6 +193,29 @@ def test_get_historic_observations_with_retry_success_second_attempt(
     assert mock_get_historic_observations.call_count == 2
     mock_sleep.assert_called_once_with(1)
 
+@patch("get_reports.ebird_data_access.sleep")
+@patch("get_reports.ebird_data_access.get_historic_observations")
+def test_get_historic_observations_with_retry_success_second_attempt_429(
+    mock_get_historic_observations, mock_sleep
+):
+    token = "test_key"
+    area = "US-VA"
+    day = date(2023, 10, 1)
+    category = "species"
+    rank = "create"
+    detail = "full"
+    mock_get_historic_observations.side_effect = [
+        OSError("HTTP Error 429: Too Many Requests"),
+        [{"comName": "SpeciesA", "speciesCode": "speca"}],
+    ]
+
+    result = get_historic_observations_with_retry(
+        token, area, day, category, rank, detail
+    )
+
+    assert result == [{"comName": "SpeciesA", "speciesCode": "speca"}]
+    assert mock_get_historic_observations.call_count == 2
+    mock_sleep.assert_called_once_with(60)
 
 @patch("get_reports.ebird_data_access.sleep")
 @patch("get_reports.ebird_data_access.get_historic_observations")
