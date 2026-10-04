@@ -1,13 +1,14 @@
 # pylint: disable=W0613, W0212, C0116, C0114, C0115
 from datetime import date
-from unittest.mock import patch, mock_open
+from unittest.mock import mock_open, patch
+
 import pandas as pd
 
 from get_reports.ebird_data_access import (
     get_checklist_with_retry,
+    get_historic_observations_from_database,
     get_historic_observations_with_retry,
     read_database,
-    get_historic_observations_from_database
 )
 
 
@@ -59,8 +60,25 @@ def test_get_checklist_with_retry_success_second_attempt(
 
     assert result == {"protocolId": "P22"}
     assert mock_get_checklist.call_count == 2
-    mock_sleep.assert_called_once_with(0.1)
+    mock_sleep.assert_called_once_with(1)
 
+@patch("get_reports.ebird_data_access.sleep")
+@patch("get_reports.ebird_data_access.get_checklist")
+def test_get_checklist_with_retry_success_second_attempt_429(
+    mock_get_checklist, mock_sleep
+):
+    api_key = "test_key"
+    observation = "sub123"
+    mock_get_checklist.side_effect = [
+        OSError("HTTP Error 429: Too Many Requests"),
+        {"protocolId": "P22"},
+    ]
+
+    result = get_checklist_with_retry(api_key, observation)
+
+    assert result == {"protocolId": "P22"}
+    assert mock_get_checklist.call_count == 2
+    mock_sleep.assert_called_once_with(60)
 
 @patch("get_reports.ebird_data_access.sleep")
 @patch("get_reports.ebird_data_access.get_checklist")
@@ -115,8 +133,8 @@ def test_get_checklist_with_retry_sleep_progression(
     except OSError:
         pass
 
-    mock_sleep.assert_any_call(0.1)
-    mock_sleep.assert_any_call(0.2)
+    mock_sleep.assert_any_call(1)
+    mock_sleep.assert_any_call(2)
     assert mock_sleep.call_count == 3
 
 
@@ -173,8 +191,31 @@ def test_get_historic_observations_with_retry_success_second_attempt(
 
     assert result == [{"comName": "SpeciesA", "speciesCode": "speca"}]
     assert mock_get_historic_observations.call_count == 2
-    mock_sleep.assert_called_once_with(0.1)
+    mock_sleep.assert_called_once_with(1)
 
+@patch("get_reports.ebird_data_access.sleep")
+@patch("get_reports.ebird_data_access.get_historic_observations")
+def test_get_historic_observations_with_retry_success_second_attempt_429(
+    mock_get_historic_observations, mock_sleep
+):
+    token = "test_key"
+    area = "US-VA"
+    day = date(2023, 10, 1)
+    category = "species"
+    rank = "create"
+    detail = "full"
+    mock_get_historic_observations.side_effect = [
+        OSError("HTTP Error 429: Too Many Requests"),
+        [{"comName": "SpeciesA", "speciesCode": "speca"}],
+    ]
+
+    result = get_historic_observations_with_retry(
+        token, area, day, category, rank, detail
+    )
+
+    assert result == [{"comName": "SpeciesA", "speciesCode": "speca"}]
+    assert mock_get_historic_observations.call_count == 2
+    mock_sleep.assert_called_once_with(60)
 
 @patch("get_reports.ebird_data_access.sleep")
 @patch("get_reports.ebird_data_access.get_historic_observations")
@@ -247,8 +288,8 @@ def test_get_historic_observations_with_retry_sleep_progression(
     except OSError:
         pass
 
-    mock_sleep.assert_any_call(0.1)
-    mock_sleep.assert_any_call(0.2)
+    mock_sleep.assert_any_call(1)
+    mock_sleep.assert_any_call(2)
     assert mock_sleep.call_count == 3
 
 
@@ -317,9 +358,10 @@ def test_read_database_os_error(mock_read_csv, mock_open_function):
         dtype={"24": str},
         usecols=[3, 5, 10, 19, 20, 30, 31, 34, 37, 46, 47],
     )
+
+
 @patch("get_reports.ebird_data_access.get_historic_observations_from_database")
 def test_get_historic_observations_from_database_single_match(mock_function):
-
     database = [
         {
             "county": "Fairfax",
@@ -345,7 +387,6 @@ def test_get_historic_observations_from_database_single_match(mock_function):
 
 
 def test_get_historic_observations_from_database_multiple_matches():
-
     database = [
         {
             "county": "Fairfax",
@@ -369,7 +410,6 @@ def test_get_historic_observations_from_database_multiple_matches():
 
 
 def test_get_historic_observations_from_database_no_matches():
-
     database = [
         {
             "county": "Fairfax",
@@ -387,7 +427,6 @@ def test_get_historic_observations_from_database_no_matches():
 
 
 def test_get_historic_observations_from_database_different_dates():
-
     database = [
         {
             "county": "Fairfax",
@@ -412,7 +451,6 @@ def test_get_historic_observations_from_database_different_dates():
 
 
 def test_get_historic_observations_from_database_empty_database():
-
     database = []
 
     result = get_historic_observations_from_database(
@@ -420,4 +458,3 @@ def test_get_historic_observations_from_database_empty_database():
     )
 
     assert result == []
-

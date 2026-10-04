@@ -44,3 +44,5 @@ mypy = "^1.11.2"
 [tool.ruff]
 line-length = 80
 
+[tool.pytest.ini_options]
+addopts = "--basetemp=.pytest_tmp"

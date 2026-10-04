@@ -88,9 +88,9 @@ class ContinuationRecord:
                     json.dump({"counties": [], "records": []}, indent=4, fp=fh)
                 finished_counties = []
                 self._records_to_review = []
-        except OSError as exc:
-            logging.error(
-                "Error loading continuation or creating record %s", exc
+        except OSError:
+            logging.exception(
+                "Error loading continuation or creating record"
             )
             raise
         self._remaining_counties = [
@@ -132,8 +132,8 @@ class ContinuationRecord:
                     json.dump(continuation_data, indent=4, fp=fh)
             else:
                 logging.error("Continuation file doesn't exist.")
-        except OSError as exc:
-            logging.error("Error updating continuation  record %s", exc)
+        except OSError:
+            logging.exception("Error updating continuation  record")
             raise
 
     def complete(self):
@@ -156,8 +156,8 @@ class ContinuationRecord:
                 p.unlink()
             else:
                 logging.error("Continuation file doesn't exist.")
-        except OSError as exc:
-            logging.error("Error deleting continuation record %s", exc)
+        except OSError:
+            logging.exception("Error deleting continuation record")
             raise
 
     def counties(self) -> list:

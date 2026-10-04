@@ -1,8 +1,9 @@
 """Tests for get_reports.py module."""
 
 import logging
+import os
 import sys
-from unittest.mock import MagicMock, mock_open, patch, ANY
+from unittest.mock import ANY, MagicMock, mock_open, patch
 
 import pytest
 
@@ -13,6 +14,7 @@ from get_reports.get_reports import (
 )
 
 # pylint: disable=C0116
+
 
 def test_parse_arguments_required_fields():
     test_args = ["get_reports", "--year", "2023", "--month", "10"]
@@ -76,7 +78,11 @@ def test_save_records_to_file_specific_day(mock_datetime, mock_file_open):
     _save_records_to_file(records, year, month, day, region)
 
     # Expected file name and content
-    expected_filename = "reports/records_to_review_2023_10_15.json"
+
+    expected_filename = os.path.join(
+        os.getcwd(), "reports", "records_to_review_2023_10_15.json"
+    )
+    expected_filename = expected_filename[0].upper() + expected_filename[1:]
     _ = {
         "date of observations": "2023-10-15",
         "region": "US-VA",
@@ -111,8 +117,11 @@ def test_save_records_to_file_all_days(mock_datetime, mock_file_open):
     # Call the function
     _save_records_to_file(records, year, month, day, region)
 
-    # Expected output
-    expected_filename = "reports/records_to_review_2023_10.json"
+    expected_filename = os.path.join(
+        os.getcwd(), "reports", "records_to_review_2023_10.json"
+    )
+    expected_filename = expected_filename[0].upper() + expected_filename[1:]
+
     _ = {
         "date of observations": "2023-10",
         "region": "US-VA",
@@ -128,6 +137,7 @@ def test_save_records_to_file_all_days(mock_datetime, mock_file_open):
     # Assert the correct data was written to the file
     handle = mock_file_open()
     assert handle.write.call_count == 32
+
 
 @patch("get_reports.get_reports.open", new_callable=mock_open)
 @patch("get_reports.get_reports.datetime")
@@ -147,7 +157,10 @@ def test_save_records_to_file_all_year(mock_datetime, mock_file_open):
     _save_records_to_file(records, year, month, day, region)
 
     # Expected output
-    expected_filename = "reports/records_to_review_2023.json"
+    expected_filename = os.path.join(
+        os.getcwd(), "reports", "records_to_review_2023.json"
+    )
+    expected_filename = expected_filename[0].upper() + expected_filename[1:]
     _ = {
         "date of observations": "2023",
         "region": "US-VA",
@@ -163,6 +176,7 @@ def test_save_records_to_file_all_year(mock_datetime, mock_file_open):
     # Assert the correct data was written to the file
     handle = mock_file_open()
     assert handle.write.call_count == 32
+
 
 @patch("get_reports.get_reports.open", new_callable=mock_open)
 def test_save_records_to_file_no_records(mock_file_open):
