@@ -28,6 +28,20 @@
             ]
         },
         {
+            "name": "Slow API get reports May 12 2025 ",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "get_reports.get_reports",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--verbose",
+                "--year", "2025",
+                "--month", "05",
+                "--day", "12",
+            ]
+        },
+        {
             "name": "database get reports May 2025 ",
             "type": "debugpy",
             "request": "launch",

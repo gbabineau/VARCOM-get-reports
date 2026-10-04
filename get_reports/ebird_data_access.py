@@ -17,13 +17,19 @@ def get_checklist_with_retry(api_key: str, observation: str) -> dict:
             return get_checklist(token=api_key, sub_id=observation)
         except OSError as exc:
             attempts += 1
-            sleep(0.1 * attempts)
+            if str(exc) == "HTTP Error 429: Too Many Requests":
+                sleep_time = 60 * attempts
+            else:
+                sleep_time = attempts
             logging.warning(
-                "get_checklist attempt %d failed for args %s, %s",
+                "get_checklist attempt %d failed for args %s, %s. Sleeping for %d seconds",
                 attempts,
                 observation,
                 exc,
+                sleep_time
             )
+            sleep(sleep_time)
+
             if attempts >= 3:
                 logging.error(
                     "get_checklist failed after %d attempts for args %s, %s",
@@ -58,9 +64,12 @@ def get_historic_observations_with_retry(
             )
         except OSError as exc:
             attempts += 1
-            sleep(0.1 * attempts)
+            if str(exc) == "HTTP Error 429: Too Many Requests":
+                sleep_time = 60 * attempts
+            else:
+                sleep_time = attempts
             logging.warning(
-                "get_historic_observations attempt %d failed for args %s, %s, %s, %s, %s, %s",
+                "get_historic_observations attempt %d failed for args %s, %s, %s, %s, %s, %s. Delaying for %d seconds",
                 attempts,
                 area,
                 day,
@@ -68,7 +77,10 @@ def get_historic_observations_with_retry(
                 rank,
                 detail,
                 exc,
+                sleep_time
             )
+            sleep(sleep_time)
+
             if attempts >= 3:
                 logging.error(
                     "get_checklist failed after %d attempts for args %s, %s, %s, %s, %s, %s",
