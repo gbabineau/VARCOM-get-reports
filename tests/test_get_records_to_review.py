@@ -9,6 +9,7 @@ from get_reports.get_records_to_review import (
     _is_new_record,
     _iterate_days_in_month,
     _observation_has_media,
+    _get_checklist,
     _pelagic_record,
     _reviewable_species,
     _reviewable_species_with_no_exclusions,
@@ -240,6 +241,7 @@ def test_reviewable_species_with_no_exclusions_no_only_or_exclude():
 )
 @patch("get_reports.get_records_to_review._is_new_record")
 @patch("get_reports.get_records_to_review._pelagic_record")
+@patch("get_reports.get_records_to_review._get_checklist")
 @patch("get_reports.get_records_to_review._observation_has_media")
 @patch("get_reports.get_records_to_review._reviewable_species")
 @patch(
@@ -249,6 +251,7 @@ def test_find_record_of_interest_new_record(
     mock_reviewable_species_with_no_exclusions,
     mock_reviewable_species,
     mock_observation_has_media,
+    mock_get_checklist,
     mock_pelagic_record,
     mock_is_new_record,
     mock_get_historic_observations,
@@ -265,6 +268,7 @@ def test_find_record_of_interest_new_record(
     mock_is_new_record.return_value = True
     mock_pelagic_record.return_value = False
     mock_observation_has_media.return_value = True
+    mock_get_checklist.return_value = {}
 
     result = _find_record_of_interest(
         ebird_api_key, [], state_list, county, day, review_species
@@ -292,6 +296,7 @@ def test_find_record_of_interest_new_record(
 )
 @patch("get_reports.get_records_to_review._is_new_record")
 @patch("get_reports.get_records_to_review._pelagic_record")
+@patch("get_reports.get_records_to_review._get_checklist")
 @patch("get_reports.get_records_to_review._observation_has_media")
 @patch("get_reports.get_records_to_review._reviewable_species")
 @patch(
@@ -301,6 +306,7 @@ def test_find_record_of_interest_reviewable_species(
     mock_reviewable_species_with_no_exclusions,
     mock_reviewable_species,
     mock_observation_has_media,
+    mock_get_checklist,
     mock_pelagic_record,
     mock_is_new_record,
     mock_get_historic_observations,
@@ -322,6 +328,7 @@ def test_find_record_of_interest_reviewable_species(
     mock_reviewable_species_with_no_exclusions.return_value = True
     mock_pelagic_record.return_value = False
     mock_observation_has_media.return_value = True
+    mock_get_checklist.return_value = {}
 
     result = _find_record_of_interest(
         ebird_api_key, [], state_list, county, day, review_species
@@ -691,135 +698,97 @@ def test_get_records_to_review_multiple_days(
     assert result[0]["records"][1]["new"] is False
 
 
-@patch(
-    "get_reports.get_records_to_review.ebird_data_access.get_checklist_with_retry"
-)
-def test_pelagic_record_true(mock_get_checklist):
-    ebird_api_key = "test_key"
+def test_pelagic_record_true():
     observation = {
         "subnational2Name": "PelagicCounty",
         "subId": "sub123",
     }
     pelagic_counties = ["PelagicCounty"]
-    mock_get_checklist.return_value = {"protocolId": "P60"}
 
-    result = _pelagic_record(ebird_api_key, [], observation, pelagic_counties)
+    result = _pelagic_record({"protocolId": "P60"}, [], observation, pelagic_counties)
 
     assert result is True
-    mock_get_checklist.assert_called_once_with("test_key", observation="sub123")
 
 
-@patch("get_reports.get_records_to_review.ebird_data_access.get_checklist")
-def test_pelagic_record_false_not_pelagic_county(mock_get_checklist):
-    ebird_api_key = "test_key"
+def test_pelagic_record_false_not_pelagic_county():
     observation = {"subnational2Name": "NonPelagicCounty", "subId": "sub123"}
     pelagic_counties = ["PelagicCounty"]
 
-    result = _pelagic_record(ebird_api_key, [], observation, pelagic_counties)
+    result = _pelagic_record({}, [], observation, pelagic_counties)
 
     assert result is False
-    mock_get_checklist.assert_not_called()
 
 
-@patch("get_reports.get_records_to_review.ebird_data_access.get_checklist")
-def test_pelagic_record_false_wrong_protocol(mock_get_checklist):
-    ebird_api_key = "test_key"
+def test_pelagic_record_false_wrong_protocol():
     observation = {"subnational2Name": "PelagicCounty", "subId": "sub123"}
     pelagic_counties = ["PelagicCounty"]
-    mock_get_checklist.return_value = {"protocolId": "P50"}
 
-    result = _pelagic_record(ebird_api_key, [], observation, pelagic_counties)
+    result = _pelagic_record({"protocolId": "P50"}, [], observation, pelagic_counties)
 
     assert result is False
-    mock_get_checklist.assert_called_once_with(
-        token=ebird_api_key, sub_id="sub123"
-    )
 
 
-@patch("get_reports.get_records_to_review.ebird_data_access.get_checklist")
-def test_pelagic_record_false_no_protocol(mock_get_checklist):
-    ebird_api_key = "test_key"
+
+def test_pelagic_record_false_no_protocol():
     observation = {"subnational2Name": "PelagicCounty", "subId": "sub123"}
     pelagic_counties = ["PelagicCounty"]
-    mock_get_checklist.return_value = {}
 
-    result = _pelagic_record(ebird_api_key, [], observation, pelagic_counties)
+    result = _pelagic_record({}, [], observation, pelagic_counties)
 
     assert result is False
-    mock_get_checklist.assert_called_once_with(
-        token=ebird_api_key, sub_id="sub123"
-    )
 
 
-@patch("get_reports.get_records_to_review.ebird_data_access.get_checklist")
-def test_observation_has_media_true(mock_get_checklist):
-    ebird_api_key = "test_key"
+def test_observation_has_media_true():
     observation = {"subId": "sub123", "speciesCode": "speciesA"}
-    mock_get_checklist.return_value = {
+    checklist = {
         "obs": [
             {"speciesCode": "speciesA", "mediaCounts": {"photos": 1}},
             {"speciesCode": "speciesB", "mediaCounts": {}},
         ]
     }
 
-    result = _observation_has_media(ebird_api_key, [], observation)
+    result = _observation_has_media(checklist, [], observation)
 
     assert result is True
-    mock_get_checklist.assert_called_once_with(
-        token=ebird_api_key, sub_id="sub123"
-    )
 
 
-@patch("get_reports.get_records_to_review.ebird_data_access.get_checklist")
-def test_observation_has_media_false_no_media(mock_get_checklist):
-    ebird_api_key = "test_key"
+
+def test_observation_has_media_false_no_media():
     observation = {"subId": "sub123", "speciesCode": "speciesA"}
-    mock_get_checklist.return_value = {
+    checklist = {
         "obs": [
             {"speciesCode": "speciesA", "mediaCounts": {}},
             {"speciesCode": "speciesB", "mediaCounts": {}},
         ]
     }
 
-    result = _observation_has_media(ebird_api_key, [], observation)
+    result = _observation_has_media(checklist, [], observation)
 
     assert result is False
-    mock_get_checklist.assert_called_once_with(
-        token=ebird_api_key, sub_id="sub123"
-    )
 
 
-@patch("get_reports.get_records_to_review.ebird_data_access.get_checklist")
-def test_observation_has_media_false_no_matching_species(mock_get_checklist):
-    ebird_api_key = "test_key"
+def test_observation_has_media_false_no_matching_species():
     observation = {"subId": "sub123", "speciesCode": "speciesC"}
-    mock_get_checklist.return_value = {
+    checklist = {
         "obs": [
             {"speciesCode": "speciesA", "mediaCounts": {"photos": 1}},
             {"speciesCode": "speciesB", "mediaCounts": {"videos": 1}},
         ]
     }
 
-    result = _observation_has_media(ebird_api_key, [], observation)
+    result = _observation_has_media(checklist, [], observation)
 
     assert result is False
-    mock_get_checklist.assert_called_once_with(
-        token=ebird_api_key, sub_id="sub123"
-    )
 
 
-@patch("get_reports.get_records_to_review.ebird_data_access.get_checklist")
-def test_observation_has_media_false_empty_checklist(mock_get_checklist):
-    ebird_api_key = "test_key"
+def test_observation_has_media_false_empty_checklist():
     observation = {"subId": "sub123", "speciesCode": "speciesA"}
-    mock_get_checklist.return_value = {"obs": []}
+    checklist = {"obs": []}
 
-    result = _observation_has_media(ebird_api_key, [], observation)
+    result = _observation_has_media(checklist, [], observation)
 
     assert result is False
-    mock_get_checklist.assert_called_once_with(
-        token=ebird_api_key, sub_id="sub123"
-    )
+
 
 
 @patch("get_reports.get_records_to_review._iterate_days_in_month")
@@ -872,3 +841,26 @@ def test_get_records_to_review_multiple_months(
     assert result[0]["county"] == "CountyA"
     assert len(result[0]["records"]) == 12
     assert mock_find_record_of_interest.call_count == 12
+
+class TestGetChecklist:
+    """Unit tests for _get_checklist."""
+
+    @patch("get_reports.get_records_to_review.ebird_data_access.get_checklist_with_retry")
+    def test_get_checklist_uses_api_when_database_is_empty(self, mock_get_checklist):
+        """When no local database is supplied, fetch via eBird API."""
+        observation = {"subId": "abc123"}
+        expected = {"result": "ok"}
+        mock_get_checklist.return_value = expected
+
+        result = _get_checklist("api-key", [], observation)
+
+        assert result == expected
+        mock_get_checklist.assert_called_once_with("api-key", observation="abc123")
+
+    def test_get_checklist_returns_empty_dict_when_database_is_provided(self):
+        """When a database is supplied, checklist lookup is skipped."""
+        observation = {"subId": "abc123"}
+
+        result = _get_checklist("api-key", [{"some": "record"}], observation)
+
+        assert result == {}
