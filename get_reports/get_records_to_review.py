@@ -5,7 +5,6 @@ Module gets the records to review based on VARCOM (or other) review rules.
 import logging
 from calendar import monthrange
 from datetime import date
-
 from get_reports import continuation_record, ebird_data_access
 
 
@@ -111,9 +110,19 @@ def _reviewable_species_with_no_exclusions(
         reviewable = True
     return reviewable
 
+def _get_checklist(ebird_api_key: str,
+    database: list,
+    observation: dict) -> dict:
+    """ returns a checklist from the ebird API """
+    if database == []:
+        return  ebird_data_access.get_checklist_with_retry(
+        ebird_api_key, observation=observation["subId"]
+        )
+    else:
+        return {}
 
 def _pelagic_record(
-    ebird_api_key: str,
+    checklist: dict,
     database: list,
     observation: dict,
     pelagic_counties: list,
@@ -125,7 +134,7 @@ def _pelagic_record(
     and the associated checklist uses the pelagic protocol (protocol ID 'P60').
 
     Args:
-        ebird_api_key (str): The API key for accessing eBird data.
+        checklist (dict): A checklist from the eBird API
         database (list): filtered eBird database.
         observation (dict): A dictionary containing observation details.
         pelagic_counties (list): A list of county names considered pelagic.
@@ -136,9 +145,6 @@ def _pelagic_record(
     if observation["subnational2Name"] in pelagic_counties:
         # get checklist and see if it uses the pelagic protocol
         if database == []:
-            checklist = ebird_data_access.get_checklist_with_retry(
-                ebird_api_key, observation=observation["subId"]
-            )
             return checklist.get("protocolId", "") == "P60"
         return observation["protocolId"] == "P60"
     else:
@@ -146,13 +152,13 @@ def _pelagic_record(
 
 
 def _observation_has_media(
-    ebird_api_key: str, database: list, observation: dict
+    checklist: dict, database: list, observation: dict
 ) -> bool:
     """
     Determines if an observation has associated media (photos, videos, etc.).
 
     Args:
-        ebird_api_key: str.
+        checklist (dict): A checklist from the eBird API
         database (list): filtered eBird database.
         observation (dict): A dictionary representing an observation.
 
@@ -160,9 +166,6 @@ def _observation_has_media(
         bool: True if the observation has associated media, False otherwise.
     """
     if database == []:
-        checklist = ebird_data_access.get_checklist_with_retry(
-            ebird_api_key, observation=observation["subId"]
-        )
         return any(
             obs.get("speciesCode") == observation["speciesCode"]
             and obs.get("mediaCounts")
@@ -170,7 +173,6 @@ def _observation_has_media(
         )
     else:
         return True  # filtered data all has media
-
 
 def _find_record_of_interest(
     ebird_api_key: str,
@@ -234,8 +236,11 @@ def _find_record_of_interest(
     records_of_interest = []
     for observation in observations:
         if _is_new_record(observation, state_list):
+            checklist = _get_checklist(ebird_api_key=ebird_api_key,
+                            database=database,
+                            observation=observation)
             if not _pelagic_record(
-                ebird_api_key=ebird_api_key,
+                checklist=checklist,
                 database=database,
                 observation=observation,
                 pelagic_counties=pelagic_counties,
@@ -249,7 +254,7 @@ def _find_record_of_interest(
                         "observation": observation,
                         "new": True,
                         "media": _observation_has_media(
-                            ebird_api_key=ebird_api_key,
+                            checklist=checklist,
                             database=database,
                             observation=observation,
                         ),
@@ -258,10 +263,13 @@ def _find_record_of_interest(
         elif matching_species := _reviewable_species(
             observation, review_species["review_species"]
         ):
+            checklist = _get_checklist(ebird_api_key=ebird_api_key,
+                            database=database,
+                            observation=observation)
             if _reviewable_species_with_no_exclusions(
                 matching_species, review_species, county
             ) and not _pelagic_record(
-                ebird_api_key=ebird_api_key,
+                checklist=checklist,
                 database=database,
                 observation=observation,
                 pelagic_counties=pelagic_counties,
@@ -278,7 +286,7 @@ def _find_record_of_interest(
                         "reviewable": True,
                         "review_species": matching_species,
                         "media": _observation_has_media(
-                            ebird_api_key=ebird_api_key,
+                            checklist=checklist,
                             database=database,
                             observation=observation,
                         ),

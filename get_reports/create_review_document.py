@@ -204,14 +204,15 @@ def _add_observation_data(
 ):
     """Add a hyperlink for a species record."""
     observation = record["observation"]
-    checklist = ebird_data_access.get_checklist_with_retry(
-        ebird_api_key, observation=record["observation"]["subId"]
-    )
-    observer_name = checklist["userDisplayName"]
-    locality = checklist["locId"]
-    sub_id = observation.get("subId", "")
-    if sub_id == "":
-        sub_id = observation.get("SubId", "unknown")
+    observer_name = observation.get("userDisplayName","")
+    locality = observation.get("locId","")
+    if observer_name == "" or locality == "":
+        checklist = ebird_data_access.get_checklist_with_retry(
+            ebird_api_key, observation=record["observation"]["subId"]
+        )
+        observer_name = checklist.get("userDisplayName","")
+        locality = checklist.get("locId","")
+    sub_id = observation.get("subId", "unknown")
     p = document.add_paragraph()
     p.add_run(f"{species_data['comName']}").bold = True
     p.add_run(" (")
