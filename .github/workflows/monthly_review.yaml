@@ -10,7 +10,7 @@ on:
   #     - "**"
 jobs:
   monthly-task:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     steps:
       - name: Checkout Code
         uses: actions/checkout@v7
@@ -81,3 +81,16 @@ jobs:
           #nodemailerlog: false
           # Optional nodemailerdebug: true/false if true lognodem will also be set true
           #nodemailerdebug: false
+      - name: Check Peak Memory Usage
+        if: always()
+        run: |
+          # Displays max resident set size (RAM) used by the runner process
+          echo "=== Peak Memory Usage ==="
+          /usr/bin/time -v python3 -c "import run_report" 2>&1 | grep "Maximum resident set size"
+  workflow-keepalive:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - uses: liskin/gh-workflow-keepalive@v1

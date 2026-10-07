@@ -11,7 +11,7 @@ on:
 jobs:
    integration_test:
     name: Integration Test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v7
         with:
@@ -40,3 +40,9 @@ jobs:
           grep S85143932 reports/review_2021_04_09.txt
         env:
           EBIRDAPIKEY: ${{ secrets.EBIRDAPIKEY }}
+      - name: Check Peak Memory Usage
+        if: always()
+        run: |
+          # Displays max resident set size (RAM) used by the runner process
+          echo "=== Peak Memory Usage ==="
+          /usr/bin/time -v python3 -c "import run_report" 2>&1 | grep "Maximum resident set size"

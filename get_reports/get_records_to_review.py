@@ -390,6 +390,7 @@ def get_records_to_review(
         database = ebird_data_access.read_database(database_file)
 
     for county in continuation.counties():
+        logging.info("Processing records for %s in year %d, month %d", county, year, month)
         county_records = _get_county_records(
             ebird_api_key,
             database,
