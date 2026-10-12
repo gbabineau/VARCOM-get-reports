@@ -142,6 +142,8 @@ def _iterate_over_species(
             "taxonOrder", float("inf")
         ),
     ):
+        if species == "Roseate Spoonbill" :
+            logging.info("here")
         sorted_records = sorted(
             species_by_county[species]["records"],
             key=lambda x: (
@@ -153,6 +155,7 @@ def _iterate_over_species(
         for record in sorted_records:
             if record.get("media"):
                 current_species = record["observation"]["comName"]
+
                 if current_species != last_species:
                     _add_species_heading(
                         document,

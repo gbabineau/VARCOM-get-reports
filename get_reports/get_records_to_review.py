@@ -5,6 +5,7 @@ Module gets the records to review based on VARCOM (or other) review rules.
 import logging
 from calendar import monthrange
 from datetime import date
+
 from get_reports import continuation_record, ebird_data_access
 
 
@@ -110,16 +111,18 @@ def _reviewable_species_with_no_exclusions(
         reviewable = True
     return reviewable
 
-def _get_checklist(ebird_api_key: str,
-    database: list,
-    observation: dict) -> dict:
-    """ returns a checklist from the ebird API """
+
+def _get_checklist(
+    ebird_api_key: str, database: list, observation: dict
+) -> dict:
+    """returns a checklist from the ebird API"""
     if database == []:
-        return  ebird_data_access.get_checklist_with_retry(
-        ebird_api_key, observation=observation["subId"]
+        return ebird_data_access.get_checklist_with_retry(
+            ebird_api_key, observation=observation["subId"]
         )
     else:
         return {}
+
 
 def _pelagic_record(
     checklist: dict,
@@ -173,6 +176,7 @@ def _observation_has_media(
         )
     else:
         return True  # filtered data all has media
+
 
 def _find_record_of_interest(
     ebird_api_key: str,
@@ -236,9 +240,11 @@ def _find_record_of_interest(
     records_of_interest = []
     for observation in observations:
         if _is_new_record(observation, state_list):
-            checklist = _get_checklist(ebird_api_key=ebird_api_key,
-                            database=database,
-                            observation=observation)
+            checklist = _get_checklist(
+                ebird_api_key=ebird_api_key,
+                database=database,
+                observation=observation,
+            )
             if not _pelagic_record(
                 checklist=checklist,
                 database=database,
@@ -263,9 +269,11 @@ def _find_record_of_interest(
         elif matching_species := _reviewable_species(
             observation, review_species["review_species"]
         ):
-            checklist = _get_checklist(ebird_api_key=ebird_api_key,
-                            database=database,
-                            observation=observation)
+            checklist = _get_checklist(
+                ebird_api_key=ebird_api_key,
+                database=database,
+                observation=observation,
+            )
             if _reviewable_species_with_no_exclusions(
                 matching_species, review_species, county
             ) and not _pelagic_record(
@@ -329,7 +337,7 @@ def _get_county_records(
     day: int,
     review_species: dict,
 ) -> list:
-    """ Get the records for a county over for a time period"""
+    """Get the records for a county over for a time period"""
     county_records = []
     if month == 0:
         month_range = range(1, 13)
@@ -337,6 +345,12 @@ def _get_county_records(
         month_range = range(month, month + 1)
 
     for month_in_year in month_range:
+        logging.info(
+            "Getting observations for %s on %d-%d",
+            county,
+            year,
+            month_in_year,
+        )
         for day_in_month in _iterate_days_in_month(year, month_in_year, day):
             records_for_county = _find_record_of_interest(
                 ebird_api_key,
@@ -390,7 +404,6 @@ def get_records_to_review(
         database = ebird_data_access.read_database(database_file)
 
     for county in continuation.counties():
-        logging.info("Processing records for %s in year %d, month %d", county, year, month)
         county_records = _get_county_records(
             ebird_api_key,
             database,

@@ -2,6 +2,7 @@
 from datetime import date
 import logging
 from time import sleep
+from urllib.error import URLError
 import pandas as pd
 
 from ebird.api.requests import get_checklist, get_historic_observations
@@ -15,7 +16,7 @@ def get_checklist_with_retry(api_key: str, observation: str) -> dict:
     while attempts < 3:
         try:
             return get_checklist(token=api_key, sub_id=observation)
-        except OSError as exc:
+        except (OSError, URLError) as exc:
             attempts += 1
             if str(exc) == "HTTP Error 429: Too Many Requests":
                 sleep_time = 60 * attempts
