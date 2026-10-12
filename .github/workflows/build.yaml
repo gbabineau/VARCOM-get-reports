@@ -35,3 +35,6 @@ jobs:
           # Displays max resident set size (RAM) used by the runner process
           echo "=== Peak Memory Usage ==="
           /usr/bin/time -v python3 -c "import run_report" 2>&1 | grep "Maximum resident set size"
+          uname -a
+          lscpu
+          
