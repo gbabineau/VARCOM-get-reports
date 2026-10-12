@@ -16,6 +16,8 @@ jobs:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Install dependencies
         run: |
+          python -m venv venv
+          source venv/bin/activate
           python -m pip install --upgrade pip
           python -m pip install poetry
           poetry install
@@ -37,4 +39,3 @@ jobs:
           /usr/bin/time -v python3 -c "import run_report" 2>&1 | grep "Maximum resident set size"
           uname -a
           lscpu
-          

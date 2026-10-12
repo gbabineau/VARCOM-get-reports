@@ -20,6 +20,8 @@ jobs:
           fetch-depth: 0
       - name: Run Monthly Task
         run: |
+          python -m venv venv
+          source venv/bin/activate
           mkdir -p reports
           python -m pip install --upgrade pip
           python -m pip install poetry
