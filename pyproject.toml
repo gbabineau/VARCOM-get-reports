@@ -51,10 +51,9 @@ line-length = 80
 addopts = "--basetemp=.pytest_tmp"
 
 [tool.get_reports.monthly_review]
-#recipients = [
-#	"guy.babineau@gmail.com",
-#	"traceyhopperesq@gmail.com",
-#	"mhanthony2@gmail.com",
-#	"varcom.records@gmail.com",
-#]
-#recipients = ["guy.babineau@gmail.com"]
+recipients = [
+	"guy.babineau@gmail.com",
+	"traceyhopperesq@gmail.com",
+	"mhanthony2@gmail.com",
+	"varcom.records@gmail.com",
+]
