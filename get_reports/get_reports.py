@@ -5,7 +5,7 @@ import json
 import logging
 import os
 from datetime import datetime
-
+from dotenv import load_dotenv
 from ebird.api.requests import get_regions, get_taxonomy
 
 from get_reports import (
@@ -148,8 +148,9 @@ def main():
     Returns:
         None
     """
+    load_dotenv()
     args = _parse_arguments()
-
+    os.makedirs(safe_path("reports"), exist_ok=True)
     if args.verbose:
         logging.basicConfig(level=logging.INFO)
 

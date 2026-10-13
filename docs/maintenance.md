@@ -19,17 +19,42 @@ Accessing eBird by the API (Application Programming Interface) requires an API k
 
 1. Request and obtain an [API key](https://ebird.org/api/keygen).
 
-1. Store the value in `EBIRDAPIKEY` in the [Actions secrets and variables](https://github.com/gbabineau/VARCOM-get-reports/settings/secrets/actions) configuration of the github repository.
+1. Add the key to the project-root `.env` file as `EBIRDAPIKEY=your_key`.
 
 ## gmail app password
 
-The [workflow](.github\workflows\monthly_review.yaml) used to create the
-monthly reports and email them relies on an action
-[dawidd6/action-send-mail@v4](https://github.com/dawidd6/action-send-mail) that
-authenticates to a mail server and then sends emails. It is set up to use the gmail smtp server which will work with gmail accounts.
+The monthly report runner sends the review document through Gmail SMTP. Create
+an App password for the sending account and add these values to the project-root
+`.env` file:
 
 1. [Create an App password](https://support.google.com/accounts/answer/185833?hl=en) for `Mail`.
-1. Store the username (e.g. username@gmail.com) and app password as `MAIL_USERNAME` and `MAIL_PASSWORD` respectively in the [Actions secrets and variables](https://github.com/gbabineau/VARCOM-get-reports/settings/secrets/actions) configuration of the github repository.
+1. Set `MAIL_USERNAME` to the Gmail address and `MAIL_PASSWORD` to its App password.
+1. Default recipients are listed under `[tool.get_reports.monthly_review]` in `pyproject.toml`. Optionally set `MAIL_TO` as a comma-separated override and `MAIL_FROM` as the sender address.
+
+Keep `.env` private and do not commit it.
+
+## Monthly report runner
+
+Run from the project directory to generate and email the report for two months
+ago:
+
+```shell
+poetry run python -m get_reports.monthly_review
+```
+
+The runner has no six-hour job timeout. If an API run is interrupted or fails,
+rerun it with the same `--year` and `--month`; county progress is checkpointed
+and unfinished work resumes. If document generation succeeded but email failed,
+retry delivery without repeating the API query:
+
+```shell
+poetry run python -m get_reports.monthly_review --year YYYY --month MM --email-only
+```
+
+Use `--no-email` to generate the report and document without sending mail. To
+run it monthly, schedule the command with cron or a systemd timer on a machine
+that stays online; for example, `13 1 2 * *` runs it at 1:13 on the second day
+of each month in the host's local timezone.
 
 ## sonarqube token
 

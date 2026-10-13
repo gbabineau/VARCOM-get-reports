@@ -22,6 +22,7 @@
         "projectKey": "gbabineau_VARCOM_get_reports"
     },
     "python-envs.defaultEnvManager": "ms-python.python:poetry",
-    "python-envs.defaultPackageManager": "ms-python.python:poetry"
+    "python-envs.defaultPackageManager": "ms-python.python:poetry",
+    "python.terminal.useEnvFile": true
 
 }
