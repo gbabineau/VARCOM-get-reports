@@ -7,8 +7,6 @@ import os
 from datetime import datetime
 
 from docx import Document
-from ebird.api.requests import get_taxonomy
-
 from get_reports import ebird_data_access, get_ebird_api_key
 from get_reports.safe_path import safe_path
 
@@ -242,7 +240,7 @@ def main():
     if args.verbose:
         logging.basicConfig(level=logging.INFO)
     ebird_api_key = get_ebird_api_key.get_ebird_api_key()
-    taxonomy = get_taxonomy(ebird_api_key)
+    taxonomy = ebird_data_access.get_taxonomy_with_retry(ebird_api_key)
 
     observations = _load_observations(args.input)
     document = _create_document(ebird_api_key, observations, taxonomy=taxonomy)

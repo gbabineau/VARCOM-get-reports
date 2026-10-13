@@ -5,7 +5,7 @@ from time import sleep
 from urllib.error import URLError
 import pandas as pd
 
-from ebird.api.requests import get_checklist, get_historic_observations
+from ebird.api.requests import get_checklist, get_historic_observations, get_taxonomy
 
 
 def get_checklist_with_retry(api_key: str, observation: str) -> dict:
@@ -40,6 +40,35 @@ def get_checklist_with_retry(api_key: str, observation: str) -> dict:
                 )
                 raise
 
+def get_taxonomy_with_retry(api_key: str) -> dict:
+    """
+    Calls the eBird API get_taxonomy with retries
+    """
+    attempts = 0
+    while attempts < 3:
+        try:
+            return get_taxonomy(token=api_key)
+        except (OSError, URLError) as exc:
+            attempts += 1
+            if str(exc) == "HTTP Error 429: Too Many Requests":
+                sleep_time = 60 * attempts
+            else:
+                sleep_time = attempts
+
+            logging.warning(
+                "get_taxonomy attempt %d failed with %s. Sleeping for %d seconds",
+                attempts,
+                exc,
+                sleep_time
+            )
+            sleep(sleep_time)
+
+            if attempts >= 3:
+                logging.exception(
+                    "get_taxonomy failed after %d attempts.",
+                    attempts,
+                )
+                raise
 
 def get_historic_observations_with_retry(
     token: str,
@@ -63,7 +92,7 @@ def get_historic_observations_with_retry(
                 rank=rank,
                 detail=detail,
             )
-        except OSError as exc:
+        except (OSError, URLError) as exc:
             attempts += 1
             if str(exc) == "HTTP Error 429: Too Many Requests":
                 sleep_time = 60 * attempts
