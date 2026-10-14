@@ -2,6 +2,8 @@
 import json
 from pathlib import Path
 
+import pytest
+
 from get_reports.continuation_record import ContinuationRecord
 
 
@@ -70,3 +72,68 @@ def test_update_logs_error_when_file_missing(tmp_path, caplog):
     caplog.clear()
     cr.update({"id": "One"}, ["r"])
     assert "Continuation file doesn't exist." in caplog.text
+
+
+def test_init_logs_and_reraises_file_error(tmp_path, monkeypatch, caplog):
+    ContinuationRecord._continuation_file = str(
+        tmp_path / "continuation_data.dat"
+    )
+
+    def fail_open(self, *args, **kwargs):
+        raise OSError("read failed")
+
+    monkeypatch.setattr(Path, "open", fail_open)
+
+    with pytest.raises(OSError, match="read failed"):
+        ContinuationRecord(["One"])
+
+    assert "Error loading continuation or creating record" in caplog.text
+
+
+def test_update_logs_and_reraises_file_error(tmp_path, monkeypatch, caplog):
+    ContinuationRecord._continuation_file = str(
+        tmp_path / "continuation_data.dat"
+    )
+    path = Path(ContinuationRecord._continuation_file)
+    path.write_text(json.dumps({"counties": [], "records": []}), encoding="utf-8")
+    cr = ContinuationRecord(["One"])
+
+    def fail_open(self, *args, **kwargs):
+        raise OSError("update failed")
+
+    monkeypatch.setattr(Path, "open", fail_open)
+
+    with pytest.raises(OSError, match="update failed"):
+        cr.update({"id": "One"}, ["r"])
+
+    assert "Error updating continuation" in caplog.text
+
+
+def test_complete_logs_when_file_is_missing(tmp_path, caplog):
+    ContinuationRecord._continuation_file = str(
+        tmp_path / "continuation_data.dat"
+    )
+    cr = ContinuationRecord(["One"])
+    Path(ContinuationRecord._continuation_file).unlink()
+    caplog.clear()
+
+    cr.complete()
+
+    assert "Continuation file doesn't exist." in caplog.text
+
+
+def test_complete_logs_and_reraises_unlink_error(tmp_path, monkeypatch, caplog):
+    ContinuationRecord._continuation_file = str(
+        tmp_path / "continuation_data.dat"
+    )
+    cr = ContinuationRecord(["One"])
+
+    def fail_unlink(self, *args, **kwargs):
+        raise OSError("delete failed")
+
+    monkeypatch.setattr(Path, "unlink", fail_unlink)
+
+    with pytest.raises(OSError, match="delete failed"):
+        cr.complete()
+
+    assert "Error deleting continuation record" in caplog.text

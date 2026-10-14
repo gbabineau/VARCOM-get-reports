@@ -110,9 +110,11 @@ def _send_email(document_path: Path, year: int, month: int) -> None:
         filename=document_path.name,
     )
 
-    with smtplib.SMTP_SSL(
-        "smtp.gmail.com", 465, context=ssl.create_default_context()
-    ) as smtp:
+    context = ssl.create_default_context()
+    context.verify_mode = ssl.CERT_REQUIRED
+    context.check_hostname = True
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as smtp:
         smtp.login(username, password)
         smtp.send_message(message)
     logging.info("Sent review document to %s", ", ".join(recipients))
