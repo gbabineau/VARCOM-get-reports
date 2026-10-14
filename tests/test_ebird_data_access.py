@@ -379,6 +379,7 @@ def test_read_database_success(mock_read_csv, mock_open_function):
             10: [1],
             19: ["subnational2Name"],
             20: ["county"],
+            25: ["location name"],
             30: ["obsDt"],
             31: ["obsTime"],
             34: ["subId"],
@@ -397,6 +398,7 @@ def test_read_database_success(mock_read_csv, mock_open_function):
             "howMany": 1,
             "subnational2Name": "subnational2Name",
             "county": "county",
+            "locName": "location name",
             "obsDt": "obsDt obsTime",
             "obsTime": "obsTime",
             "subId": "subId",
@@ -408,7 +410,7 @@ def test_read_database_success(mock_read_csv, mock_open_function):
     mock_read_csv.assert_called_once_with(
         "dummy_file.csv",
         dtype={"24": str},
-        usecols=[3, 5, 10, 19, 20, 30, 31, 34, 37, 46, 47],
+        usecols=[3, 5, 10, 19, 20, 25, 30, 31, 34, 37, 46, 47],
     )
 
 
@@ -432,7 +434,7 @@ def test_read_database_os_error(mock_read_csv, mock_open_function):
     mock_read_csv.assert_called_once_with(
         "dummy_file.csv",
         dtype={"24": str},
-        usecols=[3, 5, 10, 19, 20, 30, 31, 34, 37, 46, 47],
+        usecols=[3, 5, 10, 19, 20, 25, 30, 31, 34, 37, 46, 47],
     )
 
 

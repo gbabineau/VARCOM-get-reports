@@ -58,7 +58,14 @@ LIST_BULLET_STYLE = "List Bullet"
 
 def _add_document_header(document: Document, observations: dict):
     """Add the header section to the document."""
-    document.add_heading("DRAFT Records for Expedited Review", 0)
+    date_parts = observations["date of observations"].split("-")
+    if len(date_parts) == 1:
+        review_type = "Yearly"
+    elif len(date_parts) == 2:
+        review_type = "Draft Monthly"
+    else:
+        review_type = "Draft Daily"
+    document.add_heading(f"{review_type} Review for Expedited Review", 0)
     document.add_paragraph(
         style=LIST_BULLET_STYLE,
         text=f"Dates of observations: {observations['date of observations']}",
@@ -177,7 +184,7 @@ def _add_species_heading(
 
     if exclude := review_species.get("exclude", []):
         document.add_paragraph(
-            f"The species {species} is excluded from review in the following"
+            f"The species {species} is excluded from review in the following "
             f"counties and groups of counties: {exclude}",
             style=LIST_BULLET_STYLE,
         )
@@ -206,13 +213,12 @@ def _add_observation_data(
     """Add a hyperlink for a species record."""
     observation = record["observation"]
     observer_name = observation.get("userDisplayName","")
-    locality = observation.get("locId","")
-    if observer_name == "" or locality == "":
+    locality = observation.get("locName","")
+    if observer_name == "" :
         checklist = ebird_data_access.get_checklist_with_retry(
             ebird_api_key, observation=record["observation"]["subId"]
         )
         observer_name = checklist.get("userDisplayName","")
-        locality = checklist.get("locId","")
     sub_id = observation.get("subId", "unknown")
     p = document.add_paragraph()
     p.add_run(f"{species_data['comName']}").bold = True
@@ -247,7 +253,5 @@ def main():
     _save_document(document, args.output)
 
 
-if __name__ == "__main__":
-    main()
 if __name__ == "__main__":
     main()

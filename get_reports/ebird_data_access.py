@@ -134,7 +134,7 @@ def read_database(database_file: str) -> list:
         df = pd.read_csv(
             database_file,
             dtype={"24": str},
-            usecols=[3, 5, 10, 19, 20, 30, 31, 34, 37, 46, 47],
+            usecols=[3, 5, 10, 19, 20, 25, 30, 31, 34, 37, 46, 47],
         )
         df.columns = [
             "category",
@@ -142,6 +142,7 @@ def read_database(database_file: str) -> list:
             "howMany",
             "subnational2Name",
             "county",
+            "locName",
             "obsDt",
             "obsTime",
             "subId",
