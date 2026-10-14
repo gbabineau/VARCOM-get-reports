@@ -107,11 +107,19 @@ class TestCreateDocument:
 class TestAddDocumentHeader:
     """Tests for _add_document_header function."""
 
-    def test_header_content(self):
-        """Test header contains required information."""
+    @pytest.mark.parametrize(
+        ("observation_date", "expected_heading"),
+        [
+            ("2025", "Yearly Review for Expedited Review"),
+            ("2025-01", "Draft Monthly Review for Expedited Review"),
+            ("2025-01-01", "Draft Daily Review for Expedited Review"),
+        ],
+    )
+    def test_header_content(self, observation_date, expected_heading):
+        """Test header content and review type for each observation period."""
         doc = Document()
         observations = {
-            "date of observations": "2025-01-01 to 2025-01-31",
+            "date of observations": observation_date,
             "region": "Virginia",
             "date of report": "2025-02-01",
         }
@@ -120,7 +128,7 @@ class TestAddDocumentHeader:
 
         assert len(doc.paragraphs) > 0
         text = "\n".join([p.text for p in doc.paragraphs])
-        assert "DRAFT Records for Expedited Review" in text
+        assert expected_heading in text
         assert "Virginia" in text
 
 
@@ -186,6 +194,7 @@ class TestAddObservationData:
                 "comName": "Northern Cardinal",
                 "subId": "S123",
                 "howMany": 2,
+                "locName": "Lake Fairfax Park",
                 "subnational2Name": "Fairfax County",
                 "obsDt": "2025-01-20T10:30:00",
             },
@@ -202,6 +211,7 @@ class TestAddObservationData:
         assert "Northern Cardinal" in text
         assert "Cardinalis cardinalis" in text
         assert "2" in text
+        assert "Lake Fairfax Park Fairfax County" in text
         assert "John Doe" in text
 
     @patch("get_reports.create_review_document.ebird_data_access.get_checklist_with_retry")
@@ -218,6 +228,7 @@ class TestAddObservationData:
                 "comName": "Blue Jay",
                 "subId": "S456",
                 "howMany": 1,
+                "locName": "Potomac Overlook",
                 "subnational2Name": "Arlington County",
                 "obsDt": "2025-01-20T14:00:00",
             },
@@ -234,6 +245,7 @@ class TestAddObservationData:
         hyperlink_runs = [r for r in runs if 'https' in r.text]
         assert len(hyperlink_runs) > 0
         assert "https://ebird.org/checklist/" in hyperlink_runs[0].text
+        assert "Potomac Overlook Arlington County" in doc.paragraphs[-1].text
 
 
 class TestIterateOverSpecies:

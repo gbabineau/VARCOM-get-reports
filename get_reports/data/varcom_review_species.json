@@ -1601,9 +1601,8 @@
             "comName": "Trumpeter Swan",
             "exclude": [
                 "Mountains & Valleys",
-                "Piedmont north of I-64"
-            ],
-            "unique_exclude_notes": "except west of I-95 and north of I-64."
+                "West of I-95 and North of I-64"
+            ]
         },
         {
             "comName": "Garganey"
@@ -2625,10 +2624,43 @@
     ],
     "county_groups": [
         {
+            "name": "West of I-95 and North of I-64",
+            "description": "Counties West of I-95 and North of I-64.",
+            "counties": [
+                "Arlington",
+                "Augusta",
+                "Bath",
+                "Clarke",
+                "Culpeper",
+                "Fairfax",
+                "Fauquier",
+                "Frederick",
+                "Greene",
+                "Highland",
+                "Loudoun",
+                "Madison",
+                "Orange",
+                "Page",
+                "Prince William",
+                "Rappahannock",
+                "Rockingham",
+                "Shenandoah",
+                "Stafford",
+                "Warren",
+                "Charlottesville",
+                "Fairfax City",
+                "Falls Church",
+                "Harrisonburg",
+                "Manassas",
+                "Manassas Park",
+                "Staunton",
+                "Winchester"
+            ]
+        },
+        {
             "name": "Piedmont north of I-64",
             "description": "Counties in the Piedmont which are fully North of Interstate 64.",
             "counties": [
-                "Fairfax",
                 "Hanover",
                 "Loudoun",
                 "Prince William"
@@ -2671,7 +2703,8 @@
                 "Richmond",
                 "Suffolk",
                 "Virginia Beach",
-                "Westmoreland"
+                "Westmoreland",
+                "York"
             ]
         },
         {
@@ -2685,6 +2718,7 @@
                 "Charles City",
                 "Chesapeake",
                 "Essex",
+                "Fairfax",
                 "Franklin City",
                 "Gloucester",
                 "Hampton",
@@ -2739,8 +2773,6 @@
                 "Danville",
                 "Dinwiddie",
                 "Emporia",
-                "Fairfax City",
-                "Fairfax",
                 "Falls Church",
                 "Fauquier",
                 "Fluvanna",

@@ -19,17 +19,120 @@ Accessing eBird by the API (Application Programming Interface) requires an API k
 
 1. Request and obtain an [API key](https://ebird.org/api/keygen).
 
-1. Store the value in `EBIRDAPIKEY` in the [Actions secrets and variables](https://github.com/gbabineau/VARCOM-get-reports/settings/secrets/actions) configuration of the github repository.
+1. Add the key to the project-root `.env` file as `EBIRDAPIKEY=your_key`.
 
 ## gmail app password
 
-The [workflow](.github\workflows\monthly_review.yaml) used to create the
-monthly reports and email them relies on an action
-[dawidd6/action-send-mail@v4](https://github.com/dawidd6/action-send-mail) that
-authenticates to a mail server and then sends emails. It is set up to use the gmail smtp server which will work with gmail accounts.
+The monthly report runner sends the review document through Gmail SMTP. Create
+an App password for the sending account and add these values to the project-root
+`.env` file:
 
 1. [Create an App password](https://support.google.com/accounts/answer/185833?hl=en) for `Mail`.
-1. Store the username (e.g. username@gmail.com) and app password as `MAIL_USERNAME` and `MAIL_PASSWORD` respectively in the [Actions secrets and variables](https://github.com/gbabineau/VARCOM-get-reports/settings/secrets/actions) configuration of the github repository.
+1. Set `MAIL_USERNAME` to the Gmail address and `MAIL_PASSWORD` to its App password.
+1. Default recipients are listed under `[tool.get_reports.monthly_review]` in `pyproject.toml`. Optionally set `MAIL_TO` as a comma-separated override and `MAIL_FROM` as the sender address.
+
+Keep `.env` private and do not commit it.
+
+## Monthly report runner
+
+Run from the project directory to generate and email the report for two months
+ago:
+
+```shell
+poetry run python -m get_reports.monthly_review
+```
+
+The runner has no six-hour job timeout. If an API run is interrupted or fails,
+rerun it with the same `--year` and `--month`; county progress is checkpointed
+and unfinished work resumes. If document generation succeeded but email failed,
+retry delivery without repeating the API query:
+
+```shell
+poetry run python -m get_reports.monthly_review --year YYYY --month MM --email-only
+```
+
+Use `--no-email` to generate the report and document without sending mail. To
+run it automatically on Linux, the systemd user timer below is recommended over
+cron: it catches up after downtime, keeps logs in the journal, and can run as
+your normal user. The schedule is 1:13 AM on the second day of each month in the
+host's local timezone.
+
+### Configure the systemd timer
+
+The examples assume the repository is at
+`~/Documents/gitprojects/VARCOM-get-reports` and Poetry is `/usr/bin/poetry`.
+Adjust `WorkingDirectory` or `ExecStart` if yours differ. Check Poetry's path
+with `command -v poetry`.
+
+Create the user-unit directory:
+
+```shell
+mkdir -p ~/.config/systemd/user
+```
+
+Create `~/.config/systemd/user/varcom-monthly-report.service`:
+
+```ini
+[Unit]
+Description=Generate and email the monthly VARCOM review report
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/Documents/gitprojects/VARCOM-get-reports
+ExecStart=/usr/bin/poetry run python -u -m get_reports.monthly_review --verbose
+TimeoutStartSec=infinity
+```
+
+`TimeoutStartSec=infinity` is important: it prevents systemd from terminating
+the API run after its default start timeout. The runner reads credentials from
+the project-root `.env` file. Keep that file private (for example, run
+`chmod 600 .env`).
+
+Create `~/.config/systemd/user/varcom-monthly-report.timer`:
+
+```ini
+[Unit]
+Description=Run the VARCOM monthly report on the fifteenth day of each month
+
+[Timer]
+OnCalendar=*-*-15 01:13:00
+Persistent=true
+Unit=varcom-monthly-report.service
+
+[Install]
+WantedBy=timers.target
+```
+
+Before enabling the schedule, test the service manually and inspect its output:
+
+```shell
+systemctl --user daemon-reload
+systemctl --user start varcom-monthly-report.service
+systemctl --user status varcom-monthly-report.service
+journalctl --user -u varcom-monthly-report.service --no-pager
+```
+
+The service uses the recipient list in `pyproject.toml`, unless `MAIL_TO` is set
+in `.env`; that variable overrides the list. Keep it set to your address for
+testing, and remove or update it before the first scheduled run to send to the
+full configured list.
+
+Enable the timer after the manual test succeeds:
+
+```shell
+systemctl --user enable --now varcom-monthly-report.timer
+systemctl --user list-timers varcom-monthly-report.timer
+```
+
+For the timer to run while you are logged out and after a reboot, enable lingering
+for your account (this may require administrator privileges):
+
+```shell
+sudo loginctl enable-linger "$USER"
+```
+
+To inspect future runs, use `systemctl --user list-timers`. To inspect the latest
+run, use `journalctl --user -u varcom-monthly-report.service -n 100 --no-pager`.
 
 ## sonarqube token
 

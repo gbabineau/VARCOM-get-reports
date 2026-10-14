@@ -8,6 +8,7 @@ from get_reports.ebird_data_access import (
     get_checklist_with_retry,
     get_historic_observations_from_database,
     get_historic_observations_with_retry,
+    get_taxonomy_with_retry,
     read_database,
 )
 
@@ -28,6 +29,81 @@ class MockContinuationRecord:
 
     def update(self, county: dict, review_records: list) -> None:
         return
+
+
+@patch("get_reports.ebird_data_access.sleep")
+@patch("get_reports.ebird_data_access.get_taxonomy")
+def test_get_taxonomy_with_retry_success_first_attempt(
+    mock_get_taxonomy, mock_sleep
+):
+    api_key = "test_key"
+    taxonomy = [{"comName": "Test species"}]
+    mock_get_taxonomy.return_value = taxonomy
+
+    result = get_taxonomy_with_retry(api_key)
+
+    assert result == taxonomy
+    mock_get_taxonomy.assert_called_once_with(token=api_key)
+    mock_sleep.assert_not_called()
+
+
+@patch("get_reports.ebird_data_access.sleep")
+@patch("get_reports.ebird_data_access.get_taxonomy")
+def test_get_taxonomy_with_retry_success_after_transient_failure(
+    mock_get_taxonomy, mock_sleep
+):
+    api_key = "test_key"
+    taxonomy = [{"comName": "Test species"}]
+    mock_get_taxonomy.side_effect = [OSError("Connection failed"), taxonomy]
+
+    result = get_taxonomy_with_retry(api_key)
+
+    assert result == taxonomy
+    assert mock_get_taxonomy.call_count == 2
+    mock_sleep.assert_called_once_with(1)
+
+
+@patch("get_reports.ebird_data_access.sleep")
+@patch("get_reports.ebird_data_access.get_taxonomy")
+def test_get_taxonomy_with_retry_429_backoff_increases_by_attempt(
+    mock_get_taxonomy, mock_sleep
+):
+    api_key = "test_key"
+    taxonomy = [{"comName": "Test species"}]
+    mock_get_taxonomy.side_effect = [
+        OSError("HTTP Error 429: Too Many Requests"),
+        OSError("HTTP Error 429: Too Many Requests"),
+        taxonomy,
+    ]
+
+    result = get_taxonomy_with_retry(api_key)
+
+    assert result == taxonomy
+    assert mock_get_taxonomy.call_count == 3
+    mock_sleep.assert_any_call(60)
+    mock_sleep.assert_any_call(120)
+    assert mock_sleep.call_count == 2
+
+
+@patch("get_reports.ebird_data_access.sleep")
+@patch("get_reports.ebird_data_access.get_taxonomy")
+def test_get_taxonomy_with_retry_raises_after_all_attempts_fail(
+    mock_get_taxonomy, mock_sleep
+):
+    api_key = "test_key"
+    mock_get_taxonomy.side_effect = OSError("Connection failed")
+
+    try:
+        get_taxonomy_with_retry(api_key)
+        assert False, "Expected OSError to be raised"
+    except OSError:
+        pass
+
+    assert mock_get_taxonomy.call_count == 3
+    mock_sleep.assert_any_call(1)
+    mock_sleep.assert_any_call(2)
+    mock_sleep.assert_any_call(3)
+    assert mock_sleep.call_count == 3
 
 
 @patch("get_reports.ebird_data_access.get_checklist")
@@ -303,6 +379,7 @@ def test_read_database_success(mock_read_csv, mock_open_function):
             10: [1],
             19: ["subnational2Name"],
             20: ["county"],
+            25: ["location name"],
             30: ["obsDt"],
             31: ["obsTime"],
             34: ["subId"],
@@ -321,6 +398,7 @@ def test_read_database_success(mock_read_csv, mock_open_function):
             "howMany": 1,
             "subnational2Name": "subnational2Name",
             "county": "county",
+            "locName": "location name",
             "obsDt": "obsDt obsTime",
             "obsTime": "obsTime",
             "subId": "subId",
@@ -332,7 +410,7 @@ def test_read_database_success(mock_read_csv, mock_open_function):
     mock_read_csv.assert_called_once_with(
         "dummy_file.csv",
         dtype={"24": str},
-        usecols=[3, 5, 10, 19, 20, 30, 31, 34, 37, 46, 47],
+        usecols=[3, 5, 10, 19, 20, 25, 30, 31, 34, 37, 46, 47],
     )
 
 
@@ -356,7 +434,7 @@ def test_read_database_os_error(mock_read_csv, mock_open_function):
     mock_read_csv.assert_called_once_with(
         "dummy_file.csv",
         dtype={"24": str},
-        usecols=[3, 5, 10, 19, 20, 30, 31, 34, 37, 46, 47],
+        usecols=[3, 5, 10, 19, 20, 25, 30, 31, 34, 37, 46, 47],
     )
 
 

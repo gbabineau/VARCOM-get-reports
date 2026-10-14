@@ -5,8 +5,9 @@ import json
 import logging
 import os
 from datetime import datetime
-
-from ebird.api.requests import get_regions, get_taxonomy
+from dotenv import load_dotenv
+from ebird.api.requests import get_regions
+from get_reports import ebird_data_access, get_ebird_api_key
 
 from get_reports import (
     get_ebird_api_key,
@@ -148,13 +149,14 @@ def main():
     Returns:
         None
     """
+    load_dotenv()
     args = _parse_arguments()
-
+    os.makedirs(safe_path("reports"), exist_ok=True)
     if args.verbose:
         logging.basicConfig(level=logging.INFO)
 
     ebird_api_key = get_ebird_api_key.get_ebird_api_key()
-    taxonomy = get_taxonomy(ebird_api_key)
+    taxonomy = ebird_data_access.get_taxonomy_with_retry(ebird_api_key)
     if args.EBD != "" and not os.path.exists(args.EBD):
         logging.error("eBird Database file %s not found. Exiting.", args.EBD)
         return

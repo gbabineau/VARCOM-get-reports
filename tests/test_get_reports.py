@@ -197,7 +197,7 @@ def test_save_records_to_file_no_records(mock_file_open):
 @patch("get_reports.get_reports._parse_arguments")
 @patch("get_reports.get_reports.logging.basicConfig")
 @patch("get_reports.get_reports.get_ebird_api_key.get_ebird_api_key")
-@patch("get_reports.get_reports.get_taxonomy")
+@patch("get_reports.ebird_data_access.get_taxonomy_with_retry")
 @patch("get_reports.get_reports.get_state_list.get_state_list")
 @patch("get_reports.get_reports.get_regions")
 @patch("get_reports.get_reports.get_review_rules.get_review_rules")
@@ -209,7 +209,7 @@ def test_main(
     mock_get_review_rules,
     mock_get_regions,
     mock_get_state_list,
-    mock_get_taxonomy,
+    mock_get_taxonomy_with_retry,
     mock_get_ebird_api_key,
     mock_logging,
     mock_parse_arguments,
@@ -226,7 +226,7 @@ def test_main(
 
     # Mock the return values of the functions
     mock_get_ebird_api_key.return_value = "mock_api_key"
-    mock_get_taxonomy.return_value = "mock_taxonomy"
+    mock_get_taxonomy_with_retry.return_value = "mock_taxonomy"
     mock_get_state_list.return_value = ["mock_state_list"]
     mock_get_regions.return_value = [{"code": "US-VA-03", "name": "Albemarle"}]
     mock_get_review_rules.return_value = ["mock_species"]
@@ -239,7 +239,7 @@ def test_main(
     mock_parse_arguments.assert_called_once()
     mock_logging.assert_called_once_with(level=logging.INFO)
     mock_get_ebird_api_key.assert_called_once()
-    mock_get_taxonomy.assert_called_once_with("mock_api_key")
+    mock_get_taxonomy_with_retry.assert_called_once_with("mock_api_key")
     mock_get_state_list.assert_called_once_with(
         "custom_species.json", taxonomy="mock_taxonomy"
     )
@@ -270,13 +270,13 @@ def test_main(
 @patch("get_reports.get_reports._parse_arguments")
 @patch("get_reports.get_reports.logging.error")
 @patch("get_reports.get_reports.get_ebird_api_key.get_ebird_api_key")
-@patch("get_reports.get_reports.get_taxonomy")
+@patch("get_reports.ebird_data_access.get_taxonomy_with_retry")
 @patch("get_reports.get_reports.get_state_list.get_state_list")
 @patch("get_reports.get_reports.get_regions")
 def test_main_region_not_found(
     mock_get_regions,
     mock_get_state_list,
-    mock_get_taxonomy,
+    mock_get_taxonomy_with_retry,
     mock_get_ebird_api_key,
     mock_logging_error,
     mock_parse_arguments,
@@ -293,7 +293,7 @@ def test_main_region_not_found(
 
     # Mock the return values of the functions
     mock_get_ebird_api_key.return_value = "mock_api_key"
-    mock_get_taxonomy.return_value = "mock_taxonomy"
+    mock_get_taxonomy_with_retry.return_value = "mock_taxonomy"
     mock_get_state_list.return_value = ["mock_state_list"]
     mock_get_regions.return_value = [{"code": "US-VA-03", "name": "Albemarle"}]
 
@@ -303,7 +303,7 @@ def test_main_region_not_found(
     # Assertions
     mock_parse_arguments.assert_called_once()
     mock_get_ebird_api_key.assert_called_once()
-    mock_get_taxonomy.assert_called_once_with("mock_api_key")
+    mock_get_taxonomy_with_retry.assert_called_once_with("mock_api_key")
     mock_get_state_list.assert_called_once_with(
         "custom_species.json", taxonomy="mock_taxonomy"
     )

@@ -95,6 +95,19 @@
             ]
         },
         {
+            "name": "Doc Aug 2026",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "get_reports.create_review_document",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--verbose",
+                "--input", "reports/records_to_review_2026_08.json",
+                "--output", "reports/review_2026_08.docx"
+            ]
+        },
+        {
             "name": "doc2text",
             "type": "debugpy",
             "request": "launch",
