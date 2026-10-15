@@ -131,10 +131,8 @@ for your account (this may require administrator privileges):
 sudo loginctl enable-linger "$USER"
 ```
 
-To inspect future runs, use `systemctl --user list-timers`. To inspect the latest
-run, use `journalctl --user -u varcom-monthly-report.service -n 100 --no-pager`.
-
-## sonarqube token
+To inspect future runs, use `systemctl --user list-timers`.
+To view the log of the latest use `systemctl --user status varcom-monthly-report.service`
 
 SonarQube is not required for operation but is required in the continuous integration to ensure that quality standards are met.
 
