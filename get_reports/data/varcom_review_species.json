@@ -448,13 +448,10 @@
             "comName": "Lesser Yellowlegs"
         },
         {
-            "comName": "Willet"
+            "comName": "Saltmarsh Willet"
         },
         {
-            "comName": "Willet (Eastern)"
-        },
-        {
-            "comName": "Willet (Western)"
+            "comName": "Prairie Willet"
         },
         {
             "comName": "Greater Yellowlegs"
@@ -1117,7 +1114,7 @@
             "comName": "Sedge Wren"
         },
         {
-            "comName": "Marsh Wren"
+            "comName": "Eastern Marsh Wren"
         },
         {
             "comName": "Gray Catbird"
@@ -1872,7 +1869,13 @@
             "comName": "Terek Sandpiper"
         },
         {
-            "comName": "Willet",
+            "comName": "Saltmarsh Willet",
+            "exclude": [
+                "Coastal Plain"
+            ]
+        },
+        {
+            "comName": "Prarie Willet",
             "exclude": [
                 "Coastal Plain"
             ]
