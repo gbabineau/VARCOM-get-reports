@@ -30,7 +30,7 @@ def get_ebird_api_key() -> str:
         SystemExit: If the API key is not properly specified.
     """
     ebird_api_key = os.getenv(ebird_api_key_name)
-    if ebird_api_key == "0":
+    if ebird_api_key == None:
         sys.exit(
             "ebird API key must be specified in the "
             + ebird_api_key_name
