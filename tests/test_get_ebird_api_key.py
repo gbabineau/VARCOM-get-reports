@@ -14,4 +14,6 @@ def test_get_ebird_api_key_missing(monkeypatch):
     monkeypatch.delenv(ebird_api_key_name, raising=False)
     with pytest.raises(SystemExit) as exception_information:
         get_ebird_api_key()
-        assert exception_information == "ebird API key must be specified in the EBIRDAPIKEY environment variable."
+    assert str(exception_information.value) == (
+        "ebird API key must be specified in the EBIRDAPIKEY environment variable."
+    )
