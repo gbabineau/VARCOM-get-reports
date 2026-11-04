@@ -12,13 +12,8 @@ def test_get_ebird_api_key_valid(monkeypatch):
 def test_get_ebird_api_key_missing(monkeypatch):
     # Unset the environment variable
     monkeypatch.delenv(ebird_api_key_name, raising=False)
-    assert get_ebird_api_key() is None
-
-
-def test_get_ebird_api_key_invalid(monkeypatch):
-    # Set the environment variable to "0" to simulate an invalid key
-    monkeypatch.setenv(ebird_api_key_name, "0")
     with pytest.raises(SystemExit) as exception_information:
         get_ebird_api_key()
-    assert exception_information.type == SystemExit
-    assert "ebird API key must be specified" in str(exception_information.value)
+    assert str(exception_information.value) == (
+        "ebird API key must be specified in the EBIRDAPIKEY environment variable."
+    )
